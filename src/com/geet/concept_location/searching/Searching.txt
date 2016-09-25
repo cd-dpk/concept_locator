@@ -1,0 +1,1 @@
+searching package deals with searching the corpus and search results 
