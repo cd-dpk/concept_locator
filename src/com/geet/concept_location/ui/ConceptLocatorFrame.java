@@ -9,7 +9,9 @@ import java.io.FileNotFoundException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.text.Document;
@@ -62,9 +64,13 @@ public class ConceptLocatorFrame extends JFrame {
 		});
 		
 		add(projectTreePanel);
+		
 		sourceTextArea = new JTextArea("Hello");
-		sourceTextArea.setBounds(UIConstants.FILE_TREE_WIDTH+20, UIConstants.Menu_Height, 800, UIConstants.Height-10);
-		add(sourceTextArea);
+		JScrollPane scrollPane = new JScrollPane(sourceTextArea);
+		scrollPane.setBounds(UIConstants.FILE_TREE_WIDTH+20, UIConstants.Menu_Height, 800, UIConstants.Height-UIConstants.Menu_Height-40);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		add(scrollPane);
 		showFrame();
 	}
 	
