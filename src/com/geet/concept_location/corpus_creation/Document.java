@@ -3,21 +3,20 @@ package com.geet.concept_location.corpus_creation;
 import com.github.javaparser.Position;
 
 public class Document {
+	DocumentType documentType;
 	String docInJavaFile;
 	String docName;
 	Position startPosition, endPosition;
 	String body;
 	
-	
-	public Document(String docInJavaFile, String docName,
+	public Document(String docInJavaFile, String docName,DocumentType documentType,
 			Position startPosition, Position endPosition) {
 		this.docInJavaFile = docInJavaFile;
 		this.docName = docName;
+		this.documentType = documentType;
 		this.startPosition = startPosition;
 		this.endPosition = endPosition;
 	}
-
-
 
 	public String getDocInJavaFile() {
 		return docInJavaFile;
@@ -51,6 +50,7 @@ public class Document {
 		this.endPosition = endPosition;
 	}
 	
-
-	
+	public enum DocumentType{
+			METHOD,CONSTRUCTOR,CLASS_OR_INTERFACE;
+	}
 }

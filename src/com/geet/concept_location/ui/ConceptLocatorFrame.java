@@ -17,11 +17,19 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.text.Document;
 
 import com.geet.concept_location.constants.UIConstants;
+import com.geet.concept_location.corpus_creation.Document.DocumentType;
 import com.geet.concept_location.io.JavaFileReader;
 import com.geet.concept_location.utils.StringUtils;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
+import com.github.javaparser.Position;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.comments.Comment;
+import com.github.javaparser.ast.comments.CommentsParser;
+import com.github.javaparser.ast.comments.JavadocComment;
+import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 public class ConceptLocatorFrame extends JFrame {
 	
@@ -34,7 +42,6 @@ public class ConceptLocatorFrame extends JFrame {
 		projectTreePanel = new FileTree(new File("."));
 		projectTreePanel.setBounds(0, UIConstants.Menu_Height, UIConstants.FILE_TREE_WIDTH, UIConstants.Height-10);
 		projectTreePanel.tree.addTreeSelectionListener(new TreeSelectionListener() {
-			
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
 				// TODO Auto-generated method stub
@@ -49,12 +56,13 @@ public class ConceptLocatorFrame extends JFrame {
 				            try {
 								cu = JavaParser.parse(in);
 								System.out.println(cu.toString());
+								new ClassVisitor().visit(cu, null);
 							} catch (ParseException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}				        
 				        // prints the resulting compilation unit to default system output
-				        
+				       
 				} catch (FileNotFoundException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -74,6 +82,18 @@ public class ConceptLocatorFrame extends JFrame {
 		showFrame();
 	}
 	
+	private static class ClassVisitor extends VoidVisitorAdapter{
+		@Override
+		public void visit(MethodDeclaration n, Object arg1) {
+			 if (n.getComment() != null && n.getComment() instanceof JavadocComment) {
+                 System.out.println(n.getBeginLine()+","+n.getBeginColumn());
+                 System.out.println(n.getComment());
+                 Comment comment = n.getComment();
+                 System.out.println(comment.getBeginLine()+","+comment.getBeginColumn());
+             }
+			
+		}
+	}
 	private void showFrame(){
 	    setForeground(Color.black);
 	    setBackground(Color.lightGray);
@@ -81,8 +101,12 @@ public class ConceptLocatorFrame extends JFrame {
 	    setVisible(true);
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
+	/**
+	 * 
+	 */
 	/** Main: make a Frame, add a FileTree */
-	  public static void main(String[] av) {
+	
+	public static void main(String[] av) {
 		  new ConceptLocatorFrame();
 	  }
 
