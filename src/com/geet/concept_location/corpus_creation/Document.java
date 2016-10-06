@@ -53,4 +53,17 @@ public class Document {
 	public enum DocumentType{
 			METHOD,CONSTRUCTOR,CLASS_OR_INTERFACE;
 	}
+	
+	public boolean isBetweenPosition(Position position){
+		if (position.getLine() == startPosition.getLine() && position.getColumn() > startPosition.getColumn() ) {
+			return true;
+		} 
+		else if(position.getLine() > startPosition.getLine() && position.getLine() < endPosition.getLine()){
+			return true;
+		}
+		else if(position.getLine() == endPosition.getLine() && position.getColumn() < endPosition.getColumn()){
+			return true;
+		}
+		return false;
+	}
 }

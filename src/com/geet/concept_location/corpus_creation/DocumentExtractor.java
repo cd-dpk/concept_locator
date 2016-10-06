@@ -20,8 +20,13 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 public class DocumentExtractor {
 	
 	CompilationUnit compilationUnit;
+	private static List<Document> methodDocuments = new ArrayList<Document>();
+	private static List<Document> constructorDocuments = new ArrayList<Document>();
+	private static List<Document> classDocuments = new ArrayList<Document>();
+	
 	private static List<Document> allDocuments = new ArrayList<Document>();
 	static String fileName;
+	
 	public DocumentExtractor(File javaFile) {
 		// TODO Auto-generated constructor stub
 		try {
@@ -35,16 +40,16 @@ public class DocumentExtractor {
 			e.printStackTrace();
 		}
 	}
+		
 	
 	public List<Document> getAllDocuments(){
 		new MethodVisitor().visit(compilationUnit, null);
 		new ConstructorVisitor().visit(compilationUnit, null);
 		new ClassOrInterfaceVisitor().visit(compilationUnit, null);
-		//add Java Doc Comments to each document and set new Position of each documents
 		//decompose all the documents
-		
 		return allDocuments;
 	}
+	
 	
 	private static class MethodVisitor extends VoidVisitorAdapter{
 		@Override
@@ -54,12 +59,12 @@ public class DocumentExtractor {
 				Comment comment = methodDeclaration.getComment();
 				Position startPosition = new Position(comment.getBeginLine(), comment.getBeginColumn());
 				Position endPosition = new Position(comment.getEndLine(), comment.getEndLine());
-				allDocuments.add(new Document(fileName,methodDeclaration.getName(),DocumentType.METHOD,startPosition, endPosition));
+				methodDocuments.add(new Document(fileName,methodDeclaration.getName(),DocumentType.METHOD,startPosition, endPosition));
 
 			} else {
 				Position startPosition = new Position(methodDeclaration.getBeginLine(), methodDeclaration.getBeginColumn());
 				Position endPosition = new Position(methodDeclaration.getEndLine(), methodDeclaration.getEndLine());
-				allDocuments.add(new Document(fileName,methodDeclaration.getName(),DocumentType.METHOD,startPosition, endPosition));
+				methodDocuments.add(new Document(fileName,methodDeclaration.getName(),DocumentType.METHOD,startPosition, endPosition));
 			}
 			
 		}
@@ -72,13 +77,13 @@ public class DocumentExtractor {
 				Comment comment = constructorDeclaration.getComment();
 				Position startPosition = new Position(comment.getBeginLine(), comment.getBeginColumn());
 				Position endPosition = new Position(comment.getEndLine(), comment.getEndLine());
-				allDocuments.add(new Document(fileName,constructorDeclaration.getName(),DocumentType.CONSTRUCTOR,startPosition, endPosition));
+				constructorDocuments.add(new Document(fileName,constructorDeclaration.getName(),DocumentType.CONSTRUCTOR,startPosition, endPosition));
 				
 			}
 			else{
 				Position startPosition = new Position(constructorDeclaration.getBeginLine(), constructorDeclaration.getBeginColumn());
 				Position endPosition = new Position(constructorDeclaration.getEndLine(), constructorDeclaration.getEndLine());
-				allDocuments.add(new Document(fileName,constructorDeclaration.getName(),DocumentType.CONSTRUCTOR,startPosition, endPosition));						
+				constructorDocuments.add(new Document(fileName,constructorDeclaration.getName(),DocumentType.CONSTRUCTOR,startPosition, endPosition));						
 			}
 		}
 	}
@@ -90,13 +95,12 @@ public class DocumentExtractor {
 				Comment comment = classOrInterfaceDeclaration.getComment();
 				Position startPosition = new Position(comment.getBeginLine(), comment.getBeginColumn());
 				Position endPosition = new Position(comment.getEndLine(), comment.getEndLine());
-				allDocuments.add(new Document(fileName,classOrInterfaceDeclaration.getName(),DocumentType.CLASS_OR_INTERFACE,startPosition, endPosition));
+				classDocuments.add(new Document(fileName,classOrInterfaceDeclaration.getName(),DocumentType.CLASS_OR_INTERFACE,startPosition, endPosition));
 			}
 			else{
 				Position startPosition = new Position(classOrInterfaceDeclaration.getBeginLine(), classOrInterfaceDeclaration.getBeginColumn());
 				Position endPosition = new Position(classOrInterfaceDeclaration.getEndLine(), classOrInterfaceDeclaration.getEndLine());
-				allDocuments.add(new Document(fileName,classOrInterfaceDeclaration.getName(),DocumentType.CLASS_OR_INTERFACE,startPosition, endPosition));
-				
+				classDocuments.add(new Document(fileName,classOrInterfaceDeclaration.getName(),DocumentType.CLASS_OR_INTERFACE,startPosition, endPosition));
 			}
 		}
 	}
