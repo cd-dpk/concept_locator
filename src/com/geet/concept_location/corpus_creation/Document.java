@@ -7,7 +7,8 @@ public class Document {
 	String docInJavaFile;
 	String docName;
 	Position startPosition, endPosition;
-	String body;
+	String body ="";
+	
 	
 	public Document(String docInJavaFile, String docName,DocumentType documentType,
 			Position startPosition, Position endPosition) {

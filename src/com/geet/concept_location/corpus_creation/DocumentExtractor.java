@@ -1,7 +1,11 @@
 package com.geet.concept_location.corpus_creation;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,16 +44,67 @@ public class DocumentExtractor {
 			e.printStackTrace();
 		}
 	}
-		
 	
 	public List<Document> getAllDocuments(){
 		new MethodVisitor().visit(compilationUnit, null);
 		new ConstructorVisitor().visit(compilationUnit, null);
 		new ClassOrInterfaceVisitor().visit(compilationUnit, null);
-		//decompose all the documents
+		// decompose all the documents
+		setAllDocumentsBody();
+		// extract all the documents
 		return allDocuments;
 	}
 	
+	private String extractDocument(){
+		String article ="";
+		// remove all the keywords
+		// remove all the operators
+		// remove all the structures
+		// remove all the annotations
+		// remove all the literals
+		return article;	
+	}
+	private void setAllDocumentsBody(){
+		try {
+			FileInputStream file = new FileInputStream(fileName);
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(file));
+			int lineNumber =1;
+			String line ="";
+			/*
+			 * read every line
+			 */
+			while ((line = bufferedReader.readLine())!=null) {
+				Position position = new Position(lineNumber, 1);
+				/*
+				 * if line number is among one of the methods position then add it to method document
+				 * if line number is among one of the constructors then add it to constructor document
+				 * else it will go to the class document
+				 */
+				int index = 0;
+				if ((index = getDocumentIndexWhichLieWithinPosition(methodDocuments, position))!=-1) {
+					methodDocuments.get(index).body += methodDocuments.get(index).body+"\n";
+				} else if((index = getDocumentIndexWhichLieWithinPosition(constructorDocuments, position))!=-1){
+					constructorDocuments.get(index).body += constructorDocuments.get(index).body+"\n";
+				} else if ((index = getDocumentIndexWhichLieWithinPosition(classDocuments, position))!=-1) {
+					classDocuments.get(index).body += classDocuments.get(index).body+"\n";
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private int getDocumentIndexWhichLieWithinPosition(List<Document> documents,Position position){
+		for (Document document : documents) {
+			int i=0;
+			if (document.isBetweenPosition(position)) {
+				return i;
+			}
+			i++;
+		}
+		return -1;
+	}
 	
 	private static class MethodVisitor extends VoidVisitorAdapter{
 		@Override
