@@ -9,7 +9,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.geet.concept_location.corpus_creation.Document.DocumentType;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.Position;
@@ -24,10 +23,8 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 public class DocumentExtractor {
 	
 	CompilationUnit compilationUnit;
-	private static List<Document> methodDocuments = new ArrayList<Document>();
-	private static List<Document> constructorDocuments = new ArrayList<Document>();
-	private static List<Document> classDocuments = new ArrayList<Document>();
-	
+	private static List<MethodOrConstructorDocument> myMethodOrConstructorDocuments = new ArrayList<MethodOrConstructorDocument>();
+	private static List<ClassDocument> myClassDocuments = new ArrayList<ClassDocument>();
 	private static List<Document> allDocuments = new ArrayList<Document>();
 	static String fileName;
 	
@@ -49,51 +46,10 @@ public class DocumentExtractor {
 		new MethodVisitor().visit(compilationUnit, null);
 		new ConstructorVisitor().visit(compilationUnit, null);
 		new ClassOrInterfaceVisitor().visit(compilationUnit, null);
-		// decompose all the documents
-		setAllDocumentsBody();
-		// extract all the documents
 		return allDocuments;
 	}
 	
-	private String extractDocument(){
-		String article ="";
-		// remove all the keywords
-		// remove all the operators
-		// remove all the structures
-		// remove all the annotations
-		// remove all the literals
-		return article;	
-	}
-	private void setAllDocumentsBody(){
-		try {
-			FileInputStream file = new FileInputStream(fileName);
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(file));
-			int lineNumber =1;
-			String line ="";
-			/*
-			 * read every line
-			 */
-			while ((line = bufferedReader.readLine())!=null) {
-				Position position = new Position(lineNumber, 1);
-				/*
-				 * if line number is among one of the methods position then add it to method document
-				 * if line number is among one of the constructors then add it to constructor document
-				 * else it will go to the class document
-				 */
-				int index = 0;
-				if ((index = getDocumentIndexWhichLieWithinPosition(methodDocuments, position))!=-1) {
-					methodDocuments.get(index).body += methodDocuments.get(index).body+"\n";
-				} else if((index = getDocumentIndexWhichLieWithinPosition(constructorDocuments, position))!=-1){
-					constructorDocuments.get(index).body += constructorDocuments.get(index).body+"\n";
-				} else if ((index = getDocumentIndexWhichLieWithinPosition(classDocuments, position))!=-1) {
-					classDocuments.get(index).body += classDocuments.get(index).body+"\n";
-				}
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+	
 	
 	private int getDocumentIndexWhichLieWithinPosition(List<Document> documents,Position position){
 		for (Document document : documents) {
@@ -109,54 +65,73 @@ public class DocumentExtractor {
 	private static class MethodVisitor extends VoidVisitorAdapter{
 		@Override
 		public void visit(MethodDeclaration methodDeclaration, Object arg1) {
-			
-			if (methodDeclaration.getComment() != null && methodDeclaration.getComment() instanceof JavadocComment) {
-				Comment comment = methodDeclaration.getComment();
-				Position startPosition = new Position(comment.getBeginLine(), comment.getBeginColumn());
-				Position endPosition = new Position(comment.getEndLine(), comment.getEndLine());
-				methodDocuments.add(new Document(fileName,methodDeclaration.getName(),DocumentType.METHOD,startPosition, endPosition));
-
-			} else {
-				Position startPosition = new Position(methodDeclaration.getBeginLine(), methodDeclaration.getBeginColumn());
-				Position endPosition = new Position(methodDeclaration.getEndLine(), methodDeclaration.getEndLine());
-				methodDocuments.add(new Document(fileName,methodDeclaration.getName(),DocumentType.METHOD,startPosition, endPosition));
+			Comment methodComment = methodDeclaration.getComment();
+			Position startPosition = new Position(methodComment.getBeginLine(), methodComment.getBeginColumn());
+			Position endPosition = new Position(methodComment.getEndLine(), methodComment.getEndLine());
+			MethodOrConstructorDocument methodOrConstructorDocument = new MethodOrConstructorDocument(fileName,methodDeclaration.getName(),startPosition, endPosition);
+			if (methodComment != null && methodComment instanceof JavadocComment) {
+				methodOrConstructorDocument.javaDocComments.add((JavadocComment) methodComment);
+			}else if ((methodComment != null )&& (methodComment instanceof JavadocComment == false)) {
+				methodOrConstructorDocument.implementationComments.add(methodComment);
 			}
-			
+			for (Comment containedComment : methodDeclaration.getAllContainedComments()) {
+				if (containedComment instanceof JavadocComment) {
+					methodOrConstructorDocument.javaDocComments.add((JavadocComment) containedComment);
+				}else {
+					methodOrConstructorDocument.implementationComments.add(containedComment);
+				}
+			}
+			methodOrConstructorDocument.implementionBody = methodDeclaration.getBody().toStringWithoutComments();
+			myMethodOrConstructorDocuments.add(methodOrConstructorDocument);
 		}
 	}
 	
 	private static class ConstructorVisitor extends VoidVisitorAdapter{
 		@Override
 		public void visit(ConstructorDeclaration constructorDeclaration, Object arg1) {
-			if (constructorDeclaration.getComment() != null && constructorDeclaration.getComment() instanceof JavadocComment) {
-				Comment comment = constructorDeclaration.getComment();
-				Position startPosition = new Position(comment.getBeginLine(), comment.getBeginColumn());
-				Position endPosition = new Position(comment.getEndLine(), comment.getEndLine());
-				constructorDocuments.add(new Document(fileName,constructorDeclaration.getName(),DocumentType.CONSTRUCTOR,startPosition, endPosition));
-				
+			Comment methodComment = constructorDeclaration.getComment();
+			Position startPosition = new Position(methodComment.getBeginLine(), methodComment.getBeginColumn());
+			Position endPosition = new Position(methodComment.getEndLine(), methodComment.getEndLine());
+			MethodOrConstructorDocument methodOrConstructorDocument = new MethodOrConstructorDocument(fileName,constructorDeclaration.getName(),startPosition, endPosition);
+			if (methodComment != null && methodComment instanceof JavadocComment) {
+				methodOrConstructorDocument.javaDocComments.add((JavadocComment) methodComment);
+			}else if ((methodComment != null )&& (methodComment instanceof JavadocComment == false)) {
+				methodOrConstructorDocument.implementationComments.add(methodComment);
 			}
-			else{
-				Position startPosition = new Position(constructorDeclaration.getBeginLine(), constructorDeclaration.getBeginColumn());
-				Position endPosition = new Position(constructorDeclaration.getEndLine(), constructorDeclaration.getEndLine());
-				constructorDocuments.add(new Document(fileName,constructorDeclaration.getName(),DocumentType.CONSTRUCTOR,startPosition, endPosition));						
+			for (Comment containedComment : constructorDeclaration.getAllContainedComments()) {
+				if (containedComment instanceof JavadocComment) {
+					methodOrConstructorDocument.javaDocComments.add((JavadocComment) containedComment);
+				}else {
+					methodOrConstructorDocument.implementationComments.add(containedComment);
+				}
 			}
+			methodOrConstructorDocument.implementionBody = constructorDeclaration.getBlock().toStringWithoutComments();
+			myMethodOrConstructorDocuments.add(methodOrConstructorDocument);
 		}
 	}
 	
 	private static class ClassOrInterfaceVisitor extends VoidVisitorAdapter{
 		@Override
 		public void visit(ClassOrInterfaceDeclaration classOrInterfaceDeclaration, Object arg1) {
-			if (classOrInterfaceDeclaration.getComment() != null && classOrInterfaceDeclaration.getComment() instanceof JavadocComment) {
-				Comment comment = classOrInterfaceDeclaration.getComment();
-				Position startPosition = new Position(comment.getBeginLine(), comment.getBeginColumn());
-				Position endPosition = new Position(comment.getEndLine(), comment.getEndLine());
-				classDocuments.add(new Document(fileName,classOrInterfaceDeclaration.getName(),DocumentType.CLASS_OR_INTERFACE,startPosition, endPosition));
+			Comment methodComment = classOrInterfaceDeclaration.getComment();
+			Position startPosition = new Position(methodComment.getBeginLine(), methodComment.getBeginColumn());
+			Position endPosition = new Position(methodComment.getEndLine(), methodComment.getEndLine());
+			MethodOrConstructorDocument methodOrConstructorDocument = new MethodOrConstructorDocument(fileName,classOrInterfaceDeclaration.getName(),startPosition, endPosition);
+			if (methodComment != null && methodComment instanceof JavadocComment) {
+				methodOrConstructorDocument.javaDocComments.add((JavadocComment) methodComment);
+			}else if ((methodComment != null )&& (methodComment instanceof JavadocComment == false)) {
+				methodOrConstructorDocument.implementationComments.add(methodComment);
 			}
-			else{
-				Position startPosition = new Position(classOrInterfaceDeclaration.getBeginLine(), classOrInterfaceDeclaration.getBeginColumn());
-				Position endPosition = new Position(classOrInterfaceDeclaration.getEndLine(), classOrInterfaceDeclaration.getEndLine());
-				classDocuments.add(new Document(fileName,classOrInterfaceDeclaration.getName(),DocumentType.CLASS_OR_INTERFACE,startPosition, endPosition));
+			for (Comment containedComment : classOrInterfaceDeclaration.getAllContainedComments()) {
+				if (containedComment instanceof JavadocComment) {
+					methodOrConstructorDocument.javaDocComments.add((JavadocComment) containedComment);
+				}else {
+					methodOrConstructorDocument.implementationComments.add(containedComment);
+				}
 			}
+			// get Data
+//			methodOrConstructorDocument.implementionBody = classOrInterfaceDeclaration.toStringWithoutComments();
+			myMethodOrConstructorDocuments.add(methodOrConstructorDocument);
 		}
 	}
 }

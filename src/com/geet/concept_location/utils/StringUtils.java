@@ -29,4 +29,15 @@ public class StringUtils {
 		}
 		return false;
 	}
+	
+	public static boolean hasStringInList(String string,String[] list){
+		for (String str : list) {
+			if (str.equals(string)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
 }

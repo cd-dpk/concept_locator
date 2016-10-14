@@ -7,40 +7,34 @@ import java.util.StringTokenizer;
 
 import com.geet.concept_location.utils.StringUtils;
 import com.github.javaparser.Position;
-import com.github.javaparser.ast.comments.Comment;
-import com.github.javaparser.ast.comments.JavadocComment;
 
-public abstract class Document {
-	protected String docInJavaFile;
-	protected String docName;
-	protected Position startPosition, endPosition;
+public class MethodOrConstructorDocument extends Document {
 
-	protected List<JavadocComment> javaDocComments = new ArrayList<JavadocComment>();
-	protected List<Comment> implementationComments = new ArrayList<Comment>();
-	protected String implementionBody = "";
-	protected String article="";
-
-	
-	
-	public Document(String docInJavaFile, String docName,
+	public MethodOrConstructorDocument(String docInJavaFile, String docName,
 			Position startPosition, Position endPosition) {
-		super();
-		this.docInJavaFile = docInJavaFile;
-		this.docName = docName;
-		this.startPosition = startPosition;
-		this.endPosition = endPosition;
+		super(docInJavaFile, docName, startPosition, endPosition);
+		// TODO Auto-generated constructor stub
 	}
 
 
-	protected abstract void extractDocument();
-	/*public String extractDocumentOld(){
+	@Override
+	public void extractDocument(){
+		
 		// process all java doc comments
+		// start
+			// remove all the @tag, <tag> , </tag>
+		
+		// end
 		// process all comments
+		
 		// process all implementation body
+		// start
+			// remove all spaces, keywords, operators,structures, annotations, literals 
+		// end
 		
 		String article ="";
 		// scanner open
-		Scanner scanner = new Scanner(body);
+		Scanner scanner = new Scanner("");
 		// Step 1: read every line 
 		List<String> words = new ArrayList<String>();
 		while (scanner.hasNext()) {
@@ -63,19 +57,5 @@ public abstract class Document {
 		// Step 5: until
 		scanner.close();
 		// scanner close
-		return article;	
-	}*/
-
-	public boolean isBetweenPosition(Position position){
-		if (position.getLine() == startPosition.getLine() && position.getColumn() > startPosition.getColumn() ) {
-			return true;
-		} 
-		else if(position.getLine() > startPosition.getLine() && position.getLine() < endPosition.getLine()){
-			return true;
-		}
-		else if(position.getLine() == endPosition.getLine() && position.getColumn() < endPosition.getColumn()){
-			return true;
-		}
-		return false;
 	}
 }
