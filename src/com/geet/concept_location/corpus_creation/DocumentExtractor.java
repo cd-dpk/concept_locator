@@ -49,8 +49,6 @@ public class DocumentExtractor {
 		return allDocuments;
 	}
 	
-	
-	
 	private int getDocumentIndexWhichLieWithinPosition(List<Document> documents,Position position){
 		for (Document document : documents) {
 			int i=0;
