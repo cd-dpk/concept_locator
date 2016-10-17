@@ -1,170 +1,166 @@
 getAllDocuments /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
-[]
-[]
-{
-    new  MethodVisitor().visit(compilationUnit, null);
-    new  ConstructorVisitor().visit(compilationUnit, null);
-    new  ClassOrInterfaceVisitor().visit(compilationUnit, null);
-    for (ClassDocument document : myClassDocuments) {
-        new  FieldVisitor(document).visit(compilationUnit, null);
-    }
-    allDocuments.addAll(myMethodOrConstructorDocuments);
-    allDocuments.addAll(myClassDocuments);
-    return allDocuments;
-}
 
+ 
+ 
+    Method Visitor MethodVisitor visit compilation Unit compilationUnit  null 
+    Constructor Visitor ConstructorVisitor visit compilation Unit compilationUnit  null 
+    Class Or Interface Visitor ClassOrInterfaceVisitor visit compilation Unit compilationUnit  null 
+    Class Document ClassDocument  document   my Class Documents myClassDocuments  
+    Field Visitor FieldVisitor document visit compilation Unit compilationUnit  null 
+  
+  all Documents allDocuments add All addAll my Method Or Constructor Documents myMethodOrConstructorDocuments 
+  all Documents allDocuments add All addAll my Class Documents myClassDocuments 
+   all Documents allDocuments 
+  
+ 
 visit /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
-[]
-[]
-{
-    Comment methodComment = methodDeclaration.getComment();
-    Position startPosition = new  Position(methodDeclaration.getBeginLine(), methodDeclaration.getBeginColumn());
-    Position endPosition = new  Position(methodDeclaration.getEndLine(), methodDeclaration.getEndLine());
-    MethodOrConstructorDocument methodOrConstructorDocument = new  MethodOrConstructorDocument(fileName, methodDeclaration.getName(), startPosition, endPosition);
-    if (methodComment != null && methodComment instanceof JavadocComment) {
-        methodOrConstructorDocument.javaDocComments.add((JavadocComment) methodComment);
-    } else if ((methodComment != null) && (methodComment instanceof JavadocComment == false)) {
-        methodOrConstructorDocument.implementationComments.add(methodComment);
-    }
-    for (Comment containedComment : methodDeclaration.getAllContainedComments()) {
-        if (containedComment instanceof JavadocComment) {
-            methodOrConstructorDocument.javaDocComments.add((JavadocComment) containedComment);
-        } else {
-            methodOrConstructorDocument.implementationComments.add(containedComment);
-        }
-    }
-    methodOrConstructorDocument.implementionBody = methodDeclaration.getBody().toStringWithoutComments();
-    myMethodOrConstructorDocuments.add(methodOrConstructorDocument);
-}
 
+ 
+ 
+   Comment Comment  method Comment methodComment   method Declaration methodDeclaration get Comment getComment 
+   Position Position  start Position startPosition     Position Position method Declaration methodDeclaration get Begin Line getBeginLine  method Declaration methodDeclaration get Begin Column getBeginColumn 
+   Position Position  end Position endPosition     Position Position method Declaration methodDeclaration get End Line getEndLine  method Declaration methodDeclaration get End Line getEndLine 
+   Method Or Constructor Document MethodOrConstructorDocument  method Or Constructor Document methodOrConstructorDocument     Method Or Constructor Document MethodOrConstructorDocument file Name fileName  method Declaration methodDeclaration get Name getName  start Position startPosition  end Position endPosition 
+   method Comment methodComment   null   method Comment methodComment    Javadoc Comment JavadocComment  
+  method Or Constructor Document methodOrConstructorDocument java Doc Comments javaDocComments add  Javadoc Comment JavadocComment  method Comment methodComment 
+     method Comment methodComment   null   method Comment methodComment    Javadoc Comment JavadocComment   false  
+  method Or Constructor Document methodOrConstructorDocument implementation Comments implementationComments add method Comment methodComment 
+  
+    Comment Comment  contained Comment containedComment   method Declaration methodDeclaration get All Contained Comments getAllContainedComments  
+   contained Comment containedComment    Javadoc Comment JavadocComment  
+  method Or Constructor Document methodOrConstructorDocument java Doc Comments javaDocComments add  Javadoc Comment JavadocComment  contained Comment containedComment 
+    
+  method Or Constructor Document methodOrConstructorDocument implementation Comments implementationComments add contained Comment containedComment 
+  
+  
+  method Or Constructor Document methodOrConstructorDocument implemention Body implementionBody   method Declaration methodDeclaration get Body getBody to String Without Comments toStringWithoutComments 
+  my Method Or Constructor Documents myMethodOrConstructorDocuments add method Or Constructor Document methodOrConstructorDocument 
+  
+ 
 visit /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
-[]
-[]
-{
-    Comment methodComment = constructorDeclaration.getComment();
-    Position startPosition = new  Position(constructorDeclaration.getBeginLine(), constructorDeclaration.getBeginColumn());
-    Position endPosition = new  Position(constructorDeclaration.getEndLine(), constructorDeclaration.getEndLine());
-    MethodOrConstructorDocument methodOrConstructorDocument = new  MethodOrConstructorDocument(fileName, constructorDeclaration.getName(), startPosition, endPosition);
-    if (methodComment != null && methodComment instanceof JavadocComment) {
-        methodOrConstructorDocument.javaDocComments.add((JavadocComment) methodComment);
-    } else if ((methodComment != null) && (methodComment instanceof JavadocComment == false)) {
-        methodOrConstructorDocument.implementationComments.add(methodComment);
-    }
-    for (Comment containedComment : constructorDeclaration.getAllContainedComments()) {
-        if (containedComment instanceof JavadocComment) {
-            methodOrConstructorDocument.javaDocComments.add((JavadocComment) containedComment);
-        } else {
-            methodOrConstructorDocument.implementationComments.add(containedComment);
-        }
-    }
-    methodOrConstructorDocument.implementionBody = constructorDeclaration.getBlock().toStringWithoutComments();
-    myMethodOrConstructorDocuments.add(methodOrConstructorDocument);
-}
 
+ 
+ 
+   Comment Comment  method Comment methodComment   constructor Declaration constructorDeclaration get Comment getComment 
+   Position Position  start Position startPosition     Position Position constructor Declaration constructorDeclaration get Begin Line getBeginLine  constructor Declaration constructorDeclaration get Begin Column getBeginColumn 
+   Position Position  end Position endPosition     Position Position constructor Declaration constructorDeclaration get End Line getEndLine  constructor Declaration constructorDeclaration get End Line getEndLine 
+   Method Or Constructor Document MethodOrConstructorDocument  method Or Constructor Document methodOrConstructorDocument     Method Or Constructor Document MethodOrConstructorDocument file Name fileName  constructor Declaration constructorDeclaration get Name getName  start Position startPosition  end Position endPosition 
+   method Comment methodComment   null   method Comment methodComment    Javadoc Comment JavadocComment  
+  method Or Constructor Document methodOrConstructorDocument java Doc Comments javaDocComments add  Javadoc Comment JavadocComment  method Comment methodComment 
+     method Comment methodComment   null   method Comment methodComment    Javadoc Comment JavadocComment   false  
+  method Or Constructor Document methodOrConstructorDocument implementation Comments implementationComments add method Comment methodComment 
+  
+    Comment Comment  contained Comment containedComment   constructor Declaration constructorDeclaration get All Contained Comments getAllContainedComments  
+   contained Comment containedComment    Javadoc Comment JavadocComment  
+  method Or Constructor Document methodOrConstructorDocument java Doc Comments javaDocComments add  Javadoc Comment JavadocComment  contained Comment containedComment 
+    
+  method Or Constructor Document methodOrConstructorDocument implementation Comments implementationComments add contained Comment containedComment 
+  
+  
+  method Or Constructor Document methodOrConstructorDocument implemention Body implementionBody   constructor Declaration constructorDeclaration get Block getBlock to String Without Comments toStringWithoutComments 
+  my Method Or Constructor Documents myMethodOrConstructorDocuments add method Or Constructor Document methodOrConstructorDocument 
+  
+ 
 visit /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
-[]
-[/*			// all contained comments
-			for (Comment containedComment : classOrInterfaceDeclaration.getAllContainedComments()) {
-				// check the comments are on its comments collection
-				// check whether it is on one of the methods comment or not
-				// TODO if it is done, it will increase the performance
-				if (containedComment instanceof JavadocComment) {
-					classDocument.javaDocComments.add((JavadocComment) containedComment);
-				}else {
-					classDocument.implementationComments.add(containedComment);
-				}
-			}
-*/
-]
-{
-    Comment classComment = classOrInterfaceDeclaration.getComment();
-    Position startPosition = new  Position(classOrInterfaceDeclaration.getBeginLine(), classOrInterfaceDeclaration.getBeginColumn());
-    Position endPosition = new  Position(classOrInterfaceDeclaration.getEndLine(), classOrInterfaceDeclaration.getEndLine());
-    ClassDocument classDocument = new  ClassDocument(fileName, classOrInterfaceDeclaration.getName(), startPosition, endPosition);
-    if (classComment != null && classComment instanceof JavadocComment) {
-        classDocument.javaDocComments.add((JavadocComment) classComment);
-    } else if ((classComment != null) && (classComment instanceof JavadocComment == false)) {
-        classDocument.implementationComments.add(classComment);
-    }
-    myClassDocuments.add(classDocument);
-}
 
+ 			  all  contained  comments
+			for   Comment Comment  contained Comment containedComment   class Or Interface Declaration classOrInterfaceDeclaration get All Contained Comments getAllContainedComments  
+				  check  the  comments  are  on  its  comments  collection
+				  check  whether  it  is  on  one  of  the  methods  comment  or  not
+				  TODO  if  it  is  done  it  will  increase  the  performance
+				if  contained Comment containedComment  instanceof   Javadoc Comment JavadocComment  
+					class Document 
+					classDocument java Doc Comments javaDocComments add  Javadoc Comment JavadocComment  contained Comment containedComment 
+				 else  
+					class Document 
+					classDocument implementation Comments implementationComments add contained Comment containedComment 
+				 
+			 
+  
+ 
+   Comment Comment  class Comment classComment   class Or Interface Declaration classOrInterfaceDeclaration get Comment getComment 
+   Position Position  start Position startPosition     Position Position class Or Interface Declaration classOrInterfaceDeclaration get Begin Line getBeginLine  class Or Interface Declaration classOrInterfaceDeclaration get Begin Column getBeginColumn 
+   Position Position  end Position endPosition     Position Position class Or Interface Declaration classOrInterfaceDeclaration get End Line getEndLine  class Or Interface Declaration classOrInterfaceDeclaration get End Line getEndLine 
+   Class Document ClassDocument  class Document classDocument     Class Document ClassDocument file Name fileName  class Or Interface Declaration classOrInterfaceDeclaration get Name getName  start Position startPosition  end Position endPosition 
+   class Comment classComment   null   class Comment classComment    Javadoc Comment JavadocComment  
+  class Document classDocument java Doc Comments javaDocComments add  Javadoc Comment JavadocComment  class Comment classComment 
+     class Comment classComment   null   class Comment classComment    Javadoc Comment JavadocComment   false  
+  class Document classDocument implementation Comments implementationComments add class Comment classComment 
+  
+  my Class Documents myClassDocuments add class Document classDocument 
+  
+ 
 visit /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
-[]
-[// if the field declaration belongs to that class, then it is added to this class
-, // belonging to a class is determined by the position of class and field declaration 
-]
-{
-    Position startPosition = new  Position(fieldDeclaration.getBeginLine(), fieldDeclaration.getBeginColumn());
-    Position endPosition = new  Position(fieldDeclaration.getEndLine(), fieldDeclaration.getEndColumn());
-    if (isParamOneBelongsToParamTwo(new  Range(startPosition, endPosition), classDocument.getRange())) {
-        Comment classComment = fieldDeclaration.getComment();
-        if (classComment != null && classComment instanceof JavadocComment) {
-            classDocument.javaDocComments.add((JavadocComment) classComment);
-        } else if ((classComment != null) && (classComment instanceof JavadocComment == false)) {
-            classDocument.implementationComments.add(classComment);
-        }
-        classDocument.implementionBody += fieldDeclaration.toStringWithoutComments() + "\n";
-    }
-}
 
+ if  the  field  declaration  belongs  to  that  class  then  it  is  added  to  this  class  belonging  to  a  class  is  determined  by  the  position  of  class  and  field  declaration  
+ 
+   Position Position  start Position startPosition     Position Position field Declaration fieldDeclaration get Begin Line getBeginLine  field Declaration fieldDeclaration get Begin Column getBeginColumn 
+   Position Position  end Position endPosition     Position Position field Declaration fieldDeclaration get End Line getEndLine  field Declaration fieldDeclaration get End Column getEndColumn 
+   is Param One Belongs To Param Two isParamOneBelongsToParamTwo   Range Range start Position startPosition  end Position endPosition  class Document classDocument get Range getRange  
+   Comment Comment  class Comment classComment   field Declaration fieldDeclaration get Comment getComment 
+   class Comment classComment   null   class Comment classComment    Javadoc Comment JavadocComment  
+  class Document classDocument java Doc Comments javaDocComments add  Javadoc Comment JavadocComment  class Comment classComment 
+     class Comment classComment   null   class Comment classComment    Javadoc Comment JavadocComment   false  
+  class Document classDocument implementation Comments implementationComments add class Comment classComment 
+  
+  class Document classDocument implemention Body implementionBody   field Declaration fieldDeclaration to String Without Comments toStringWithoutComments   " \n" "\n" 
+  
+  
+ 
 isParamOneBelongsToParamTwo /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
-[]
-[]
-{
-    if (isPositionBelongsToANode(new  Position(paramOne.getBeginLine(), paramOne.getBeginColumn()), paramTwo) && isPositionBelongsToANode(new  Position(paramOne.getEndLine(), paramOne.getEndColumn()), paramTwo)) {
-        return true;
-    }
-    return false;
-}
 
+ 
+ 
+   is Position Belongs To A Node isPositionBelongsToANode   Position Position param One paramOne get Begin Line getBeginLine  param One paramOne get Begin Column getBeginColumn  param Two paramTwo   is Position Belongs To A Node isPositionBelongsToANode   Position Position param One paramOne get End Line getEndLine  param One paramOne get End Column getEndColumn  param Two paramTwo  
+   true 
+  
+   false 
+  
+ 
 isPositionBelongsToANode /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
-[]
-[]
-{
-    if (position.getLine() == node.getBeginLine() && position.getColumn() > node.getBeginColumn()) {
-        return true;
-    } else if (position.getLine() > node.getBeginLine() && position.getLine() < node.getEndLine()) {
-        return true;
-    } else if (position.getLine() == node.getEndLine() && position.getColumn() < node.getEndColumn()) {
-        return true;
-    }
-    return false;
-}
 
+ 
+ 
+   position get Line getLine   node get Begin Line getBeginLine   position get Column getColumn   node get Begin Column getBeginColumn  
+   true 
+     position get Line getLine   node get Begin Line getBeginLine   position get Line getLine   node get End Line getEndLine  
+   true 
+     position get Line getLine   node get End Line getEndLine   position get Column getColumn   node get End Column getEndColumn  
+   true 
+  
+   false 
+  
+ 
 DocumentExtractor /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
-[]
-[// TODO Auto-generated constructor stub
-, // TODO Auto-generated catch block
-, // TODO Auto-generated catch block
-]
-{
-    try {
-        fileName = javaFile.getAbsolutePath();
-        compilationUnit = JavaParser.parse(javaFile);
-    } catch (ParseException e) {
-        e.printStackTrace();
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
-}
 
+ TODO   Auto Auto generated  constructor  stub  TODO   Auto Auto generated  catch  block  TODO   Auto Auto generated  catch  block  
+ 
+   
+  file Name fileName   java File javaFile get Absolute Path getAbsolutePath 
+  compilation Unit compilationUnit    Java Parser JavaParser parse java File javaFile 
+     Parse Exception ParseException  e  
+  e print Stack Trace printStackTrace 
+     I O Exception IOException  e  
+  e print Stack Trace printStackTrace 
+  
+  
+ 
 FieldVisitor /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
-[]
-[// TODO Auto-generated constructor stub
-]
-{
-    this.classDocument = classDocument;
-}
 
+ TODO   Auto Auto generated  constructor  stub  
+ 
+  class Document classDocument   class Document classDocument 
+  
+ 
 DocumentExtractor /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
-[]
-[]
-CompilationUnit compilationUnit;
-private static List<MethodOrConstructorDocument> myMethodOrConstructorDocuments = new  ArrayList<MethodOrConstructorDocument>();
-private static List<ClassDocument> myClassDocuments = new  ArrayList<ClassDocument>();
-private static List<Document> allDocuments = new  ArrayList<Document>();
-static String fileName;
-ClassDocument classDocument;
 
-
+ 
+  Compilation Unit CompilationUnit  compilation Unit compilationUnit 
+private    List List  Method Or Constructor Document MethodOrConstructorDocument  my Method Or Constructor Documents myMethodOrConstructorDocuments     Array List ArrayList  Method Or Constructor Document MethodOrConstructorDocument 
+private    List List  Class Document ClassDocument  my Class Documents myClassDocuments     Array List ArrayList  Class Document ClassDocument 
+private    List List  Document Document  all Documents allDocuments     Array List ArrayList  Document Document 
+static   String String  file Name fileName 
+ Class Document 
+ClassDocument  class Document classDocument 
+  
+ 

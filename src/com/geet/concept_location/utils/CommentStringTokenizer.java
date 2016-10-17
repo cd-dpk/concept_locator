@@ -2,21 +2,22 @@ package com.geet.concept_location.utils;
 
 import java.util.StringTokenizer;
 
+import com.geet.concept_location.corpus_creation.JavaLanguage;
 import com.github.javaparser.Position;
 
-public class CustomStringTokenizer extends StringTokenizer{
+public class CommentStringTokenizer extends StringTokenizer{
 
-	public CustomStringTokenizer(String str) {
+	public CommentStringTokenizer(String str) {
 		super(str);
 		// TODO Auto-generated constructor stub
 	}
 
-	public CustomStringTokenizer(String str, String delim, boolean returnDelims) {
+	public CommentStringTokenizer(String str, String delim, boolean returnDelims) {
 		super(str, delim, returnDelims);
 		// TODO Auto-generated constructor stub
 	}
 
-	public CustomStringTokenizer(String str, String delim) {
+	public CommentStringTokenizer(String str, String delim) {
 		super(str, delim);
 		// TODO Auto-generated constructor stub
 	}
@@ -24,17 +25,24 @@ public class CustomStringTokenizer extends StringTokenizer{
 	@Override
 	public String nextToken() {
 		// TODO Auto-generated method stub
-		String token = nextToken();
-		if (findAtSign(token)) {
-			token = replaceWordWithAtSign(token, "");
+		String largeToken = "";
+		String token = super.nextToken();
+		// if token has a substring of programming syntax then replace with " "
+		StringTokenizer stringTokenizer = new StringTokenizer(token,JavaLanguage.getProgrammingLanguageSyntax()+JavaLanguage.INLINE_COMMENT+JavaLanguage.BLOCK_OR_JAVADOC_CONTINUE,false);
+		while (stringTokenizer.hasMoreTokens()) {
+			String nestedToken = stringTokenizer.nextToken();
+			// in line comment or 
+			if (nestedToken.equals(JavaLanguage.INLINE_COMMENT) || nestedToken.equals(JavaLanguage.BLOCK_OR_JAVADOC_CONTINUE)) {
+				continue;
+			}
+			if (findAtSign(nestedToken)) {
+				nestedToken = replaceWordWithAtSign(nestedToken, " ");
+			}
+			nestedToken = replaceWordWithHTMLTag(nestedToken, " ");
+			largeToken += StringUtils.getIdentifierSeparations(nestedToken)+" ";
 		}
-		token = replaceWordWithHTMLTag(token, "");
-		return token;
+		return largeToken;
 	}
-	
-
-	
-	
 	private boolean findAtSign(String target){
 		if (target.startsWith("@")) {
 			return true;

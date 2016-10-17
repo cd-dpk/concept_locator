@@ -6,7 +6,6 @@ package com.geet.concept_location.corpus_creation;
  *
  */
 public class JavaLanguage {
-	// hello
 	
 	// java keywords
 	public final static String KEYWORDS[] = { 
@@ -26,17 +25,17 @@ public class JavaLanguage {
 	}
 	
 	public final static String OPERATORS[]={
-			"=","+","-","*","/","%","++","--","!",
+			"=","+","-","*","/","%","++","--","!","+=",
 			"==","!=",">",">=","<","<=","&&","||",
 			"?:","instanceof","~","<<",">>",">>>",
 			"&","^","|" };
-	public String getOperators(){
+	public static String getOperators(){
 		return getInStringFromStringArray(OPERATORS);
 	}
 	
-	public final static String PROGRAMING_LANGUAGE_SYNTAX[]={"()","{}","[]",",",".",";",":","->","&"," ","?"};
+	public final static String PROGRAMING_LANGUAGE_SYNTAX[]={"()","{}","[]",",",".",";",":","->","&"," ","?","<>"};
 	
-	public String getProgrammingLanguageSyntax(){
+	public static String getProgrammingLanguageSyntax(){
 		return getInStringFromStringArray(PROGRAMING_LANGUAGE_SYNTAX);
 	}
 	public final static String ANNOTATIONS[]={
@@ -67,14 +66,14 @@ public class JavaLanguage {
 	public final static String BLOCK_OR_INLINE_COMMENT_START = "/*";
 	public final static String BLOCK_OR_JAVADOC_CONTINUE="*";
 	public final static String BLOCK_OR_INLINE_COMMENT_END = "*/";
-	public String getComments(){
+	public static String getComments(){
 		return INLINE_COMMENT+BLOCK_OR_INLINE_COMMENT_START+BLOCK_OR_JAVADOC_CONTINUE+BLOCK_OR_INLINE_COMMENT_END;
 	}
 	
-	private String getInStringFromStringArray(String[] array){
-		String str= "";
+	private static String getInStringFromStringArray(String[] array){
+		String str= " ";
 		for (int i = 0; i < array.length; i++) {
-				str += array[i];
+				str += array[i]+"";
 		}
 		return str;
 	}

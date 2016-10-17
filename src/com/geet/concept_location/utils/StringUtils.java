@@ -9,6 +9,10 @@ public class StringUtils {
 	public static char underScoreCase = '_';
 	public static int upperCase_low = 65;
 	public static char upperCase_high  = 96;
+	public static char lowerCase_low  = 97;
+	public static char lowerCase_high  = 97+25;
+	
+	
 	
 	
 	public static String getFilePathName(String treePath){
@@ -51,13 +55,41 @@ public class StringUtils {
 	 * also the identifier itself 
 	 */
 	public static String getIdentifierSeparations(String target){
-		String resultant = target+" ";
+		String resultant ="";
+		if (allLowerCaseCharacters(target)|| allUpperCaseCharacters(target)) {
+			return target;
+		}
 		for (int i = 0; i < target.length(); i++) {
 			char ch = target.charAt(i);
-			if (ch == underScoreCase ||( ch > upperCase_low && ch < upperCase_high)) {
-				resultant += ' '+ch;
+			if (ch == underScoreCase ||( ch >= upperCase_low && ch <= upperCase_high)) {
+				resultant += " "+ch;
+				continue;
+			}
+			resultant += ch;
+		}
+		if (resultant.equals(target)) {
+			return target;
+		}
+		return resultant+" "+ target;
+	}	
+	
+	public static boolean allUpperCaseCharacters(String target){
+		for (int i = 0; i < target.length(); i++) {
+			char ch = target.charAt(i);
+			if (ch<upperCase_low || ch> upperCase_high) {
+				return false;
 			}
 		}
-		return resultant;
-	}	
+		return true;
+	}
+	
+	public static boolean allLowerCaseCharacters(String target){
+		for (int i = 0; i < target.length(); i++) {
+			char ch = target.charAt(i);
+			if (ch<lowerCase_low || ch> lowerCase_high) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

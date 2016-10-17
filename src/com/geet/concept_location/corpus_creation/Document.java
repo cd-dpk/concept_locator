@@ -85,7 +85,10 @@ public abstract class Document {
 	
 	public String getArticle() {
 		article = docName+ " "+ docInJavaFile+"\n";
-		article += javaDocComments.toString()+"\n"+ implementationComments.toString()+"\n"+ implementionBody.toString()+"\n";
+	//	article += javaDocComments.toString()+"\n"+ implementationComments.toString()+"\n"+ implementionBody.toString()+"\n";
+		for (String term : new TermExtractorFromDocument().getTermsFromDocument(this)) {
+			article += term+" ";
+		}
 		return article;
 	}
 	
