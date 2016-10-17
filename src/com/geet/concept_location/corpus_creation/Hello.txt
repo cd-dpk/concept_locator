@@ -1,166 +1,384 @@
 getAllDocuments /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
+[ method,2,0.3010299956639812] 
+[ visitor,4,0.6989700043360189] 
+[ methodvisitor,1,0.6989700043360189] 
+[ visit,4,0.6989700043360189] 
+[ compilation,4,0.3979400086720376] 
+[ unit,4,0.3979400086720376] 
+[ compilationunit,4,0.3979400086720376] 
+[ null,4,0.2218487496163564] 
+[ constructor,2,0.1549019599857432] 
+[ constructorvisitor,1,0.6989700043360189] 
+[ class,4,0.2218487496163564] 
+[ or,2,0.2218487496163564] 
+[ interface,1,0.5228787452803376] 
+[ classorinterfacevisitor,1,0.6989700043360189] 
+[ document,3,0.09691001300805642] 
+[ classdocument,1,0.2218487496163564] 
+[ my,3,0.2218487496163564] 
+[ documents,6,0.2218487496163564] 
+[ myclassdocuments,2,0.3979400086720376] 
+[ field,1,0.5228787452803376] 
+[ fieldvisitor,1,0.6989700043360189] 
+[ all,5,0.2218487496163564] 
+[ alldocuments,3,0.5228787452803376] 
+[ add,2,0.2218487496163564] 
+[ addall,2,0.6989700043360189] 
+[ mymethodorconstructordocuments,1,0.3010299956639812] 
 
- 
- 
-    Method Visitor MethodVisitor visit compilation Unit compilationUnit  null 
-    Constructor Visitor ConstructorVisitor visit compilation Unit compilationUnit  null 
-    Class Or Interface Visitor ClassOrInterfaceVisitor visit compilation Unit compilationUnit  null 
-    Class Document ClassDocument  document   my Class Documents myClassDocuments  
-    Field Visitor FieldVisitor document visit compilation Unit compilationUnit  null 
-  
-  all Documents allDocuments add All addAll my Method Or Constructor Documents myMethodOrConstructorDocuments 
-  all Documents allDocuments add All addAll my Class Documents myClassDocuments 
-   all Documents allDocuments 
-  
- 
 visit /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
+[ comment,21,0.3010299956639812] 
+[ method,25,0.3010299956639812] 
+[ methodcomment,7,0.5228787452803376] 
+[ declaration,8,0.3010299956639812] 
+[ methoddeclaration,8,0.6989700043360189] 
+[ get,8,0.09691001300805642] 
+[ getcomment,1,0.3010299956639812] 
+[ position,12,0.1549019599857432] 
+[ start,2,0.3010299956639812] 
+[ startposition,2,0.3010299956639812] 
+[ begin,2,0.1549019599857432] 
+[ line,3,0.1549019599857432] 
+[ getbeginline,1,0.1549019599857432] 
+[ column,1,0.1549019599857432] 
+[ getbegincolumn,1,0.1549019599857432] 
+[ end,4,0.1549019599857432] 
+[ endposition,2,0.3010299956639812] 
+[ getendline,2,0.1549019599857432] 
+[ or,10,0.2218487496163564] 
+[ constructor,10,0.1549019599857432] 
+[ document,9,0.09691001300805642] 
+[ methodorconstructordocument,9,0.3979400086720376] 
+[ file,1,0.2218487496163564] 
+[ name,2,0.2218487496163564] 
+[ filename,1,0.2218487496163564] 
+[ getname,1,0.3979400086720376] 
+[ null,2,0.2218487496163564] 
+[ javadoc,5,0.3010299956639812] 
+[ javadoccomment,5,0.3010299956639812] 
+[ java,2,0.2218487496163564] 
+[ doc,2,0.3010299956639812] 
+[ comments,6,0.3010299956639812] 
+[ javadoccomments,2,0.3010299956639812] 
+[ add,5,0.2218487496163564] 
+[ false,1,0.1549019599857432] 
+[ implementation,2,0.3010299956639812] 
+[ implementationcomments,2,0.3010299956639812] 
+[ contained,5,0.3979400086720376] 
+[ containedcomment,4,0.3979400086720376] 
+[ all,1,0.2218487496163564] 
+[ getallcontainedcomments,1,0.3979400086720376] 
+[ implemention,1,0.3979400086720376] 
+[ body,2,0.3979400086720376] 
+[ implementionbody,1,0.3979400086720376] 
+[ getbody,1,0.6989700043360189] 
+[ to,1,0.3010299956639812] 
+[ string,1,0.3010299956639812] 
+[ without,1,0.3979400086720376] 
+[ tostringwithoutcomments,1,0.3979400086720376] 
+[ my,1,0.2218487496163564] 
+[ documents,1,0.2218487496163564] 
+[ mymethodorconstructordocuments,1,0.3010299956639812] 
 
- 
- 
-   Comment Comment  method Comment methodComment   method Declaration methodDeclaration get Comment getComment 
-   Position Position  start Position startPosition     Position Position method Declaration methodDeclaration get Begin Line getBeginLine  method Declaration methodDeclaration get Begin Column getBeginColumn 
-   Position Position  end Position endPosition     Position Position method Declaration methodDeclaration get End Line getEndLine  method Declaration methodDeclaration get End Line getEndLine 
-   Method Or Constructor Document MethodOrConstructorDocument  method Or Constructor Document methodOrConstructorDocument     Method Or Constructor Document MethodOrConstructorDocument file Name fileName  method Declaration methodDeclaration get Name getName  start Position startPosition  end Position endPosition 
-   method Comment methodComment   null   method Comment methodComment    Javadoc Comment JavadocComment  
-  method Or Constructor Document methodOrConstructorDocument java Doc Comments javaDocComments add  Javadoc Comment JavadocComment  method Comment methodComment 
-     method Comment methodComment   null   method Comment methodComment    Javadoc Comment JavadocComment   false  
-  method Or Constructor Document methodOrConstructorDocument implementation Comments implementationComments add method Comment methodComment 
-  
-    Comment Comment  contained Comment containedComment   method Declaration methodDeclaration get All Contained Comments getAllContainedComments  
-   contained Comment containedComment    Javadoc Comment JavadocComment  
-  method Or Constructor Document methodOrConstructorDocument java Doc Comments javaDocComments add  Javadoc Comment JavadocComment  contained Comment containedComment 
-    
-  method Or Constructor Document methodOrConstructorDocument implementation Comments implementationComments add contained Comment containedComment 
-  
-  
-  method Or Constructor Document methodOrConstructorDocument implemention Body implementionBody   method Declaration methodDeclaration get Body getBody to String Without Comments toStringWithoutComments 
-  my Method Or Constructor Documents myMethodOrConstructorDocuments add method Or Constructor Document methodOrConstructorDocument 
-  
- 
 visit /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
+[ comment,21,0.3010299956639812] 
+[ method,17,0.3010299956639812] 
+[ methodcomment,7,0.5228787452803376] 
+[ constructor,18,0.1549019599857432] 
+[ declaration,8,0.3010299956639812] 
+[ constructordeclaration,8,0.6989700043360189] 
+[ get,8,0.09691001300805642] 
+[ getcomment,1,0.3010299956639812] 
+[ position,12,0.1549019599857432] 
+[ start,2,0.3010299956639812] 
+[ startposition,2,0.3010299956639812] 
+[ begin,2,0.1549019599857432] 
+[ line,3,0.1549019599857432] 
+[ getbeginline,1,0.1549019599857432] 
+[ column,1,0.1549019599857432] 
+[ getbegincolumn,1,0.1549019599857432] 
+[ end,4,0.1549019599857432] 
+[ endposition,2,0.3010299956639812] 
+[ getendline,2,0.1549019599857432] 
+[ or,10,0.2218487496163564] 
+[ document,9,0.09691001300805642] 
+[ methodorconstructordocument,9,0.3979400086720376] 
+[ file,1,0.2218487496163564] 
+[ name,2,0.2218487496163564] 
+[ filename,1,0.2218487496163564] 
+[ getname,1,0.3979400086720376] 
+[ null,2,0.2218487496163564] 
+[ javadoc,5,0.3010299956639812] 
+[ javadoccomment,5,0.3010299956639812] 
+[ java,2,0.2218487496163564] 
+[ doc,2,0.3010299956639812] 
+[ comments,6,0.3010299956639812] 
+[ javadoccomments,2,0.3010299956639812] 
+[ add,5,0.2218487496163564] 
+[ false,1,0.1549019599857432] 
+[ implementation,2,0.3010299956639812] 
+[ implementationcomments,2,0.3010299956639812] 
+[ contained,5,0.3979400086720376] 
+[ containedcomment,4,0.3979400086720376] 
+[ all,1,0.2218487496163564] 
+[ getallcontainedcomments,1,0.3979400086720376] 
+[ implemention,1,0.3979400086720376] 
+[ body,1,0.3979400086720376] 
+[ implementionbody,1,0.3979400086720376] 
+[ block,1,0.5228787452803376] 
+[ getblock,1,0.6989700043360189] 
+[ to,1,0.3010299956639812] 
+[ string,1,0.3010299956639812] 
+[ without,1,0.3979400086720376] 
+[ tostringwithoutcomments,1,0.3979400086720376] 
+[ my,1,0.2218487496163564] 
+[ documents,1,0.2218487496163564] 
+[ mymethodorconstructordocuments,1,0.3010299956639812] 
 
- 
- 
-   Comment Comment  method Comment methodComment   constructor Declaration constructorDeclaration get Comment getComment 
-   Position Position  start Position startPosition     Position Position constructor Declaration constructorDeclaration get Begin Line getBeginLine  constructor Declaration constructorDeclaration get Begin Column getBeginColumn 
-   Position Position  end Position endPosition     Position Position constructor Declaration constructorDeclaration get End Line getEndLine  constructor Declaration constructorDeclaration get End Line getEndLine 
-   Method Or Constructor Document MethodOrConstructorDocument  method Or Constructor Document methodOrConstructorDocument     Method Or Constructor Document MethodOrConstructorDocument file Name fileName  constructor Declaration constructorDeclaration get Name getName  start Position startPosition  end Position endPosition 
-   method Comment methodComment   null   method Comment methodComment    Javadoc Comment JavadocComment  
-  method Or Constructor Document methodOrConstructorDocument java Doc Comments javaDocComments add  Javadoc Comment JavadocComment  method Comment methodComment 
-     method Comment methodComment   null   method Comment methodComment    Javadoc Comment JavadocComment   false  
-  method Or Constructor Document methodOrConstructorDocument implementation Comments implementationComments add method Comment methodComment 
-  
-    Comment Comment  contained Comment containedComment   constructor Declaration constructorDeclaration get All Contained Comments getAllContainedComments  
-   contained Comment containedComment    Javadoc Comment JavadocComment  
-  method Or Constructor Document methodOrConstructorDocument java Doc Comments javaDocComments add  Javadoc Comment JavadocComment  contained Comment containedComment 
-    
-  method Or Constructor Document methodOrConstructorDocument implementation Comments implementationComments add contained Comment containedComment 
-  
-  
-  method Or Constructor Document methodOrConstructorDocument implemention Body implementionBody   constructor Declaration constructorDeclaration get Block getBlock to String Without Comments toStringWithoutComments 
-  my Method Or Constructor Documents myMethodOrConstructorDocuments add method Or Constructor Document methodOrConstructorDocument 
-  
- 
 visit /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
+[ all,2,0.2218487496163564] 
+[ contained,6,0.3979400086720376] 
+[ comments,8,0.3010299956639812] 
+[ for,1,0.6989700043360189] 
+[ comment,22,0.3010299956639812] 
+[ containedcomment,4,0.3979400086720376] 
+[ class,23,0.2218487496163564] 
+[ or,8,0.2218487496163564] 
+[ interface,7,0.5228787452803376] 
+[ declaration,7,0.3010299956639812] 
+[ classorinterfacedeclaration,7,0.6989700043360189] 
+[ get,7,0.09691001300805642] 
+[ getallcontainedcomments,1,0.3979400086720376] 
+[ check,2,0.6989700043360189] 
+[ the,3,0.5228787452803376] 
+[ are,1,0.6989700043360189] 
+[ on,2,0.6989700043360189] 
+[ its,1,0.6989700043360189] 
+[ collection,1,0.6989700043360189] 
+[ whether,1,0.6989700043360189] 
+[ it,3,0.5228787452803376] 
+[ is,2,0.3979400086720376] 
+[ one,1,0.3979400086720376] 
+[ of,1,0.5228787452803376] 
+[ methods,1,0.6989700043360189] 
+[ not,1,0.6989700043360189] 
+[ todo,1,0.3979400086720376] 
+[ if,2,0.5228787452803376] 
+[ done,1,0.6989700043360189] 
+[ will,1,0.6989700043360189] 
+[ increase,1,0.6989700043360189] 
+[ performance,1,0.6989700043360189] 
+[ instanceof,1,0.6989700043360189] 
+[ javadoc,5,0.3010299956639812] 
+[ javadoccomment,5,0.3010299956639812] 
+[ document,8,0.09691001300805642] 
+[ classdocument,8,0.2218487496163564] 
+[ java,2,0.2218487496163564] 
+[ doc,2,0.3010299956639812] 
+[ javadoccomments,2,0.3010299956639812] 
+[ add,5,0.2218487496163564] 
+[ else,1,0.6989700043360189] 
+[ implementation,2,0.3010299956639812] 
+[ implementationcomments,2,0.3010299956639812] 
+[ classcomment,7,0.5228787452803376] 
+[ getcomment,1,0.3010299956639812] 
+[ position,12,0.1549019599857432] 
+[ start,2,0.3010299956639812] 
+[ startposition,2,0.3010299956639812] 
+[ begin,2,0.1549019599857432] 
+[ line,3,0.1549019599857432] 
+[ getbeginline,1,0.1549019599857432] 
+[ column,1,0.1549019599857432] 
+[ getbegincolumn,1,0.1549019599857432] 
+[ end,4,0.1549019599857432] 
+[ endposition,2,0.3010299956639812] 
+[ getendline,2,0.1549019599857432] 
+[ file,1,0.2218487496163564] 
+[ name,2,0.2218487496163564] 
+[ filename,1,0.2218487496163564] 
+[ getname,1,0.3979400086720376] 
+[ null,2,0.2218487496163564] 
+[ false,1,0.1549019599857432] 
+[ my,1,0.2218487496163564] 
+[ documents,1,0.2218487496163564] 
+[ myclassdocuments,1,0.3979400086720376] 
 
- 			  all  contained  comments
-			for   Comment Comment  contained Comment containedComment   class Or Interface Declaration classOrInterfaceDeclaration get All Contained Comments getAllContainedComments  
-				  check  the  comments  are  on  its  comments  collection
-				  check  whether  it  is  on  one  of  the  methods  comment  or  not
-				  TODO  if  it  is  done  it  will  increase  the  performance
-				if  contained Comment containedComment  instanceof   Javadoc Comment JavadocComment  
-					class Document 
-					classDocument java Doc Comments javaDocComments add  Javadoc Comment JavadocComment  contained Comment containedComment 
-				 else  
-					class Document 
-					classDocument implementation Comments implementationComments add contained Comment containedComment 
-				 
-			 
-  
- 
-   Comment Comment  class Comment classComment   class Or Interface Declaration classOrInterfaceDeclaration get Comment getComment 
-   Position Position  start Position startPosition     Position Position class Or Interface Declaration classOrInterfaceDeclaration get Begin Line getBeginLine  class Or Interface Declaration classOrInterfaceDeclaration get Begin Column getBeginColumn 
-   Position Position  end Position endPosition     Position Position class Or Interface Declaration classOrInterfaceDeclaration get End Line getEndLine  class Or Interface Declaration classOrInterfaceDeclaration get End Line getEndLine 
-   Class Document ClassDocument  class Document classDocument     Class Document ClassDocument file Name fileName  class Or Interface Declaration classOrInterfaceDeclaration get Name getName  start Position startPosition  end Position endPosition 
-   class Comment classComment   null   class Comment classComment    Javadoc Comment JavadocComment  
-  class Document classDocument java Doc Comments javaDocComments add  Javadoc Comment JavadocComment  class Comment classComment 
-     class Comment classComment   null   class Comment classComment    Javadoc Comment JavadocComment   false  
-  class Document classDocument implementation Comments implementationComments add class Comment classComment 
-  
-  my Class Documents myClassDocuments add class Document classDocument 
-  
- 
 visit /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
+[ if,1,0.5228787452803376] 
+[ the,2,0.5228787452803376] 
+[ field,8,0.5228787452803376] 
+[ declaration,8,0.3010299956639812] 
+[ belongs,2,0.5228787452803376] 
+[ to,5,0.3010299956639812] 
+[ that,1,0.6989700043360189] 
+[ class,15,0.2218487496163564] 
+[ then,1,0.6989700043360189] 
+[ it,1,0.5228787452803376] 
+[ is,3,0.3979400086720376] 
+[ added,1,0.6989700043360189] 
+[ this,1,0.6989700043360189] 
+[ belonging,1,0.6989700043360189] 
+[ a,1,0.5228787452803376] 
+[ determined,1,0.6989700043360189] 
+[ by,1,0.6989700043360189] 
+[ position,13,0.1549019599857432] 
+[ of,1,0.5228787452803376] 
+[ and,1,0.6989700043360189] 
+[ start,2,0.3010299956639812] 
+[ startposition,2,0.3010299956639812] 
+[ fielddeclaration,6,0.6989700043360189] 
+[ get,6,0.09691001300805642] 
+[ begin,2,0.1549019599857432] 
+[ line,2,0.1549019599857432] 
+[ getbeginline,1,0.1549019599857432] 
+[ column,2,0.1549019599857432] 
+[ getbegincolumn,1,0.1549019599857432] 
+[ end,4,0.1549019599857432] 
+[ endposition,2,0.3010299956639812] 
+[ getendline,1,0.1549019599857432] 
+[ getendcolumn,1,0.3979400086720376] 
+[ param,2,0.5228787452803376] 
+[ one,1,0.3979400086720376] 
+[ two,1,0.5228787452803376] 
+[ isparamonebelongstoparamtwo,1,0.6989700043360189] 
+[ range,3,0.6989700043360189] 
+[ document,4,0.09691001300805642] 
+[ classdocument,4,0.2218487496163564] 
+[ getrange,1,0.6989700043360189] 
+[ comment,13,0.3010299956639812] 
+[ classcomment,7,0.5228787452803376] 
+[ getcomment,1,0.3010299956639812] 
+[ null,2,0.2218487496163564] 
+[ javadoc,3,0.3010299956639812] 
+[ javadoccomment,3,0.3010299956639812] 
+[ java,1,0.2218487496163564] 
+[ doc,1,0.3010299956639812] 
+[ comments,3,0.3010299956639812] 
+[ javadoccomments,1,0.3010299956639812] 
+[ add,2,0.2218487496163564] 
+[ false,1,0.1549019599857432] 
+[ implementation,1,0.3010299956639812] 
+[ implementationcomments,1,0.3010299956639812] 
+[ implemention,1,0.3979400086720376] 
+[ body,1,0.3979400086720376] 
+[ implementionbody,1,0.3979400086720376] 
+[ string,1,0.3010299956639812] 
+[ without,1,0.3979400086720376] 
+[ tostringwithoutcomments,1,0.3979400086720376] 
+[ ",1,0.6989700043360189] 
+[ \n",1,0.6989700043360189] 
+[ "\n",1,0.6989700043360189] 
 
- if  the  field  declaration  belongs  to  that  class  then  it  is  added  to  this  class  belonging  to  a  class  is  determined  by  the  position  of  class  and  field  declaration  
- 
-   Position Position  start Position startPosition     Position Position field Declaration fieldDeclaration get Begin Line getBeginLine  field Declaration fieldDeclaration get Begin Column getBeginColumn 
-   Position Position  end Position endPosition     Position Position field Declaration fieldDeclaration get End Line getEndLine  field Declaration fieldDeclaration get End Column getEndColumn 
-   is Param One Belongs To Param Two isParamOneBelongsToParamTwo   Range Range start Position startPosition  end Position endPosition  class Document classDocument get Range getRange  
-   Comment Comment  class Comment classComment   field Declaration fieldDeclaration get Comment getComment 
-   class Comment classComment   null   class Comment classComment    Javadoc Comment JavadocComment  
-  class Document classDocument java Doc Comments javaDocComments add  Javadoc Comment JavadocComment  class Comment classComment 
-     class Comment classComment   null   class Comment classComment    Javadoc Comment JavadocComment   false  
-  class Document classDocument implementation Comments implementationComments add class Comment classComment 
-  
-  class Document classDocument implemention Body implementionBody   field Declaration fieldDeclaration to String Without Comments toStringWithoutComments   " \n" "\n" 
-  
-  
- 
 isParamOneBelongsToParamTwo /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
+[ is,2,0.3979400086720376] 
+[ position,6,0.1549019599857432] 
+[ belongs,2,0.5228787452803376] 
+[ to,2,0.3010299956639812] 
+[ a,2,0.5228787452803376] 
+[ node,2,0.5228787452803376] 
+[ ispositionbelongstoanode,2,0.6989700043360189] 
+[ param,6,0.5228787452803376] 
+[ one,4,0.3979400086720376] 
+[ paramone,4,0.6989700043360189] 
+[ get,4,0.09691001300805642] 
+[ begin,2,0.1549019599857432] 
+[ line,2,0.1549019599857432] 
+[ getbeginline,1,0.1549019599857432] 
+[ column,2,0.1549019599857432] 
+[ getbegincolumn,1,0.1549019599857432] 
+[ two,2,0.5228787452803376] 
+[ paramtwo,2,0.6989700043360189] 
+[ end,2,0.1549019599857432] 
+[ getendline,1,0.1549019599857432] 
+[ getendcolumn,1,0.3979400086720376] 
+[ true,1,0.5228787452803376] 
+[ false,1,0.1549019599857432] 
 
- 
- 
-   is Position Belongs To A Node isPositionBelongsToANode   Position Position param One paramOne get Begin Line getBeginLine  param One paramOne get Begin Column getBeginColumn  param Two paramTwo   is Position Belongs To A Node isPositionBelongsToANode   Position Position param One paramOne get End Line getEndLine  param One paramOne get End Column getEndColumn  param Two paramTwo  
-   true 
-  
-   false 
-  
- 
 isPositionBelongsToANode /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
+[ position,6,0.1549019599857432] 
+[ get,12,0.09691001300805642] 
+[ line,8,0.1549019599857432] 
+[ getline,4,0.6989700043360189] 
+[ node,6,0.5228787452803376] 
+[ begin,3,0.1549019599857432] 
+[ getbeginline,2,0.1549019599857432] 
+[ column,4,0.1549019599857432] 
+[ getcolumn,2,0.6989700043360189] 
+[ getbegincolumn,1,0.1549019599857432] 
+[ true,3,0.5228787452803376] 
+[ end,3,0.1549019599857432] 
+[ getendline,2,0.1549019599857432] 
+[ getendcolumn,1,0.3979400086720376] 
+[ false,1,0.1549019599857432] 
 
- 
- 
-   position get Line getLine   node get Begin Line getBeginLine   position get Column getColumn   node get Begin Column getBeginColumn  
-   true 
-     position get Line getLine   node get Begin Line getBeginLine   position get Line getLine   node get End Line getEndLine  
-   true 
-     position get Line getLine   node get End Line getEndLine   position get Column getColumn   node get End Column getEndColumn  
-   true 
-  
-   false 
-  
- 
 DocumentExtractor /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
+[ todo,3,0.3979400086720376] 
+[ auto,6,0.5228787452803376] 
+[ generated,3,0.5228787452803376] 
+[ constructor,1,0.1549019599857432] 
+[ stub,1,0.5228787452803376] 
+[ catch,2,0.6989700043360189] 
+[ block,2,0.5228787452803376] 
+[ file,3,0.2218487496163564] 
+[ name,1,0.2218487496163564] 
+[ filename,1,0.2218487496163564] 
+[ java,3,0.2218487496163564] 
+[ javafile,2,0.6989700043360189] 
+[ get,1,0.09691001300805642] 
+[ absolute,1,0.6989700043360189] 
+[ path,1,0.6989700043360189] 
+[ getabsolutepath,1,0.6989700043360189] 
+[ compilation,1,0.3979400086720376] 
+[ unit,1,0.3979400086720376] 
+[ compilationunit,1,0.3979400086720376] 
+[ parser,1,0.6989700043360189] 
+[ javaparser,1,0.6989700043360189] 
+[ parse,2,0.6989700043360189] 
+[ exception,2,0.6989700043360189] 
+[ parseexception,1,0.6989700043360189] 
+[ e,4,0.6989700043360189] 
+[ print,2,0.6989700043360189] 
+[ stack,2,0.6989700043360189] 
+[ trace,2,0.6989700043360189] 
+[ printstacktrace,2,0.6989700043360189] 
+[ i,1,0.6989700043360189] 
+[ o,1,0.6989700043360189] 
+[ ioexception,1,0.6989700043360189] 
 
- TODO   Auto Auto generated  constructor  stub  TODO   Auto Auto generated  catch  block  TODO   Auto Auto generated  catch  block  
- 
-   
-  file Name fileName   java File javaFile get Absolute Path getAbsolutePath 
-  compilation Unit compilationUnit    Java Parser JavaParser parse java File javaFile 
-     Parse Exception ParseException  e  
-  e print Stack Trace printStackTrace 
-     I O Exception IOException  e  
-  e print Stack Trace printStackTrace 
-  
-  
- 
 FieldVisitor /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
+[ todo,1,0.3979400086720376] 
+[ auto,2,0.5228787452803376] 
+[ generated,1,0.5228787452803376] 
+[ constructor,1,0.1549019599857432] 
+[ stub,1,0.5228787452803376] 
+[ class,2,0.2218487496163564] 
+[ document,2,0.09691001300805642] 
+[ classdocument,2,0.2218487496163564] 
 
- TODO   Auto Auto generated  constructor  stub  
- 
-  class Document classDocument   class Document classDocument 
-  
- 
 DocumentExtractor /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
+[ compilation,2,0.3979400086720376] 
+[ unit,2,0.3979400086720376] 
+[ compilationunit,2,0.3979400086720376] 
+[ private,3,0.6989700043360189] 
+[ list,9,0.6989700043360189] 
+[ method,3,0.3010299956639812] 
+[ or,3,0.2218487496163564] 
+[ constructor,3,0.1549019599857432] 
+[ document,10,0.09691001300805642] 
+[ methodorconstructordocument,2,0.3979400086720376] 
+[ my,2,0.2218487496163564] 
+[ documents,3,0.2218487496163564] 
+[ mymethodorconstructordocuments,1,0.3010299956639812] 
+[ array,3,0.6989700043360189] 
+[ arraylist,3,0.6989700043360189] 
+[ class,5,0.2218487496163564] 
+[ classdocument,4,0.2218487496163564] 
+[ myclassdocuments,1,0.3979400086720376] 
+[ all,1,0.2218487496163564] 
+[ alldocuments,1,0.5228787452803376] 
+[ static,1,0.6989700043360189] 
+[ string,2,0.3010299956639812] 
+[ file,1,0.2218487496163564] 
+[ name,1,0.2218487496163564] 
+[ filename,1,0.2218487496163564] 
 
- 
-  Compilation Unit CompilationUnit  compilation Unit compilationUnit 
-private    List List  Method Or Constructor Document MethodOrConstructorDocument  my Method Or Constructor Documents myMethodOrConstructorDocuments     Array List ArrayList  Method Or Constructor Document MethodOrConstructorDocument 
-private    List List  Class Document ClassDocument  my Class Documents myClassDocuments     Array List ArrayList  Class Document ClassDocument 
-private    List List  Document Document  all Documents allDocuments     Array List ArrayList  Document Document 
-static   String String  file Name fileName 
- Class Document 
-ClassDocument  class Document classDocument 
-  
- 

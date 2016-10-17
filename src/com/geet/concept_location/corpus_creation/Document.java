@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
+import com.geet.concept_location.indexing.Term;
 import com.geet.concept_location.utils.StringUtils;
 import com.github.javaparser.Position;
 import com.github.javaparser.ast.comments.Comment;
@@ -37,7 +38,6 @@ public abstract class Document {
 		// process all java doc comments
 		// process all comments
 		// process all implementation body
-		
 		String article ="";
 		// scanner open
 		Scanner scanner = new Scanner(body);
@@ -84,7 +84,7 @@ public abstract class Document {
 	}
 	
 	public String getArticle() {
-		article = docName+ " "+ docInJavaFile+"\n";
+		article = "";
 	//	article += javaDocComments.toString()+"\n"+ implementationComments.toString()+"\n"+ implementionBody.toString()+"\n";
 		for (String term : new TermExtractorFromDocument().getTermsFromDocument(this)) {
 			article += term+" ";
@@ -92,4 +92,36 @@ public abstract class Document {
 		return article;
 	}
 	
+	public List<Term> getTerms() {
+		List<Term> terms = new ArrayList<Term>();
+		StringTokenizer stringTokenizer = new StringTokenizer(getArticle(), JavaLanguage.getWhiteSpace(), false);
+		while (stringTokenizer.hasMoreTokens()) {
+			Term candidateTerm = new Term(stringTokenizer.nextToken().toLowerCase(), 1);
+			int pass = -1;
+			for (int i = 0; i < terms.size(); i++) {
+				if (terms.get(i).isSame(candidateTerm)) {
+					pass = i;
+					terms.get(i).termFrequency++;
+					continue;
+				}
+			}
+			if (pass == -1) {
+				terms.add(candidateTerm);
+			}
+		}
+		return terms;
+	}
+	
+	public boolean hasTerm(Term term){
+		for (Term trm : getTerms()) {
+			if (trm.isSame(term)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public String toIndentity(){
+		return docName+" "+docInJavaFile;
+	}
 }

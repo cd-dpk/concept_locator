@@ -89,6 +89,11 @@ public class JavaLanguage {
 		delimString += getJavaDocs();
 		return delimString;
 	}
+	public final static String WHITE_SPACE[]={
+		"\n","\r","\f","\t","\b"," "};
 	
-	
+	public static String getWhiteSpace() {
+		return getInStringFromStringArray(WHITE_SPACE);
+	}
+
 }

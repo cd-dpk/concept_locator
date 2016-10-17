@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.DocumentExtractor;
+import com.geet.concept_location.indexing.Term;
 
 public class JavaFileWriter {
 	
@@ -17,7 +18,13 @@ public class JavaFileWriter {
 		try {
 			FileWriter fileWriter = new FileWriter("src/com/geet/concept_location/corpus_creation/Hello.txt");
 			for (Document document : documents) {
-				fileWriter.write(document.getArticle());
+				fileWriter.write(document.toIndentity());
+				fileWriter.write("\n");
+				for (Term term : document.getTerms()) {
+					term.setDocumentFrequencyAndInverseDocumentFrequency(documents);
+					fileWriter.write(term.toString());
+					fileWriter.write("\n");
+				}				
 				fileWriter.write("\n");
 			}
 			fileWriter.close();
