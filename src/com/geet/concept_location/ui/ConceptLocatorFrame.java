@@ -98,8 +98,8 @@ public class ConceptLocatorFrame extends JFrame {
 	 */
 	/** Main: make a Frame, add a FileTree */
 	
-	public static void main(String[] av) {
+	/*public static void main(String[] av) {
 		  new ConceptLocatorFrame();
-	  }
+	  }*/
 
 }

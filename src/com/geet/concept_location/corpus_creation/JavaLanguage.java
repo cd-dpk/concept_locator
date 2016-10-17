@@ -1,6 +1,14 @@
 package com.geet.concept_location.corpus_creation;
 
+/**
+ * 
+ * @author geet
+ *
+ */
 public class JavaLanguage {
+	// hello
+	
+	// java keywords
 	public final static String KEYWORDS[] = { 
 			"abstract", "continue", "for",	"new", "switch",
 			"assert", "default", "goto", "package", "synchronized",
@@ -26,7 +34,7 @@ public class JavaLanguage {
 		return getInStringFromStringArray(OPERATORS);
 	}
 	
-	public final static String PROGRAMING_LANGUAGE_SYNTAX[]={"()","{}","[]",",",".",";",":","->","&"," "};
+	public final static String PROGRAMING_LANGUAGE_SYNTAX[]={"()","{}","[]",",",".",";",":","->","&"," ","?"};
 	
 	public String getProgrammingLanguageSyntax(){
 		return getInStringFromStringArray(PROGRAMING_LANGUAGE_SYNTAX);

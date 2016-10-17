@@ -1,0 +1,170 @@
+getAllDocuments /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
+[]
+[]
+{
+    new  MethodVisitor().visit(compilationUnit, null);
+    new  ConstructorVisitor().visit(compilationUnit, null);
+    new  ClassOrInterfaceVisitor().visit(compilationUnit, null);
+    for (ClassDocument document : myClassDocuments) {
+        new  FieldVisitor(document).visit(compilationUnit, null);
+    }
+    allDocuments.addAll(myMethodOrConstructorDocuments);
+    allDocuments.addAll(myClassDocuments);
+    return allDocuments;
+}
+
+visit /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
+[]
+[]
+{
+    Comment methodComment = methodDeclaration.getComment();
+    Position startPosition = new  Position(methodDeclaration.getBeginLine(), methodDeclaration.getBeginColumn());
+    Position endPosition = new  Position(methodDeclaration.getEndLine(), methodDeclaration.getEndLine());
+    MethodOrConstructorDocument methodOrConstructorDocument = new  MethodOrConstructorDocument(fileName, methodDeclaration.getName(), startPosition, endPosition);
+    if (methodComment != null && methodComment instanceof JavadocComment) {
+        methodOrConstructorDocument.javaDocComments.add((JavadocComment) methodComment);
+    } else if ((methodComment != null) && (methodComment instanceof JavadocComment == false)) {
+        methodOrConstructorDocument.implementationComments.add(methodComment);
+    }
+    for (Comment containedComment : methodDeclaration.getAllContainedComments()) {
+        if (containedComment instanceof JavadocComment) {
+            methodOrConstructorDocument.javaDocComments.add((JavadocComment) containedComment);
+        } else {
+            methodOrConstructorDocument.implementationComments.add(containedComment);
+        }
+    }
+    methodOrConstructorDocument.implementionBody = methodDeclaration.getBody().toStringWithoutComments();
+    myMethodOrConstructorDocuments.add(methodOrConstructorDocument);
+}
+
+visit /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
+[]
+[]
+{
+    Comment methodComment = constructorDeclaration.getComment();
+    Position startPosition = new  Position(constructorDeclaration.getBeginLine(), constructorDeclaration.getBeginColumn());
+    Position endPosition = new  Position(constructorDeclaration.getEndLine(), constructorDeclaration.getEndLine());
+    MethodOrConstructorDocument methodOrConstructorDocument = new  MethodOrConstructorDocument(fileName, constructorDeclaration.getName(), startPosition, endPosition);
+    if (methodComment != null && methodComment instanceof JavadocComment) {
+        methodOrConstructorDocument.javaDocComments.add((JavadocComment) methodComment);
+    } else if ((methodComment != null) && (methodComment instanceof JavadocComment == false)) {
+        methodOrConstructorDocument.implementationComments.add(methodComment);
+    }
+    for (Comment containedComment : constructorDeclaration.getAllContainedComments()) {
+        if (containedComment instanceof JavadocComment) {
+            methodOrConstructorDocument.javaDocComments.add((JavadocComment) containedComment);
+        } else {
+            methodOrConstructorDocument.implementationComments.add(containedComment);
+        }
+    }
+    methodOrConstructorDocument.implementionBody = constructorDeclaration.getBlock().toStringWithoutComments();
+    myMethodOrConstructorDocuments.add(methodOrConstructorDocument);
+}
+
+visit /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
+[]
+[/*			// all contained comments
+			for (Comment containedComment : classOrInterfaceDeclaration.getAllContainedComments()) {
+				// check the comments are on its comments collection
+				// check whether it is on one of the methods comment or not
+				// TODO if it is done, it will increase the performance
+				if (containedComment instanceof JavadocComment) {
+					classDocument.javaDocComments.add((JavadocComment) containedComment);
+				}else {
+					classDocument.implementationComments.add(containedComment);
+				}
+			}
+*/
+]
+{
+    Comment classComment = classOrInterfaceDeclaration.getComment();
+    Position startPosition = new  Position(classOrInterfaceDeclaration.getBeginLine(), classOrInterfaceDeclaration.getBeginColumn());
+    Position endPosition = new  Position(classOrInterfaceDeclaration.getEndLine(), classOrInterfaceDeclaration.getEndLine());
+    ClassDocument classDocument = new  ClassDocument(fileName, classOrInterfaceDeclaration.getName(), startPosition, endPosition);
+    if (classComment != null && classComment instanceof JavadocComment) {
+        classDocument.javaDocComments.add((JavadocComment) classComment);
+    } else if ((classComment != null) && (classComment instanceof JavadocComment == false)) {
+        classDocument.implementationComments.add(classComment);
+    }
+    myClassDocuments.add(classDocument);
+}
+
+visit /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
+[]
+[// if the field declaration belongs to that class, then it is added to this class
+, // belonging to a class is determined by the position of class and field declaration 
+]
+{
+    Position startPosition = new  Position(fieldDeclaration.getBeginLine(), fieldDeclaration.getBeginColumn());
+    Position endPosition = new  Position(fieldDeclaration.getEndLine(), fieldDeclaration.getEndColumn());
+    if (isParamOneBelongsToParamTwo(new  Range(startPosition, endPosition), classDocument.getRange())) {
+        Comment classComment = fieldDeclaration.getComment();
+        if (classComment != null && classComment instanceof JavadocComment) {
+            classDocument.javaDocComments.add((JavadocComment) classComment);
+        } else if ((classComment != null) && (classComment instanceof JavadocComment == false)) {
+            classDocument.implementationComments.add(classComment);
+        }
+        classDocument.implementionBody += fieldDeclaration.toStringWithoutComments() + "\n";
+    }
+}
+
+isParamOneBelongsToParamTwo /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
+[]
+[]
+{
+    if (isPositionBelongsToANode(new  Position(paramOne.getBeginLine(), paramOne.getBeginColumn()), paramTwo) && isPositionBelongsToANode(new  Position(paramOne.getEndLine(), paramOne.getEndColumn()), paramTwo)) {
+        return true;
+    }
+    return false;
+}
+
+isPositionBelongsToANode /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
+[]
+[]
+{
+    if (position.getLine() == node.getBeginLine() && position.getColumn() > node.getBeginColumn()) {
+        return true;
+    } else if (position.getLine() > node.getBeginLine() && position.getLine() < node.getEndLine()) {
+        return true;
+    } else if (position.getLine() == node.getEndLine() && position.getColumn() < node.getEndColumn()) {
+        return true;
+    }
+    return false;
+}
+
+DocumentExtractor /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
+[]
+[// TODO Auto-generated constructor stub
+, // TODO Auto-generated catch block
+, // TODO Auto-generated catch block
+]
+{
+    try {
+        fileName = javaFile.getAbsolutePath();
+        compilationUnit = JavaParser.parse(javaFile);
+    } catch (ParseException e) {
+        e.printStackTrace();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+
+FieldVisitor /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
+[]
+[// TODO Auto-generated constructor stub
+]
+{
+    this.classDocument = classDocument;
+}
+
+DocumentExtractor /media/Files/IITDU/8thSemester/Project/Ubuntu/concept_locator/src/com/geet/concept_location/corpus_creation/DocumentExtractor.java
+[]
+[]
+CompilationUnit compilationUnit;
+private static List<MethodOrConstructorDocument> myMethodOrConstructorDocuments = new  ArrayList<MethodOrConstructorDocument>();
+private static List<ClassDocument> myClassDocuments = new  ArrayList<ClassDocument>();
+private static List<Document> allDocuments = new  ArrayList<Document>();
+static String fileName;
+ClassDocument classDocument;
+
+

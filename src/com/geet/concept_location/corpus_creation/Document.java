@@ -14,7 +14,7 @@ public abstract class Document {
 	protected String docInJavaFile;
 	protected String docName;
 	protected Position startPosition, endPosition;
-
+	
 	protected List<JavadocComment> javaDocComments = new ArrayList<JavadocComment>();
 	protected List<Comment> implementationComments = new ArrayList<Comment>();
 	protected String implementionBody = "";
@@ -78,4 +78,15 @@ public abstract class Document {
 		}
 		return false;
 	}
+	
+	public Range getRange(){
+		return new Range(startPosition, endPosition);
+	}
+	
+	public String getArticle() {
+		article = docName+ " "+ docInJavaFile+"\n";
+		article += javaDocComments.toString()+"\n"+ implementationComments.toString()+"\n"+ implementionBody.toString()+"\n";
+		return article;
+	}
+	
 }

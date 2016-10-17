@@ -5,7 +5,6 @@ import java.util.List;
 
 public class TermExtractorFromDocument {
 
-	
 	public List<String> getTermsFromDocument(Document document){
 		List<String> terms = new ArrayList<String>();
 		terms.addAll(getTermsFromJavaDocComment());
@@ -17,7 +16,7 @@ public class TermExtractorFromDocument {
 	
 	private List<String> getTermsFromJavaDocComment(){
 		/*
-		 * remove *, @tag, <tag>, </tag>
+		 * remove *, programming syntax, @tag, <tag>, </tag>
 		 */
 		List<String> terms = new ArrayList<String>();
 		String documentString = "";
@@ -26,14 +25,17 @@ public class TermExtractorFromDocument {
 	
 	private List<String> getTermsFromComment(){
 		List<String> terms = new ArrayList<String>();
+		// remove *, programming syntax, @tag, <tag>, </tag>
 		return terms;
 	}
 	
 	private List<String> getTermsFromImplementation(){
 		List<String> terms = new ArrayList<String>();
+		// remove all programming syntax
+		// remove all keywords
+		// remove all operators
 		return terms;
 	}
-	
 	
 	// Identifier Separation
 	private List<String> getTermsAfterIdentifierSeparation(List<String> terms){
