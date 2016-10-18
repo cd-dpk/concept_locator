@@ -21,7 +21,7 @@ public class JavaFileWriter {
 				fileWriter.write(document.toIndentity());
 				fileWriter.write("\n");
 				for (Term term : document.getTerms()) {
-					term.setDocumentFrequencyAndInverseDocumentFrequency(documents);
+//					term.setDocumentFrequencyAndInverseDocumentFrequency(documents);
 					fileWriter.write(term.toString());
 					fileWriter.write("\n");
 				}				

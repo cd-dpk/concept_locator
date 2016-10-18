@@ -33,8 +33,8 @@ public class Term {
 		return false;
 	}
 	
-	public void setDocumentFrequencyAndInverseDocumentFrequency(List<Document>documents){
-		for (Document document : documents) {
+	public void setDocumentFrequencyAndInverseDocumentFrequency(List<VectorDocument>vectorDocuments){
+		for (VectorDocument document : vectorDocuments) {
 			for (Term term : document.getTerms()) {
 				if (term.isSame(this)) {
 					documentFrequency++;
@@ -42,9 +42,8 @@ public class Term {
 				}
 			}
 		}
-		inverseDocumentFrequency = Math.log10((double)documents.size()/(double)documentFrequency);
+		inverseDocumentFrequency = 1+Math.log10((double)vectorDocuments.size()/(double)documentFrequency);
 	}
-	
 	public double getTF_IDF(){
 		return (double) termFrequency * inverseDocumentFrequency;
 	}
