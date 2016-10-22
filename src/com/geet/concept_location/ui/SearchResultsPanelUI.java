@@ -2,14 +2,19 @@ package com.geet.concept_location.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
+
+import com.geet.concept_location.indexing.VectorDocument;
+
 /**
  * 
  * @author geet
@@ -17,12 +22,21 @@ import javax.swing.ListCellRenderer;
  */
 public class SearchResultsPanelUI extends JPanel{
 
-	
 	DefaultListModel listModel = new DefaultListModel();
 	JList searchResultList = new JList(listModel);
+	List<VectorDocument> vectorDocuments = new ArrayList<VectorDocument>();
 	
-	public SearchResultsPanelUI() {
+	public SearchResultsPanelUI(List<VectorDocument>vectorDocuments, Bound bound) {
+		super();
+		setLayout(null);
+		this.vectorDocuments = vectorDocuments;
 		searchResultList.setCellRenderer(new TextAreaListItem(10, 20));
+		for (VectorDocument vectorDocument : vectorDocuments) {
+			listModel.addElement(vectorDocument.toString());
+		}
+		JScrollPane scrollPane =new JScrollPane(searchResultList);
+		scrollPane.setBounds(0, 0, bound.width,bound.height);
+		add(scrollPane);
 	}
 	
 	private class TextAreaListItem extends JTextArea implements ListCellRenderer{

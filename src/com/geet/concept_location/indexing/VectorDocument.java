@@ -73,4 +73,10 @@ public class VectorDocument{
 		}
 		return dotProduct;
 	}
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "Ram and Sham are good friends.\nThey are good man also";
+	}
 }

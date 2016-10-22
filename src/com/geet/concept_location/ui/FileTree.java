@@ -21,6 +21,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import com.geet.concept_location.utils.StringUtils;
 
 public class FileTree extends JPanel {
+	
 	JTree tree;
 	/** Construct a FileTree */
 	  public FileTree(File dir) {
@@ -36,7 +37,21 @@ public class FileTree extends JPanel {
 	    add(BorderLayout.CENTER, scrollpane);
 	  }
 
-	  /** Add nodes from under "dir" into curTop. Highly recursive. */
+	  
+	  
+	  public JTree getTree() {
+		return tree;
+	}
+
+
+
+	public void setTree(JTree tree) {
+		this.tree = tree;
+	}
+
+
+
+	/** Add nodes from under "dir" into curTop. Highly recursive. */
 	  DefaultMutableTreeNode addNodes(DefaultMutableTreeNode curTop, File dir) {
 	    String curPath = dir.getPath();
 	    DefaultMutableTreeNode curDir = new DefaultMutableTreeNode(curPath);

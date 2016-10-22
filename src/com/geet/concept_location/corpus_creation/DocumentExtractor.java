@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.Position;
@@ -29,7 +30,7 @@ public class DocumentExtractor {
 		// TODO Auto-generated constructor stub
 		try {
 			fileName = javaFile.getAbsolutePath();
-			compilationUnit = JavaParser.parse(javaFile);
+			compilationUnit = JavaParser.parse(new JavaClassPreprocessor().getProcessedJavaFile(javaFile));
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

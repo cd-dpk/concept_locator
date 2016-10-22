@@ -2,14 +2,14 @@ package com.geet.concept_location.ui;
 
 public class Bound {
 	
-	public int x,y, width, heigh;
+	public int x,y, width, height;
 
-	public Bound(int x, int y, int width, int heigh) {
+	public Bound(int x, int y, int width, int height) {
 		super();
 		this.x = x;
 		this.y = y;
 		this.width = width;
-		this.heigh = heigh;
+		this.height = height;
 	}
 
 	public int getX() {
@@ -37,10 +37,10 @@ public class Bound {
 	}
 
 	public int getHeigh() {
-		return heigh;
+		return height;
 	}
 
 	public void setHeigh(int heigh) {
-		this.heigh = heigh;
+		this.height = heigh;
 	}
 }

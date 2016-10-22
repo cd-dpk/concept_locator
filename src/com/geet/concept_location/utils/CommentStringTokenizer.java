@@ -3,7 +3,6 @@ package com.geet.concept_location.utils;
 import java.util.StringTokenizer;
 
 import com.geet.concept_location.corpus_creation.JavaLanguage;
-import com.github.javaparser.Position;
 
 public class CommentStringTokenizer extends StringTokenizer{
 
@@ -11,7 +10,6 @@ public class CommentStringTokenizer extends StringTokenizer{
 		super(str);
 		// TODO Auto-generated constructor stub
 	}
-
 	public CommentStringTokenizer(String str, String delim, boolean returnDelims) {
 		super(str, delim, returnDelims);
 		// TODO Auto-generated constructor stub
@@ -74,25 +72,5 @@ public class CommentStringTokenizer extends StringTokenizer{
 			}
 		}
 		return str;
-	}
-	
-	private IndexRange findWordWithHTMLTag(String target){
-		IndexRange indexRange = new IndexRange();
-		for (int i = 0; i < target.length(); i++) {
-			char ch = target.charAt(i);
-			if (indexRange.a !=-1 ) {
-				if (ch == '<') {
-					indexRange.a = i;
-				}
-			}else{
-				if (ch == '>') {
-					indexRange.b = i;
-				}
-			}
-			if (indexRange.isValid()) {
-				return indexRange;
-			}
-		}
-		return indexRange;
 	}
 }

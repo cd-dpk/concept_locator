@@ -10,9 +10,10 @@ public class SourceViewPanel extends JPanel{
 	private JTextArea sourceTextArea;
 	private JScrollPane scrollPane;
 	
-	public SourceViewPanel(JTextArea sourceTextArea,Bound bound){
+	public SourceViewPanel(String source,Bound bound){
 		super();
 		setLayout(null);
+		sourceTextArea = new JTextArea(source);
 		scrollPane = new JScrollPane(sourceTextArea);
 		scrollPane.setBounds(bound.getX(), bound.getY(), bound.getWidth(), bound.getHeigh());
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -27,5 +28,4 @@ public class SourceViewPanel extends JPanel{
 	public void setSourceTextArea(JTextArea sourceTextArea) {
 		this.sourceTextArea = sourceTextArea;
 	}
-	
 }

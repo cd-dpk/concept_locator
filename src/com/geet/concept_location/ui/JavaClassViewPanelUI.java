@@ -1,24 +1,15 @@
 package com.geet.concept_location.ui;
-
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class JavaClassViewPanelUI extends JPanel{
 	
-	JLabel positionLabel;
 	SourceViewPanel sourceViewPanel;
 	Bound bound;
-	public JavaClassViewPanelUI(Bound bound) {
+	public JavaClassViewPanelUI(Bound bound, String source) {
 		super();
 		setLayout(null);
-	}
-	
-	public void setPositionLabel(JLabel positionLabel) {
-		this.positionLabel = positionLabel;
-	}
-	
-	public void setSourceViewPanel(SourceViewPanel sourceViewPanel) {
-		this.sourceViewPanel = sourceViewPanel;
-	}
-
+		sourceViewPanel = new SourceViewPanel(source, bound);
+		sourceViewPanel.setBounds(0, 0, bound.width, bound.height);
+		add(sourceViewPanel);
+	}	
 }
