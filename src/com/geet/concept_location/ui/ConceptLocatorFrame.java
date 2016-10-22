@@ -23,7 +23,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
 import com.geet.concept_location.constants.UIConstants;
-import com.geet.concept_location.indexing.VectorDocument;
+import com.geet.concept_location.indexing_vsm.VectorDocument;
 import com.geet.concept_location.io.JavaFileReader;
 import com.geet.concept_location.utils.StringUtils;
 import com.github.javaparser.JavaParser;

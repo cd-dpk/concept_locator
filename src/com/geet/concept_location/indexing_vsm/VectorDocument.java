@@ -1,4 +1,4 @@
-package com.geet.concept_location.indexing;
+package com.geet.concept_location.indexing_vsm;
 
 import java.util.ArrayList;
 import java.util.List;

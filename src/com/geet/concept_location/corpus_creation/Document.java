@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
-import com.geet.concept_location.indexing.Term;
+import com.geet.concept_location.indexing_vsm.Term;
 import com.geet.concept_location.utils.StringUtils;
 import com.github.javaparser.Position;
 import com.github.javaparser.ast.comments.Comment;
