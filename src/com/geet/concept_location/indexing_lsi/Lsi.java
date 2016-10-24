@@ -9,12 +9,39 @@ public class Lsi {
 	
 	static double[][] TERM_DOCUMENT_MATRIX;
 	static String[] TERMS;
-	static String[] DOCS ;
+	static String[] DOCS;
 	
 	public Lsi(VectorSpaceModel vectorSpaceModel){
+		
 		TERMS = vectorSpaceModel.getTERMS();
 		DOCS = vectorSpaceModel.getDOCUMENTS();
 		TERM_DOCUMENT_MATRIX = vectorSpaceModel.getTERM_DOCUMENT_MATRIX();
+		
+		double featureInit = 0.01;
+		double initialLearningRate = 0.005;
+		int annealingRate = 1000;
+		double regularization = 0.00;
+		double minImprovement = 0.0000;
+		int minEpochs = 10;
+		int maxEpochs = 50000;
+
+		System.out.println("  Computing SVD");
+		System.out.println("    maxFactors=" + NUM_FACTORS);
+		System.out.println("    featureInit=" + featureInit);
+		System.out.println("    initialLearningRate=" + initialLearningRate);
+		System.out.println("    annealingRate=" + annealingRate);
+		System.out.println("    regularization" + regularization);
+		System.out.println("    minImprovement=" + minImprovement);
+		System.out.println("    minEpochs=" + minEpochs);
+		System.out.println("    maxEpochs=" + maxEpochs);
+
+		SvdMatrix matrix = SvdMatrix.svd(TERM_DOCUMENT_MATRIX, NUM_FACTORS,
+				featureInit, initialLearningRate, annealingRate,
+				regularization, null, minImprovement, minEpochs, maxEpochs);
+
+		double[] scales = matrix.singularValues();
+		double[][] termVectors = matrix.leftSingularVectors();
+		double[][] docVectors = matrix.rightSingularVectors();
 	}
 	
 	static final int NUM_FACTORS = 2;

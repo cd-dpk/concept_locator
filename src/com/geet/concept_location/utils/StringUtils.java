@@ -92,7 +92,6 @@ public class StringUtils {
 		}
 		return true;
 	}
-	
 	public static boolean isEmpty(String target){
 		for (int i = 0; i < target.length(); i++) {
 			char ch = target.charAt(i);
