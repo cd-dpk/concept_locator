@@ -1,7 +1,5 @@
 package com.geet.concept_location.query_formulation;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 
 import com.geet.concept_location.utils.StringUtils;
@@ -26,7 +24,7 @@ public class QueryManager {
 				tokens ="";
 			}
 			String token = stringTokenizer.nextToken();
-			if (!new StopWords().isStopword(token)) {
+			if (!StopWords.isStopword(token)) {
 				tokens += token+" ";
 			}
 		}
@@ -43,4 +41,5 @@ public class QueryManager {
 	public static void main(String[] args) {
 		System.out.println(new QueryManager("methodLove").getProcessedQuery());
 	}
+	
 }

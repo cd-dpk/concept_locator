@@ -14,7 +14,7 @@ public class Lsi {
 	public Lsi(VectorSpaceModel vectorSpaceModel){
 		
 		TERMS = vectorSpaceModel.getTERMS();
-		DOCS = vectorSpaceModel.getDOCUMENTS();
+		DOCS = vectorSpaceModel.getDOCS();
 		TERM_DOCUMENT_MATRIX = vectorSpaceModel.getTERM_DOCUMENT_MATRIX();
 		
 		double featureInit = 0.01;

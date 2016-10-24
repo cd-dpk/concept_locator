@@ -2,6 +2,7 @@ package com.geet.concept_location.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,16 +24,22 @@ import com.geet.concept_location.indexing_vsm.VectorDocument;
 public class SearchResultsPanelUI extends JPanel{
 
 	DefaultListModel listModel = new DefaultListModel();
-	JList searchResultList = new JList(listModel);
-	List<VectorDocument> vectorDocuments = new ArrayList<VectorDocument>();
+	public JList searchResultList = new JList(listModel);
+	public List<VectorDocument> vectorDocuments = new ArrayList<VectorDocument>();
 	
 	public SearchResultsPanelUI(List<VectorDocument>vectorDocuments, Bound bound) {
 		super();
 		setLayout(null);
 		this.vectorDocuments = vectorDocuments;
 		searchResultList.setCellRenderer(new TextAreaListItem(10, 20));
-		for (VectorDocument vectorDocument : vectorDocuments) {
-			listModel.addElement(vectorDocument.toString());
+		for (VectorDocument document : vectorDocuments) {
+			String str="";
+			str += document.dotProduct+"\n";
+			str += document.getDocName()+"\n";
+			str += document.getDocInJavaFile()+"\n";
+			str += document.article+"\n";
+			listModel.addElement(str);
+			
 		}
 		JScrollPane scrollPane =new JScrollPane(searchResultList);
 		scrollPane.setBounds(0, 0, bound.width,bound.height);

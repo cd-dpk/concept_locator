@@ -8,12 +8,10 @@ public class Term {
 	
 	public String termString;
 	public int termFrequency=0;
-	public int documentFrequency = 1;
+	public int documentFrequency = 0;
 	public double inverseDocumentFrequency = 0.0; 
 	
-	
 	public Term(String termString) {
-		// TODO Auto-generated constructor stub
 		this.termString = termString;
 	}
 	public Term(String termString, int termFrequency) {
@@ -41,14 +39,16 @@ public class Term {
 	public void setDocumentFrequencyAndInverseDocumentFrequency(List<VectorDocument>vectorDocuments){
 		for (VectorDocument document : vectorDocuments) {
 			for (Term term : document.getTerms()) {
-				if (term.isSame(this)) {
+				if (isSame(term)) {
 					documentFrequency++;
 					break;
 				}
 			}
 		}
 		inverseDocumentFrequency = 1+Math.log10((double)vectorDocuments.size()/(double)documentFrequency);
+		System.out.println(inverseDocumentFrequency);
 	}
+	
 	public void setTermFrequencyFromDocument(VectorDocument vectorDocument){
 		for (Term term : vectorDocument.getTerms()) {
 			if (isSame(term)) {
@@ -57,9 +57,15 @@ public class Term {
 			}
 		}
 	}
+	
 	public double getTF_IDF(){
 		return  (double) termFrequency * inverseDocumentFrequency;
 	}
+	
+	public double getTF(){
+		return  (double) termFrequency;
+	}
+	
 	
 	@Override
 	public String toString() {

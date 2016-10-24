@@ -4,7 +4,10 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JFileChooser;
@@ -12,18 +15,26 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import com.geet.concept_location.constants.UIConstants;
+import com.geet.concept_location.corpus_creation.Document;
+import com.geet.concept_location.corpus_creation.DocumentExtractor;
+import com.geet.concept_location.corpus_creation.QueryDocument;
 import com.geet.concept_location.indexing_vsm.VectorDocument;
+import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
+import com.geet.concept_location.io.JavaFileReader;
 
 public class ConceptLocatorFrame extends JFrame {
 	
-	String projectPath = ".";
 	
+	String projectPath = ".";
+	String javaClassPath ="src/com/geet/concept_location/corpus_creation/DocumentExtractor.java";
 	ProjectExplorerViewPanel projectExplorerViewPanel;
 	SearchResultsPanelUI searchResultsPanelUI;
 	JavaClassViewPanelUI javaClassViewPanelUI;
-	
+	List<VectorDocument> vectorDocuments = new ArrayList<VectorDocument>();
 	SearchBoxPanelUI searchBoxPanel;
 	
 	public ConceptLocatorFrame(){
@@ -31,7 +42,7 @@ public class ConceptLocatorFrame extends JFrame {
 		setLayout(null);
 		createMenuBar();
 		setAndViewSearchBoxPanel();
-		setProjectExplorerViewPanel();
+		setJavaClassViewPanelUI();
 		showFrame();
 	}
 	
@@ -40,6 +51,29 @@ public class ConceptLocatorFrame extends JFrame {
 		searchBoxPanel = new SearchBoxPanelUI(UIConstants.Width, UIConstants.Menu_Height);
 		searchBoxPanel.setBounds(UIConstants.PADDING_LEFT, UIConstants.PADDING_TOP, UIConstants.Width-UIConstants.PADDING_RIGHT, UIConstants.Menu_Height);
 		add(searchBoxPanel);
+		searchBoxPanel.getSearchButton().addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+						VectorDocument queryVectorDocument = new VectorDocument(
+								new QueryDocument(searchBoxPanel
+										.getSearchTextField().getText()));
+						DocumentExtractor documentExtractor = new DocumentExtractor(
+								new File(javaClassPath));
+						List<Document> documents = documentExtractor
+								.getAllDocuments();
+						VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(
+								documents);
+						for (VectorDocument document : vectorSpaceModel.vectorDocuments) {
+							document.dotProduct = document
+									.getDotProduct(queryVectorDocument);
+						}
+						Collections.sort(vectorSpaceModel.vectorDocuments);
+						Collections.reverse(vectorSpaceModel.vectorDocuments);
+						vectorDocuments = vectorSpaceModel.vectorDocuments;
+						setSearchResultsPanelUI();
+			}
+		});
 	}
 	private void setProjectExplorerViewPanel(){
 		setAllPanelInvisible();
@@ -50,20 +84,29 @@ public class ConceptLocatorFrame extends JFrame {
 		projectExplorerViewPanel.revalidate();
 	}
 	
-	private void searchResultsPanelUI(){
+	private void setSearchResultsPanelUI(){
 		setAllPanelInvisible();
-		List<VectorDocument> vectorDocuments = new ArrayList<VectorDocument>();
-		for (int i = 0; i < 20; i++) {
-			vectorDocuments.add(new VectorDocument());
-		}
 		searchResultsPanelUI = new SearchResultsPanelUI(vectorDocuments,new Bound(0, 0, 1300-100, 800-50));
 		searchResultsPanelUI.setBounds(UIConstants.PADDING_LEFT, UIConstants.Menu_Height+UIConstants.PADDING_TOP, 1300, 800);
 		add(searchResultsPanelUI);
 		searchResultsPanelUI.revalidate();
+		
+		searchResultsPanelUI.searchResultList.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				javaClassPath = searchResultsPanelUI.vectorDocuments.get(searchResultsPanelUI.searchResultList.getSelectedIndex()).getDocInJavaFile();
+				setJavaClassViewPanelUI();
+			}
+		});
 	}
 	private void setJavaClassViewPanelUI(){
 		setAllPanelInvisible();
-		javaClassViewPanelUI = new JavaClassViewPanelUI(new Bound(0, 0, 1300-100, 800-50),"Source");
+		String src="Source";
+		JavaFileReader javaFileReader = new JavaFileReader();
+		if (javaFileReader.openFile(new File(javaClassPath))){
+			src = javaFileReader.getText();
+		}
+		javaClassViewPanelUI = new JavaClassViewPanelUI(new Bound(0, 0, 1300-100, 800-50),src);
 		javaClassViewPanelUI.setBounds(UIConstants.PADDING_LEFT, UIConstants.Menu_Height+UIConstants.PADDING_TOP, 1300, 800);
 		add(javaClassViewPanelUI);
 	}

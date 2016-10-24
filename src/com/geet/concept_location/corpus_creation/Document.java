@@ -11,7 +11,8 @@ import com.github.javaparser.Position;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
 
-public abstract class Document {
+public class Document {
+	
 	protected String docInJavaFile;
 	protected String docName;
 	protected Position startPosition, endPosition;
@@ -22,7 +23,85 @@ public abstract class Document {
 	protected String article="";
 
 	
+	public Document() {
+		// TODO Auto-generated constructor stub
+	}
 	
+	public String getDocInJavaFile() {
+		return docInJavaFile;
+	}
+
+
+	public void setDocInJavaFile(String docInJavaFile) {
+		this.docInJavaFile = docInJavaFile;
+	}
+
+
+	public String getDocName() {
+		return docName;
+	}
+
+
+	public void setDocName(String docName) {
+		this.docName = docName;
+	}
+
+
+	public Position getStartPosition() {
+		return startPosition;
+	}
+
+
+	public void setStartPosition(Position startPosition) {
+		this.startPosition = startPosition;
+	}
+
+
+	public Position getEndPosition() {
+		return endPosition;
+	}
+
+
+	public void setEndPosition(Position endPosition) {
+		this.endPosition = endPosition;
+	}
+
+
+	public List<JavadocComment> getJavaDocComments() {
+		return javaDocComments;
+	}
+
+
+	public void setJavaDocComments(List<JavadocComment> javaDocComments) {
+		this.javaDocComments = javaDocComments;
+	}
+
+
+	public List<Comment> getImplementationComments() {
+		return implementationComments;
+	}
+
+
+	public void setImplementationComments(List<Comment> implementationComments) {
+		this.implementationComments = implementationComments;
+	}
+
+
+	public String getImplementionBody() {
+		return implementionBody;
+	}
+
+
+	public void setImplementionBody(String implementionBody) {
+		this.implementionBody = implementionBody;
+	}
+
+
+	public void setArticle(String article) {
+		this.article = article;
+	}
+
+
 	public Document(String docInJavaFile, String docName,
 			Position startPosition, Position endPosition) {
 		super();
@@ -31,40 +110,6 @@ public abstract class Document {
 		this.startPosition = startPosition;
 		this.endPosition = endPosition;
 	}
-
-
-	protected abstract void extractDocument();
-	/*public String extractDocumentOld(){
-		// process all java doc comments
-		// process all comments
-		// process all implementation body
-		String article ="";
-		// scanner open
-		Scanner scanner = new Scanner(body);
-		// Step 1: read every line 
-		List<String> words = new ArrayList<String>();
-		while (scanner.hasNext()) {
-			String line = scanner.nextLine();
-			// Step 2: delete all spaces, operators, programming syntax, comment
-			String delim = new JavaLanguage().getOperators()+ new JavaLanguage().getProgrammingLanguageSyntax()+new JavaLanguage().getComments();
-			StringTokenizer stringTokenizer = new StringTokenizer(line,delim,false);
-			// Step 3: take all the words
-			while (stringTokenizer.hasMoreTokens()) {
-				words.add(stringTokenizer.nextToken());
-			}
-			// Step 4: remove all keywords, structures, annotations, literals					
-			for (String string : words) {
-				if (StringUtils.hasStringInList(string, new JavaLanguage().KEYWORDS) || StringUtils.hasStringInList(string, new JavaLanguage().ANNOTATIONS) || StringUtils.hasStringInList(string, new JavaLanguage().LITERALS)|| StringUtils.hasStringInList(string, new JavaLanguage().JAVA_DOC)) {
-					continue;
-				}
-				article += string+" ";
-			}
-		}
-		// Step 5: until
-		scanner.close();
-		// scanner close
-		return article;	
-	}*/
 
 	public boolean isBetweenPosition(Position position){
 		if (position.getLine() == startPosition.getLine() && position.getColumn() > startPosition.getColumn() ) {
