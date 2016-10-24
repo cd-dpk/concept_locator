@@ -1,13 +1,15 @@
-/*package com.geet.concept_location.io;
+package com.geet.concept_location.io;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.DocumentExtractor;
-import com.geet.concept_location.indexing.Term;
+import com.geet.concept_location.indexing_vsm.VectorDocument;
+import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
 
 public class JavaFileWriter {
 	
@@ -15,18 +17,15 @@ public class JavaFileWriter {
 		// TODO Auto-generated method stub
 		DocumentExtractor documentExtractor = new DocumentExtractor(new File("src/com/geet/concept_location/corpus_creation/DocumentExtractor.java"));
 		List<Document> documents = documentExtractor.getAllDocuments();
+		List<VectorDocument> vectorDocuments = new ArrayList<VectorDocument>();
+		
+		for (Document document : documents) {
+			vectorDocuments.add(new VectorDocument(document));
+		}
 		try {
 			FileWriter fileWriter = new FileWriter("src/com/geet/concept_location/corpus_creation/Hello.txt");
-			for (Document document : documents) {
-				fileWriter.write(document.toIndentity());
-				fileWriter.write("\n");
-				for (Term term : document.getTerms()) {
-//					term.setDocumentFrequencyAndInverseDocumentFrequency(documents);
-					fileWriter.write(term.toString());
-					fileWriter.write("\n");
-				}				
-				fileWriter.write("\n");
-			}
+			VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(vectorDocuments);
+			fileWriter.write(vectorSpaceModel.TERM_DOCUMENT_MATRIX_TO_STRING());
 			fileWriter.close();
 			System.out.println("DOne");
 		} catch (IOException e) {
@@ -39,6 +38,4 @@ public class JavaFileWriter {
 	public static void main(String[] args) {
 		new JavaFileWriter().writeFile();
 	}
-
 }
-*/

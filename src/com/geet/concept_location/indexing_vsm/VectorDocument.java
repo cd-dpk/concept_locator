@@ -3,9 +3,22 @@ package com.geet.concept_location.indexing_vsm;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.geet.concept_location.corpus_creation.Document;
+
 public class VectorDocument{
 	
+	
+	public VectorDocument() {
+		// TODO Auto-generated constructor stub
+	}
+	public VectorDocument(Document document) {
+		// TODO Auto-generated constructor stub
+		this.terms = document.getTerms(); 
+		this.article = document.getArticle();
+	}
+	
 	public List<Term> terms = new ArrayList<Term>();
+	public String article = "";
 	public List<Term> getTerms() {
 		return terms;
 	}
