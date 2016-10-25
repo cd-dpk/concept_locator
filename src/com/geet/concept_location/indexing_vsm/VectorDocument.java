@@ -135,4 +135,14 @@ public class VectorDocument implements Comparable<VectorDocument>{
 		}
 		return -1;
 	}
+	
+	public double getTF_IDF(String termString){
+		double tf_idf = 0.0;
+		for (Term term : getTerms()) {
+			if (term.isSame(new Term(termString))) {
+				return term.getTF_IDF();
+			}
+		}
+		return tf_idf;
+	}
 }

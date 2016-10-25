@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -14,25 +15,31 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
 import com.geet.concept_location.constants.UIConstants;
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.DocumentExtractor;
 import com.geet.concept_location.corpus_creation.QueryDocument;
+import com.geet.concept_location.indexing_lsi.Lsi;
+import com.geet.concept_location.indexing_lsi.LsiDocument;
+import com.geet.concept_location.indexing_lsi.LsiQuery;
+import com.geet.concept_location.indexing_lsi.Vector;
 import com.geet.concept_location.indexing_vsm.VectorDocument;
 import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
 import com.geet.concept_location.io.JavaFileReader;
 
-public class ConceptLocatorFrame extends JFrame {
+public class ConceptLocatorLsiFrame extends JFrame {
 
 	String projectPath = ".";
 	String javaClassPath = "src/com/geet/concept_location/corpus_creation/DocumentExtractor.java";
 	ProjectExplorerViewPanel projectExplorerViewPanel;
-	SearchResultsPanelUI searchResultsPanelUI;
 	JavaClassViewPanelUI javaClassViewPanelUI;
-	List<VectorDocument> vectorDocuments = new ArrayList<VectorDocument>();
+	SearchResultsPanelLsiUI searchResultsPanelLsiUI;
+	
+	List<LsiDocument> lsiDocuments = new ArrayList<LsiDocument>();
 	SearchBoxPanelUI searchBoxPanel;
 	
-	public ConceptLocatorFrame() {
+	public ConceptLocatorLsiFrame() {
 		super("Concept Locator");
 		setLayout(null);
 		createMenuBar();
@@ -55,23 +62,17 @@ public class ConceptLocatorFrame extends JFrame {
 				new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						VectorDocument queryVectorDocument = new VectorDocument(
-								new QueryDocument(searchBoxPanel
-										.getSearchTextField().getText()));
+						
 						DocumentExtractor documentExtractor = new DocumentExtractor(
 								new File(javaClassPath));
 						List<Document> documents = documentExtractor
 								.getAllDocuments();
 						VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(
 								documents);
-						for (VectorDocument document : vectorSpaceModel.vectorDocuments) {
-							document.dotProduct = document
-									.getDotProduct(queryVectorDocument);
-						}
-						Collections.sort(vectorSpaceModel.vectorDocuments);
-						Collections.reverse(vectorSpaceModel.vectorDocuments);
-						vectorDocuments = vectorSpaceModel.vectorDocuments;
-						setSearchResultsPanelUI();
+						Lsi lsi = new Lsi(vectorSpaceModel);
+						lsi.search(new LsiQuery(searchBoxPanel.getSearchTextField().getText(), new Vector(Lsi.NUM_FACTORS)));
+						lsiDocuments = lsi.lsiDocuments;
+						setSearchResultsPanelLsiUI();;
 					}
 				});
 	}
@@ -87,21 +88,21 @@ public class ConceptLocatorFrame extends JFrame {
 		projectExplorerViewPanel.revalidate();
 	}
 
-	private void setSearchResultsPanelUI() {
+	private void setSearchResultsPanelLsiUI() {
 		setAllPanelInvisible();
-		searchResultsPanelUI = new SearchResultsPanelUI(vectorDocuments,
+		searchResultsPanelLsiUI = new SearchResultsPanelLsiUI(lsiDocuments,
 				new Bound(0, 0, 1300 - 100, 800 - 50));
-		searchResultsPanelUI.setBounds(UIConstants.PADDING_LEFT,
+		searchResultsPanelLsiUI.setBounds(UIConstants.PADDING_LEFT,
 				UIConstants.Menu_Height + UIConstants.PADDING_TOP, 1300, 800);
-		add(searchResultsPanelUI);
-		searchResultsPanelUI.revalidate();
+		add(searchResultsPanelLsiUI);
+		searchResultsPanelLsiUI.revalidate();
 
-		searchResultsPanelUI.searchResultList
+		searchResultsPanelLsiUI.searchResultList
 				.addListSelectionListener(new ListSelectionListener() {
 					@Override
 					public void valueChanged(ListSelectionEvent e) {
-						javaClassPath = searchResultsPanelUI.vectorDocuments
-								.get(searchResultsPanelUI.searchResultList
+						javaClassPath = searchResultsPanelLsiUI.lsiDocuments
+								.get(searchResultsPanelLsiUI.searchResultList
 										.getSelectedIndex()).getDocInJavaFile();
 						setJavaClassViewPanelUI();
 					}
@@ -126,8 +127,8 @@ public class ConceptLocatorFrame extends JFrame {
 		if (projectExplorerViewPanel != null) {
 			projectExplorerViewPanel.setVisible(false);
 		}
-		if (searchResultsPanelUI != null) {
-			searchResultsPanelUI.setVisible(false);
+		if (searchResultsPanelLsiUI != null) {
+			searchResultsPanelLsiUI.setVisible(false);
 		}
 		if (javaClassViewPanelUI != null) {
 			javaClassViewPanelUI.setVisible(false);
@@ -144,7 +145,7 @@ public class ConceptLocatorFrame extends JFrame {
 
 	/** Main: make a Frame, add a FileTree */
 	public static void main(String[] av) {
-		new ConceptLocatorFrame();
+		new ConceptLocatorLsiFrame();
 	}
 
 	private void createMenuBar() {
@@ -170,7 +171,7 @@ public class ConceptLocatorFrame extends JFrame {
 				projectPathChooser
 						.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				int returnValue = projectPathChooser
-						.showOpenDialog(ConceptLocatorFrame.this);
+						.showOpenDialog(ConceptLocatorLsiFrame.this);
 				if (returnValue == JFileChooser.APPROVE_OPTION) {
 					projectPath = projectPathChooser.getSelectedFile()
 							.getAbsolutePath();

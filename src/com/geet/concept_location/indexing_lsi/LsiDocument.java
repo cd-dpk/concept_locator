@@ -12,6 +12,7 @@ public class LsiDocument implements Comparable<LsiDocument>{
 		this.article = vectorDocument.getArticle();
 		this.startPosition = vectorDocument.getStartPosition();
 		this.endPosition = vectorDocument.getEndPosition();
+		this.vector = vector;
 	}
 	public String docInJavaFile;
 	public String docName;

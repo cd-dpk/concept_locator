@@ -11,15 +11,12 @@ public class Lsi {
 	
 	public List<LsiTerm> lsiTerms = new ArrayList<LsiTerm>();
 	public List<LsiDocument> lsiDocuments = new ArrayList<LsiDocument>();
-	static final int NUM_FACTORS = 2;
+	public static final int NUM_FACTORS = 2;
 	double [] scales = new double[NUM_FACTORS];
 
 	public Lsi(VectorSpaceModel vectorSpaceModel){
-		String[] TERMS;
-		String[] DOCS;
+		
 		double[][] TERM_DOCUMENT_MATRIX;
-		TERMS = vectorSpaceModel.getTERMS();
-		DOCS = vectorSpaceModel.getDOCS();
 		TERM_DOCUMENT_MATRIX = vectorSpaceModel.getTERM_DOCUMENT_MATRIX();
 		
 		double featureInit = 0.01;
@@ -48,6 +45,9 @@ public class Lsi {
 		double[][] termVectors = matrix.leftSingularVectors();
 		double[][] docVectors = matrix.rightSingularVectors();
 		
+		String[] TERMS;
+		TERMS = vectorSpaceModel.getTERMS();
+		
 		/* term vectors into lsi terms*/
 		for (int i = 0; i < termVectors.length; i++) {
 				Vector vector = new Vector(NUM_FACTORS);
@@ -55,7 +55,7 @@ public class Lsi {
 				vector.dimensionValue[1] = termVectors[i][1];
 				lsiTerms.add(new LsiTerm(TERMS[i], vector));
 		}
-		
+		System.out.println("DOC VECTORS "+ TERM_DOCUMENT_MATRIX[0].length);
 		/* document vectors into lsi docs*/
 		for (int i = 0; i < docVectors.length; i++) {
 				Vector vector = new Vector(NUM_FACTORS);
@@ -74,6 +74,14 @@ public class Lsi {
 		Collections.reverse(lsiDocuments);
 	}
 	
-
-
+	public void printDocumentsVector(){
+		for (LsiDocument lsiDocument : lsiDocuments) {
+			System.out.println(lsiDocument.vector.toString());
+		}
+	}
+	public void printTermsVector(){
+		for (LsiTerm lsiTerm : lsiTerms) {
+			System.out.println(lsiTerm.vector.toString());
+		}
+	}
 }

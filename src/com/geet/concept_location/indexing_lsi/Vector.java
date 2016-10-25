@@ -39,5 +39,14 @@ public class Vector {
 		
 		return Math.sqrt(scalarValue);
 	}
+	@Override
+	public String toString() {
+		String string="[";
+		for (int i = 0; i < dimensionValue.length; i++) {
+			string+=dimensionValue[i]+",";
+		}
+		string += "]\n";
+		return string;
+	}
 
 }
