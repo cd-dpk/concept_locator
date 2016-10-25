@@ -7,6 +7,15 @@ import javax.swing.ScrollPaneConstants;
 
 public class SourceViewPanel extends JPanel{
 	
+	private String filePath="";
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
+
 	private JTextArea sourceTextArea;
 	private JScrollPane scrollPane;
 	

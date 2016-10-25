@@ -5,22 +5,19 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
 import com.geet.concept_location.constants.UIConstants;
 import com.geet.concept_location.io.JavaFileReader;
 import com.geet.concept_location.utils.StringUtils;
-import com.github.javaparser.JavaParser;
-import com.github.javaparser.ParseException;
-import com.github.javaparser.ast.CompilationUnit;
 
 public class ProjectExplorerViewPanel extends JPanel{
 
+	
 	FileTree projectTreePanel;
 	File project;
-	SourceViewPanel sourceViewPanel;
+	SourceViewPanel sourceViewPanel;     
 	String source = "<code>sample</code>";
 	
 	public ProjectExplorerViewPanel(Bound bound, File project){
@@ -42,6 +39,7 @@ public class ProjectExplorerViewPanel extends JPanel{
 				// TODO Auto-generated method stub
 				JavaFileReader javaFileReader = new JavaFileReader();
 				String filePath = StringUtils.getFilePathName(e.getPath().toString());
+				sourceViewPanel.setFilePath(filePath);
 				try {
 					FileInputStream in = new FileInputStream(filePath);
 					if(javaFileReader.openFile(new File (filePath))){
