@@ -1,5 +1,4 @@
 package com.geet.concept_location.query_formulation;
-
 /*
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -15,13 +14,10 @@ package com.geet.concept_location.query_formulation;
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
 /*
  *    Stopwords.java
  *    Copyright (C) 2001 University of Waikato, Hamilton, New Zealand
  */
-
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -33,7 +29,6 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Vector;
-
 /**
  * Class that can test whether a given string is a stop word.
  * Lowercases all words before the test. <p/>
@@ -60,25 +55,20 @@ import java.util.Vector;
  * @version $Revision: 5953 $
  */
 public class StopWords{
-  
   /** The hash set containing the list of stopwords */
   protected HashSet<String> m_Words = null;
-
   /** The default stopwords object (stoplist based on Rainbow) */
   protected static StopWords m_Stopwords;
-
   static {
     if (m_Stopwords == null) {
       m_Stopwords = new StopWords();
     }
   }
-
   /**
    * initializes the stopwords (based on <a href="http://www.cs.cmu.edu/~mccallum/bow/rainbow/" target="_blank">Rainbow</a>).
    */
   public StopWords() {
     m_Words = new HashSet<String>();
-
     //Stopwords list from Rainbow
     add("a");
     add("able");
@@ -607,14 +597,12 @@ public class StopWords{
     add("z");
     add("zero");
   }
-
   /**
    * removes all stopwords
    */
   public void clear() {
     m_Words.clear();
   }
-
   /**
    * adds the given word to the stopword list (is automatically converted to
    * lower case and trimmed)
@@ -625,7 +613,6 @@ public class StopWords{
     if (word.trim().length() > 0)
       m_Words.add(word.trim().toLowerCase());
   }
-
   /**
    * removes the word from the stopword list
    *
@@ -635,7 +622,6 @@ public class StopWords{
   public boolean remove(String word) {
     return m_Words.remove(word);
   }
-  
   /** 
    * Returns true if the given string is a stop word.
    * 
@@ -645,7 +631,6 @@ public class StopWords{
   public boolean is(String word) {
     return m_Words.contains(word.toLowerCase());
   }
-
   /**
    * Returns a sorted enumeration over all stored stopwords
    *
@@ -654,19 +639,14 @@ public class StopWords{
   public Enumeration elements() {
     Iterator<String>    iter;
     Vector<String>      list;
-
     iter = m_Words.iterator();
     list = new Vector<String>();
-
     while (iter.hasNext())
       list.add(iter.next());
-
     // sort list
     Collections.sort(list);
-
     return list.elements();
   }
-
   /**
    * Generates a new Stopwords object from the given file
    *
@@ -676,7 +656,6 @@ public class StopWords{
   public void read(String filename) throws Exception {
     read(new File(filename));
   }
-
   /**
    * Generates a new Stopwords object from the given file
    *
@@ -686,7 +665,6 @@ public class StopWords{
   public void read(File file) throws Exception {
     read(new BufferedReader(new FileReader(file)));
   }
-
   /**
    * Generates a new Stopwords object from the reader. The reader is
    * closed automatically.
@@ -696,9 +674,7 @@ public class StopWords{
    */
   public void read(BufferedReader reader) throws Exception {
     String      line;
-
     clear();
-    
     while ((line = reader.readLine()) != null) {
       line = line.trim();
       // comment?
@@ -706,10 +682,8 @@ public class StopWords{
         continue;
       add(line);
     }
-
     reader.close();
   }
-
   /**
    * Writes the current stopwords to the given file
    *
@@ -719,7 +693,6 @@ public class StopWords{
   public void write(String filename) throws Exception {
     write(new File(filename));
   }
-
   /**
    * Writes the current stopwords to the given file
    *
@@ -729,7 +702,6 @@ public class StopWords{
   public void write(File file) throws Exception {
     write(new BufferedWriter(new FileWriter(file)));
   }
-
   /**
    * Writes the current stopwords to the given writer. The writer is closed
    * automatically.
@@ -739,22 +711,17 @@ public class StopWords{
    */
   public void write(BufferedWriter writer) throws Exception {
     Enumeration   enm;
-
     // header
     writer.write("# generated " + new Date());
     writer.newLine();
-
     enm = elements();
-
     while (enm.hasMoreElements()) {
       writer.write(enm.nextElement().toString());
       writer.newLine();
     }
-
     writer.flush();
     writer.close();
   }
-
   /**
    * returns the current stopwords in a string
    *
@@ -763,7 +730,6 @@ public class StopWords{
   public String toString() {
     Enumeration   enm;
     StringBuffer  result;
-
     result = new StringBuffer();
     enm    = elements();
     while (enm.hasMoreElements()) {
@@ -771,10 +737,8 @@ public class StopWords{
       if (enm.hasMoreElements())
         result.append(",");
     }
-
     return result.toString();
   }
-  
   /** 
    * Returns true if the given string is a stop word.
    * 
@@ -784,8 +748,6 @@ public class StopWords{
   public static boolean isStopword(String str) {
     return m_Stopwords.is(str.toLowerCase());
   }
-  
-  
     /**
    * Accepts the following parameter: <p/>
    *

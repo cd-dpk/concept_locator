@@ -1,13 +1,9 @@
 package com.geet.concept_location.io;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-
 public class JavaFileReader {
-
 	String text="";
-	
 	public boolean openFile(File file){
 		try {
 			Scanner scanner = new Scanner(file);

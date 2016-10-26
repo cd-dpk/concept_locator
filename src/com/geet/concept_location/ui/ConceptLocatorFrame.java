@@ -1,5 +1,4 @@
 package com.geet.concept_location.ui;
-
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,9 +20,7 @@ import com.geet.concept_location.corpus_creation.QueryDocument;
 import com.geet.concept_location.indexing_vsm.VectorDocument;
 import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
 import com.geet.concept_location.io.JavaFileReader;
-
 public class ConceptLocatorFrame extends JFrame {
-
 	String projectPath = ".";
 	String javaClassPath = "src/com/geet/concept_location/corpus_creation/DocumentExtractor.java";
 	ProjectExplorerViewPanel projectExplorerViewPanel;
@@ -31,7 +28,6 @@ public class ConceptLocatorFrame extends JFrame {
 	JavaClassViewPanelUI javaClassViewPanelUI;
 	List<VectorDocument> vectorDocuments = new ArrayList<VectorDocument>();
 	SearchBoxPanelUI searchBoxPanel;
-	
 	public ConceptLocatorFrame() {
 		super("Concept Locator");
 		setLayout(null);
@@ -43,7 +39,6 @@ public class ConceptLocatorFrame extends JFrame {
 		String path = getClass().getResource("").getPath();;
 		System.out.println("E : "+ path);
 	}
-
 	private void setAndViewSearchBoxPanel() {
 		searchBoxPanel = new SearchBoxPanelUI(UIConstants.Width,
 				UIConstants.Menu_Height);
@@ -75,7 +70,6 @@ public class ConceptLocatorFrame extends JFrame {
 					}
 				});
 	}
-
 	private void setProjectExplorerViewPanel() {
 		setAllPanelInvisible();
 		projectExplorerViewPanel = new ProjectExplorerViewPanel(new Bound(0, 0,
@@ -86,7 +80,6 @@ public class ConceptLocatorFrame extends JFrame {
 		add(projectExplorerViewPanel);
 		projectExplorerViewPanel.revalidate();
 	}
-
 	private void setSearchResultsPanelUI() {
 		setAllPanelInvisible();
 		searchResultsPanelUI = new SearchResultsPanelUI(vectorDocuments,
@@ -95,7 +88,6 @@ public class ConceptLocatorFrame extends JFrame {
 				UIConstants.Menu_Height + UIConstants.PADDING_TOP, 1300, 800);
 		add(searchResultsPanelUI);
 		searchResultsPanelUI.revalidate();
-
 		searchResultsPanelUI.searchResultList
 				.addListSelectionListener(new ListSelectionListener() {
 					@Override
@@ -107,7 +99,6 @@ public class ConceptLocatorFrame extends JFrame {
 					}
 				});
 	}
-
 	private void setJavaClassViewPanelUI() {
 		setAllPanelInvisible();
 		String src = "Source";
@@ -121,7 +112,6 @@ public class ConceptLocatorFrame extends JFrame {
 				UIConstants.Menu_Height + UIConstants.PADDING_TOP, 1300, 800);
 		add(javaClassViewPanelUI);
 	}
-
 	private void setAllPanelInvisible() {
 		if (projectExplorerViewPanel != null) {
 			projectExplorerViewPanel.setVisible(false);
@@ -133,7 +123,6 @@ public class ConceptLocatorFrame extends JFrame {
 			javaClassViewPanelUI.setVisible(false);
 		}
 	}
-
 	private void showFrame() {
 		setForeground(Color.black);
 		setBackground(Color.lightGray);
@@ -141,28 +130,21 @@ public class ConceptLocatorFrame extends JFrame {
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
-
 	/** Main: make a Frame, add a FileTree */
 	public static void main(String[] av) {
 		new ConceptLocatorFrame();
 	}
-
 	private void createMenuBar() {
-
 		JMenuBar menuBar = new JMenuBar();
-
 		JMenu fileMenu = new JMenu("File");
 		JMenuItem homeItem = new JMenuItem("Home");
 		JMenuItem newFileItem = new JMenuItem("New");
 		JMenuItem exitItem = new JMenuItem("Exit");
-
 		fileMenu.add(homeItem);
 		fileMenu.add(newFileItem);
 		fileMenu.add(exitItem);
-
 		menuBar.add(fileMenu);
 		setJMenuBar(menuBar);
-
 		newFileItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -183,5 +165,4 @@ public class ConceptLocatorFrame extends JFrame {
 		});
 		return;
 	}
-
 }

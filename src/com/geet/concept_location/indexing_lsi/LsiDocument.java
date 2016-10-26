@@ -1,10 +1,7 @@
 package com.geet.concept_location.indexing_lsi;
-
 import com.geet.concept_location.indexing_vsm.VectorDocument;
 import com.github.javaparser.Position;
-
 public class LsiDocument implements Comparable<LsiDocument>{
-	
 	public LsiDocument(VectorDocument vectorDocument, Vector vector) {
 		super();
 		this.docInJavaFile = vectorDocument.getDocInJavaFile();
@@ -19,9 +16,7 @@ public class LsiDocument implements Comparable<LsiDocument>{
 	public String article = "";
 	public Vector vector;
 	public Position startPosition, endPosition;
-	
 	public double score= -1;
-	
 	public String getDocInJavaFile() {
 		return docInJavaFile;
 	}
@@ -64,7 +59,6 @@ public class LsiDocument implements Comparable<LsiDocument>{
 	public void setScore(double score) {
 		this.score = score;
 	}
-	
 	@Override
 	public int compareTo(LsiDocument lsiDocument) {
 		if (score >= lsiDocument.score ) {
@@ -72,10 +66,4 @@ public class LsiDocument implements Comparable<LsiDocument>{
 		}
 		return -1;
 	}
-	
-	
-	
-	
-	
-
 }

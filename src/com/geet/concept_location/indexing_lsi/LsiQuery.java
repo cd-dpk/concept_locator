@@ -1,14 +1,10 @@
 package com.geet.concept_location.indexing_lsi;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-
 public class LsiQuery {
-
 	public String query;
 	public Vector vector;
-	
 	public LsiQuery(String query, Vector vector) {
 		super();
 		this.query = query;
@@ -37,7 +33,6 @@ public class LsiQuery {
 		}
 		return vector;
 	}
-	
 	private List<String> getTerms(){
 		List<String> terms = new ArrayList<String>();
 		StringTokenizer stringTokenizer = new StringTokenizer(query," ", false);
@@ -46,5 +41,4 @@ public class LsiQuery {
 		}
 		return terms;
 	}
-	
 }

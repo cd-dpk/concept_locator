@@ -1,16 +1,11 @@
 package com.geet.concept_location.indexing_vsm;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import com.geet.concept_location.corpus_creation.Document;
-
 public class VectorSpaceModel {
-	
 	public List<VectorDocument> vectorDocuments = new ArrayList<VectorDocument>();
-	
 	public VectorSpaceModel(List<Document> documents) {
 		String[] terms = getTermsFromDocuments(documents);
 		List<Term> uniqueTerms = new ArrayList<Term>();
@@ -20,14 +15,12 @@ public class VectorSpaceModel {
 		for (Document document : documents) {
 			vectorDocuments.add(new VectorDocument(document.getDocInJavaFile(), document.getDocName(), document.getStartPosition(), document.getEndPosition(), document.getTerms(), document.getArticle()));
 		}
-		
 		for (VectorDocument vectorDocument : vectorDocuments) {
 			for (Term term : vectorDocument.getTerms()) {
 				term.setDocumentFrequencyAndInverseDocumentFrequency(vectorDocuments);
 			}
 		}
 	}
-	
 	public double [][] getTERM_DOCUMENT_MATRIX(){
 		String[] terms= getTERMS();
 		String[] documents = getDOCS();
@@ -39,7 +32,6 @@ public class VectorSpaceModel {
 		}
 		return TERM_DOCUMENT_MATRIX;
 	}
-	
 	public String[] getTermsFromDocuments(List<Document> documents){
 		Set<String> termSet = new HashSet<String>();
 		for (Document document : documents) {
@@ -49,7 +41,6 @@ public class VectorSpaceModel {
 		}
 		return termSet.toArray(new String[termSet.size()]);
 	}
-
 	public String[] getTERMS(){
 		Set<String> termSet = new HashSet<String>();
 		for (VectorDocument document : vectorDocuments) {
@@ -59,7 +50,6 @@ public class VectorSpaceModel {
 		}
 		return termSet.toArray(new String[termSet.size()]);
 	}
-
 	public String [] getDOCS(){
 		Set<String> documentSet = new HashSet<String>();
 		for (VectorDocument document : vectorDocuments) {
@@ -67,7 +57,6 @@ public class VectorSpaceModel {
 		}
 		return documentSet.toArray(new String[documentSet.size()]);
 	}
-	
 	public String TERM_DOCUMENT_MATRIX_TO_STRING(){
 		String text="";
 		String[] terms= getTERMS();

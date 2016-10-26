@@ -1,24 +1,17 @@
 package com.geet.concept_location.indexing_lsi;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import com.aliasi.matrix.SvdMatrix;
 import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
-
 public class Lsi {
-	
 	public List<LsiTerm> lsiTerms = new ArrayList<LsiTerm>();
 	public List<LsiDocument> lsiDocuments = new ArrayList<LsiDocument>();
 	public static final int NUM_FACTORS = 2;
 	double [] scales = new double[NUM_FACTORS];
-
 	public Lsi(VectorSpaceModel vectorSpaceModel){
-		
 		double[][] TERM_DOCUMENT_MATRIX;
 		TERM_DOCUMENT_MATRIX = vectorSpaceModel.getTERM_DOCUMENT_MATRIX();
-		
 		double featureInit = 0.01;
 		double initialLearningRate = 0.005;
 		int annealingRate = 1000;
@@ -26,7 +19,6 @@ public class Lsi {
 		double minImprovement = 0.0000;
 		int minEpochs = 10;
 		int maxEpochs = 50000;
-
 		System.out.println("  Computing SVD");
 		System.out.println("    maxFactors=" + NUM_FACTORS);
 		System.out.println("    featureInit=" + featureInit);
@@ -36,18 +28,14 @@ public class Lsi {
 		System.out.println("    minImprovement=" + minImprovement);
 		System.out.println("    minEpochs=" + minEpochs);
 		System.out.println("    maxEpochs=" + maxEpochs);
-
 		SvdMatrix matrix = SvdMatrix.svd(TERM_DOCUMENT_MATRIX, NUM_FACTORS,
 				featureInit, initialLearningRate, annealingRate,
 				regularization, null, minImprovement, minEpochs, maxEpochs);
-
 		scales = matrix.singularValues();
 		double[][] termVectors = matrix.leftSingularVectors();
 		double[][] docVectors = matrix.rightSingularVectors();
-		
 		String[] TERMS;
 		TERMS = vectorSpaceModel.getTERMS();
-		
 		/* term vectors into lsi terms*/
 		for (int i = 0; i < termVectors.length; i++) {
 				Vector vector = new Vector(NUM_FACTORS);
@@ -63,9 +51,7 @@ public class Lsi {
 				vector.dimensionValue[1] = docVectors[i][1];
 				lsiDocuments.add(new LsiDocument(vectorSpaceModel.vectorDocuments.get(i),vector));
 		}
-		
 	}
-	
 	public void search(LsiQuery lsiQuery){
 		for (int j = 0; j < lsiDocuments.size(); ++j) {
 			lsiDocuments.get(j).score = lsiQuery.getVectorFromLSI(lsiTerms, scales).getDotProductWith(lsiDocuments.get(j).vector, scales);
@@ -73,7 +59,6 @@ public class Lsi {
 		Collections.sort(lsiDocuments);
 		Collections.reverse(lsiDocuments);
 	}
-	
 	public void printDocumentsVector(){
 		for (LsiDocument lsiDocument : lsiDocuments) {
 			System.out.println(lsiDocument.vector.toString());

@@ -1,13 +1,9 @@
 package com.geet.concept_location.corpus_creation;
-
 import com.github.javaparser.Position;
 import com.github.javaparser.ast.Node;
-
 public class Range {
 	public Position startPosition;
 	public Position endPosition;
-	
-	
 	public Range(Position startPosition, Position endPosition) {
 		super();
 		this.startPosition = startPosition;
@@ -25,7 +21,6 @@ public class Range {
 	public void setEndPosition(Position endPosition) {
 		this.endPosition = endPosition;
 	}
-	
 	public int getBeginLine(){
 		return startPosition.getLine();
 	}

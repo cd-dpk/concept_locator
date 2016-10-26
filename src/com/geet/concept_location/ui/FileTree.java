@@ -1,5 +1,4 @@
 package com.geet.concept_location.ui;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.io.File;
@@ -7,47 +6,31 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
-
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
-
 import com.geet.concept_location.utils.JavaFileFilter;
-
 public class FileTree extends JPanel {
-	
 	JTree tree;
-	List<String> javaFilePaths = new ArrayList<String>();
-	
+	public List<String> javaFilePaths = new ArrayList<String>();
 	/** Construct a FileTree */
 	  public FileTree(File dir) {
 	    setLayout(new BorderLayout());
-
 	    // Make a tree list with all the nodes, and make it a JTree
 	    tree = new JTree(addNodes(null, dir));
-
 	    // Add a listener
 	    // Lastly, put the JTree into a JScrollPane.
 	    JScrollPane scrollpane = new JScrollPane();
 	    scrollpane.getViewport().add(tree);
 	    add(BorderLayout.CENTER, scrollpane);
 	  }
-
-	  
-	  
 	  public JTree getTree() {
 		return tree;
 	}
-
-
-
 	public void setTree(JTree tree) {
 		this.tree = tree;
 	}
-
-
-
 	/** Add nodes from under "dir" into curTop. Highly recursive. */
 	  DefaultMutableTreeNode addNodes(DefaultMutableTreeNode curTop, File dir) {
 		  String curPath = dir.getPath();
@@ -72,7 +55,6 @@ public class FileTree extends JPanel {
 	      else{
 	        newPath = curPath + File.separator + thisObject;
 	      }
-	      
 	      f = new File(newPath);
 	      if (f.isDirectory() && !f.isHidden()){
 	        addNodes(curDir, f);
@@ -90,13 +72,9 @@ public class FileTree extends JPanel {
 	      curDir.add(new DefaultMutableTreeNode(files.elementAt(fnum)));
 	    return curDir;
 	  }
-
-	  
-	  
 	  public Dimension getMinimumSize() {
 	    return new Dimension(200, 400);
 	  }
-
 	  public Dimension getPreferredSize() {
 	    return new Dimension(200, 400);
 	  }

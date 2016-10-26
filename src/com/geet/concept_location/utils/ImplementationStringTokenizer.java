@@ -1,27 +1,20 @@
 package com.geet.concept_location.utils;
-
 import java.util.StringTokenizer;
-
 import com.geet.concept_location.corpus_creation.JavaLanguage;
-
 public class ImplementationStringTokenizer extends StringTokenizer{
-
 	public ImplementationStringTokenizer(String str, String delim,
 			boolean returnDelims) {
 		super(str, delim, returnDelims);
 		// TODO Auto-generated constructor stub
 	}
-
 	public ImplementationStringTokenizer(String str, String delim) {
 		super(str, delim);
 		// TODO Auto-generated constructor stub
 	}
-
 	public ImplementationStringTokenizer(String str) {
 		super(str);
 		// TODO Auto-generated constructor stub
 	}
-	
 	@Override
 	public String nextToken() {
 		String largeToken = "";

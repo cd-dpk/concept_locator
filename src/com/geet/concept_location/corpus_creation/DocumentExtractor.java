@@ -1,10 +1,8 @@
 package com.geet.concept_location.corpus_creation;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
@@ -17,20 +15,17 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-
 public class DocumentExtractor {
-	
 	CompilationUnit compilationUnit;
 	private static List<MethodOrConstructorDocument> myMethodOrConstructorDocuments = new ArrayList<MethodOrConstructorDocument>();
 	private static List<ClassDocument> myClassDocuments = new ArrayList<ClassDocument>();
 	private static List<Document> allDocuments = new ArrayList<Document>();
 	static String fileName;
-	
 	public DocumentExtractor(File javaFile) {
 		// TODO Auto-generated constructor stub
 		try {
 			fileName = javaFile.getAbsolutePath();
-			compilationUnit = JavaParser.parse(new JavaClassPreprocessor().getProcessedJavaFile(javaFile));
+			compilationUnit = JavaParser.parse(javaFile);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -39,7 +34,6 @@ public class DocumentExtractor {
 			e.printStackTrace();
 		}
 	}
-	
 	public List<Document> getAllDocuments(){
 		new MethodVisitor().visit(compilationUnit, null);
 		new ConstructorVisitor().visit(compilationUnit, null);
@@ -51,7 +45,6 @@ public class DocumentExtractor {
 		allDocuments.addAll(myClassDocuments);
 		return allDocuments;
 	}
-	
 	private static class MethodVisitor extends VoidVisitorAdapter{
 		@Override
 		public void visit(MethodDeclaration methodDeclaration, Object arg1) {
@@ -75,7 +68,6 @@ public class DocumentExtractor {
 			myMethodOrConstructorDocuments.add(methodOrConstructorDocument);
 		}
 	}
-	
 	private static class ConstructorVisitor extends VoidVisitorAdapter{
 		@Override
 		public void visit(ConstructorDeclaration constructorDeclaration, Object arg1) {
@@ -99,7 +91,6 @@ public class DocumentExtractor {
 			myMethodOrConstructorDocuments.add(methodOrConstructorDocument);
 		}
 	}
-	
 	private static class ClassOrInterfaceVisitor extends VoidVisitorAdapter{
 		@Override
 		public void visit(ClassOrInterfaceDeclaration classOrInterfaceDeclaration, Object arg1) {
@@ -107,7 +98,6 @@ public class DocumentExtractor {
 			Position startPosition = new Position(classOrInterfaceDeclaration.getBeginLine(), classOrInterfaceDeclaration.getBeginColumn());
 			Position endPosition = new Position(classOrInterfaceDeclaration.getEndLine(), classOrInterfaceDeclaration.getEndLine());
 			ClassDocument classDocument = new ClassDocument(fileName,classOrInterfaceDeclaration.getName(),startPosition, endPosition);
-			
 			if (classComment != null && classComment instanceof JavadocComment) {
 				classDocument.javaDocComments.add((JavadocComment) classComment);
 			}else if ((classComment != null )&& (classComment instanceof JavadocComment == false)) {
@@ -127,9 +117,7 @@ public class DocumentExtractor {
 */			myClassDocuments.add(classDocument);
 		}
 	}
-	
 	private static class FieldVisitor extends VoidVisitorAdapter{
-		
 		ClassDocument classDocument;
 		public FieldVisitor(ClassDocument classDocument) {
 			// TODO Auto-generated constructor stub
@@ -152,7 +140,6 @@ public class DocumentExtractor {
 			}			
 		}
 	}
-	
 	private static boolean isParamOneBelongsToParamTwo(Range paramOne, Range paramTwo){
 		if (isPositionBelongsToANode(new Position(paramOne.getBeginLine(), paramOne.getBeginColumn()), paramTwo) && isPositionBelongsToANode(new Position(paramOne.getEndLine(), paramOne.getEndColumn()), paramTwo)) {
 			return true;

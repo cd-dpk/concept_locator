@@ -1,8 +1,6 @@
 package com.geet.concept_location.ui;
 import javax.swing.JPanel;
-
 public class JavaClassViewPanelUI extends JPanel{
-	
 	SourceViewPanel sourceViewPanel;
 	Bound bound;
 	public JavaClassViewPanelUI(Bound bound, String source) {

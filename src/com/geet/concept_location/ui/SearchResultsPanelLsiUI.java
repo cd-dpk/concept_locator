@@ -1,11 +1,9 @@
 package com.geet.concept_location.ui;
-
 import java.awt.Color;
 import java.awt.Component;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -14,21 +12,17 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
 import javax.swing.Scrollable;
-
 import com.geet.concept_location.indexing_lsi.LsiDocument;
 import com.geet.concept_location.indexing_vsm.VectorDocument;
-
 /**
  * 
  * @author geet
  * show the the search results in a text area
  */
 public class SearchResultsPanelLsiUI extends JPanel{
-
 	DefaultListModel listModel = new DefaultListModel();
 	public JList searchResultList = new JList(listModel);
 	public List<LsiDocument> lsiDocuments = new ArrayList<LsiDocument>();
-	
 	public SearchResultsPanelLsiUI(List<LsiDocument>vectorDocuments, Bound bound) {
 		super();
 		setLayout(null);
@@ -41,13 +35,11 @@ public class SearchResultsPanelLsiUI extends JPanel{
 			str += document.getDocInJavaFile()+"\n";
 			str += document.article+"\n";
 			listModel.addElement(str);
-			
 		}
 		JScrollPane scrollPane =new JScrollPane(searchResultList);
 		scrollPane.setBounds(0, 0, bound.width,bound.height);
 		add(scrollPane);
 	}
-	
 	private class TextAreaListItem extends JTextArea implements ListCellRenderer, Scrollable{
 		protected TextAreaListItem(int rows, int cols){
 			super(rows, cols);
@@ -60,6 +52,5 @@ public class SearchResultsPanelLsiUI extends JPanel{
 			setText(value.toString());
 			return this;
 		}
-		
 	}
 }

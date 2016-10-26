@@ -1,20 +1,13 @@
 package com.geet.concept_location.utils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-
 public class StringUtils {
-
 	public static char underScoreCase = '_';
 	public static int upperCase_low = 65;
 	public static char upperCase_high  = 96;
 	public static char lowerCase_low  = 97;
 	public static char lowerCase_high  = 97+25;
-	
-	
-	
-	
 	public static String getFilePathName(String treePath){
 		String filePath ="";
 		List<String> uniqueNames = new ArrayList<String>();
@@ -29,7 +22,6 @@ public class StringUtils {
 		}	
 		return filePath;
 	}
-	
 	public static boolean hasStringInList(String string,List<String>list){
 		for (String str : list) {
 			if (str.equals(string)) {
@@ -38,7 +30,6 @@ public class StringUtils {
 		}
 		return false;
 	}
-	
 	public static boolean hasStringInList(String string,String[] list){
 		for (String str : list) {
 			if (str.equals(string)) {
@@ -47,7 +38,6 @@ public class StringUtils {
 		}
 		return false;
 	}
-	
 	/**
 	 * @param target identifier
 	 * @return resultant 
@@ -72,7 +62,6 @@ public class StringUtils {
 		}
 		return resultant+" "+ target;
 	}	
-	
 	public static boolean allUpperCaseCharacters(String target){
 		for (int i = 0; i < target.length(); i++) {
 			char ch = target.charAt(i);
@@ -82,7 +71,6 @@ public class StringUtils {
 		}
 		return true;
 	}
-	
 	public static boolean allLowerCaseCharacters(String target){
 		for (int i = 0; i < target.length(); i++) {
 			char ch = target.charAt(i);
@@ -101,7 +89,6 @@ public class StringUtils {
 		}
 		return true;
 	}
-	
 	public static boolean isWord(String target){
 		for (int i = 0; i < target.length(); i++) {
 			char ch = target.charAt(i);
@@ -111,7 +98,6 @@ public class StringUtils {
 		}
 		return true;	
 	}
-	
 	public static String validateFolderPath(String path){
 		String returnPath="";
 		for (int i = 0; i < path.length(); i++) {
@@ -123,5 +109,4 @@ public class StringUtils {
 		}
 		return returnPath;
 	}
-	
 }

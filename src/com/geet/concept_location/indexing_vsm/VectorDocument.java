@@ -1,14 +1,10 @@
 package com.geet.concept_location.indexing_vsm;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.QueryDocument;
 import com.github.javaparser.Position;
-
 public class VectorDocument implements Comparable<VectorDocument>{
-	
 	protected String docInJavaFile;
 	protected String docName;
 	public String getDocInJavaFile() {
@@ -52,11 +48,9 @@ public class VectorDocument implements Comparable<VectorDocument>{
 		this.terms = uniqueTerms;
 		this.article = article;
 	}
-	
 	protected Position startPosition, endPosition;
 	public List<Term> terms = new ArrayList<Term>();
 	public String article = "";
-
 	/**
 	 * constructor from query
 	 * @param terms
@@ -69,26 +63,19 @@ public class VectorDocument implements Comparable<VectorDocument>{
 		this.terms = document.getTerms(); 
 		this.article = document.getArticle();
 	}
-	
 	public List<Term> getTerms() {
 		return terms;
 	}
-
 	public void setTerms(List<Term> terms) {
 		this.terms = terms;
 	}
-
 	public String getIdentity() {
 		return identity;
 	}
-
 	public void setIdentity(String identity) {
 		this.identity = identity;
 	}
-
 	public String identity;
-
-	
 	public double getScalarValue(){
 		double scalarValue = 0.0;
 		for (Term term : terms) {
@@ -97,7 +84,6 @@ public class VectorDocument implements Comparable<VectorDocument>{
 		scalarValue = Math.sqrt(scalarValue);
 		return scalarValue;
 	}
-	
 	/**
 	 * 
 	 * @param vectorDocument
@@ -115,19 +101,14 @@ public class VectorDocument implements Comparable<VectorDocument>{
 				}
 			}
 		}
-		
 		// cosine similarity
-		
 		return dotProduct;
 	}
-	
 	@Override
 	public String toString() {
 		return "Ram and Sham are good friends.\nThey are good man also";
 	}
-	
 	public double dotProduct=0.0;
-	
 	@Override
 	public int compareTo(VectorDocument vectorDocument) {
 		if (dotProduct > vectorDocument.dotProduct) {
@@ -135,7 +116,6 @@ public class VectorDocument implements Comparable<VectorDocument>{
 		}
 		return -1;
 	}
-	
 	public double getTF_IDF(String termString){
 		double tf_idf = 0.0;
 		for (Term term : getTerms()) {

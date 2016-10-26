@@ -1,23 +1,18 @@
 package com.geet.concept_location.io;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.DocumentExtractor;
 import com.geet.concept_location.corpus_creation.QueryDocument;
 import com.geet.concept_location.indexing_vsm.Term;
 import com.geet.concept_location.indexing_vsm.VectorDocument;
 import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
-
 public class JavaFileWriter {
-	
 	private void writeFile() {
-		
 		VectorDocument queryVectorDocument = new VectorDocument(new QueryDocument("extract document"));
 		DocumentExtractor documentExtractor = new DocumentExtractor(new File("src/com/geet/concept_location/corpus_creation/DocumentExtractor.java"));
 		List<Document> documents = documentExtractor.getAllDocuments();
@@ -45,7 +40,6 @@ public class JavaFileWriter {
 			e.printStackTrace();
 		}
 	}
-
 	public static void main(String[] args) {
 		new JavaFileWriter().writeFile();
 	}

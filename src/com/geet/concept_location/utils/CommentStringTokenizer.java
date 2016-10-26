@@ -1,11 +1,7 @@
 package com.geet.concept_location.utils;
-
 import java.util.StringTokenizer;
-
 import com.geet.concept_location.corpus_creation.JavaLanguage;
-
 public class CommentStringTokenizer extends StringTokenizer{
-
 	public CommentStringTokenizer(String str) {
 		super(str);
 		// TODO Auto-generated constructor stub
@@ -14,12 +10,10 @@ public class CommentStringTokenizer extends StringTokenizer{
 		super(str, delim, returnDelims);
 		// TODO Auto-generated constructor stub
 	}
-
 	public CommentStringTokenizer(String str, String delim) {
 		super(str, delim);
 		// TODO Auto-generated constructor stub
 	}
-	
 	@Override
 	public String nextToken() {
 		// TODO Auto-generated method stub
@@ -47,12 +41,9 @@ public class CommentStringTokenizer extends StringTokenizer{
 		}
 		return false;
 	}
-	
-	
 	private String replaceWordWithAtSign(String target, String replace){
 		return target=replace;
 	}
-	
 	private String replaceWordWithHTMLTag(String target,String replace){
 		String str = "";
 		boolean lock = false;
@@ -66,7 +57,6 @@ public class CommentStringTokenizer extends StringTokenizer{
 				lock = false;
 				continue;
 			}
-			
 			if (!lock) {
 				str = str + ch; 
 			}

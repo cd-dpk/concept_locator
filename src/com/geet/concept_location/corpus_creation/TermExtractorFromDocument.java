@@ -1,17 +1,12 @@
 package com.geet.concept_location.corpus_creation;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import com.geet.concept_location.utils.CommentStringTokenizer;
 import com.geet.concept_location.utils.ImplementationStringTokenizer;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
-
 public class TermExtractorFromDocument {
-	
 	Document document;
-	
 	public List<String> getTermsFromDocument(Document document){
 		List<String> terms = new ArrayList<String>();
 		this.document = document;
@@ -30,8 +25,6 @@ public class TermExtractorFromDocument {
 		terms = getTermsAfterStemming(terms);
 		return terms;
 	}
-	
-	
 	private List<String> getTermsFromJavaDocComments(){
 		/*
 		 * remove *, programming syntax, @tag, <tag>, </tag>
@@ -47,7 +40,6 @@ public class TermExtractorFromDocument {
 		}
 		return terms;
 	}
-	
 	private List<String> getTermsFromComment(){
 		List<String> terms = new ArrayList<String>();
 		// remove *, programming syntax, @tag, <tag>, </tag>
@@ -61,7 +53,6 @@ public class TermExtractorFromDocument {
 		}
 		return terms;
 	}
-	
 	private List<String> getTermsFromImplementation(){
 		List<String> terms = new ArrayList<String>();
 		// remove all programming syntax, operators, keywords
@@ -71,12 +62,10 @@ public class TermExtractorFromDocument {
 		}
 		return terms;
 	}
-	
 	// Identifier Separation
 	private List<String> getTermsAfterIdentifierSeparation(List<String> terms){
 		return terms;
 	}
-	
 	// Terms Stemming
 	private List<String> getTermsAfterStemming(List<String>terms){
 		return terms;

@@ -1,24 +1,18 @@
 package com.geet.concept_location.ui;
-
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
-
 public class SourceViewPanel extends JPanel{
-	
 	private String filePath="";
 	public String getFilePath() {
 		return filePath;
 	}
-
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
 	}
-
 	private JTextArea sourceTextArea;
 	private JScrollPane scrollPane;
-	
 	public SourceViewPanel(String source,Bound bound){
 		super();
 		setLayout(null);
@@ -29,11 +23,9 @@ public class SourceViewPanel extends JPanel{
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		add(scrollPane);
 	}
-
 	public JTextArea getSourceTextArea() {
 		return sourceTextArea;
 	}
-
 	public void setSourceTextArea(JTextArea sourceTextArea) {
 		this.sourceTextArea = sourceTextArea;
 	}
