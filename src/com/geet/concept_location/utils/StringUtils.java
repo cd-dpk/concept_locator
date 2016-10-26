@@ -101,4 +101,27 @@ public class StringUtils {
 		}
 		return true;
 	}
+	
+	public static boolean isWord(String target){
+		for (int i = 0; i < target.length(); i++) {
+			char ch = target.charAt(i);
+			if (!Character.isLetter(ch)) {
+				return false;
+			}
+		}
+		return true;	
+	}
+	
+	public static String validateFolderPath(String path){
+		String returnPath="";
+		for (int i = 0; i < path.length(); i++) {
+			if (path.charAt(i)==' ') {
+				returnPath+= '/';
+			}else{
+				returnPath += path.charAt(i); 
+			}
+		}
+		return returnPath;
+	}
+	
 }

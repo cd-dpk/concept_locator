@@ -41,12 +41,27 @@ public class Vector {
 	}
 	@Override
 	public String toString() {
-		String string="[";
+		String string="";
 		for (int i = 0; i < dimensionValue.length; i++) {
 			string+=dimensionValue[i]+",";
 		}
-		string += "]\n";
+		string += "\n";
 		return string;
 	}
-
+	
+	public Vector getUnitVector(double [] scales){
+		Vector unitVector = new Vector(scales.length);
+		double scalarValue = scalarValue(scales);
+		for (int i = 0; i < scales.length; i++) {
+			unitVector.dimensionValue[i] = (dimensionValue[i]* scales[i])/scalarValue; 
+		}
+		return unitVector;
+	}
+	
+	public boolean isNullVector(double [] scales){
+		if (scalarValue(scales)==0) {
+			return true;
+		}
+		return false;
+	} 
 }

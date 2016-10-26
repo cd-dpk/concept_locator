@@ -15,6 +15,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.geet.concept_location.constants.UIConstants;
 import com.geet.concept_location.corpus_creation.Document;
@@ -27,6 +29,9 @@ import com.geet.concept_location.indexing_lsi.Vector;
 import com.geet.concept_location.indexing_vsm.VectorDocument;
 import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
 import com.geet.concept_location.io.JavaFileReader;
+import com.geet.concept_location.utils.FileUtils;
+import com.geet.concept_location.utils.JavaFileFilter;
+import com.geet.concept_location.utils.StringUtils;
 
 public class ConceptLocatorLsiFrame extends JFrame {
 
@@ -35,17 +40,18 @@ public class ConceptLocatorLsiFrame extends JFrame {
 	ProjectExplorerViewPanel projectExplorerViewPanel;
 	JavaClassViewPanelUI javaClassViewPanelUI;
 	SearchResultsPanelLsiUI searchResultsPanelLsiUI;
-	
 	List<LsiDocument> lsiDocuments = new ArrayList<LsiDocument>();
 	SearchBoxPanelUI searchBoxPanel;
+	
+	FileNameExtensionFilter javaFileNameExtensionFilter = new FileNameExtensionFilter("Java Files Only", ".java");
 	
 	public ConceptLocatorLsiFrame() {
 		super("Concept Locator");
 		setLayout(null);
 		createMenuBar();
 		setAndViewSearchBoxPanel();
-		//setProjectExplorerViewPanel();
-		setJavaClassViewPanelUI();
+		setProjectExplorerViewPanel();
+		//setJavaClassViewPanelUI();
 		showFrame();
 		String path = getClass().getResource("").getPath();;
 		System.out.println("E : "+ path);
@@ -70,9 +76,13 @@ public class ConceptLocatorLsiFrame extends JFrame {
 						VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(
 								documents);
 						Lsi lsi = new Lsi(vectorSpaceModel);
-						lsi.search(new LsiQuery(searchBoxPanel.getSearchTextField().getText(), new Vector(Lsi.NUM_FACTORS)));
+						/*lsi.search(new LsiQuery(searchBoxPanel.getSearchTextField().getText(), new Vector(Lsi.NUM_FACTORS)));
 						lsiDocuments = lsi.lsiDocuments;
-						setSearchResultsPanelLsiUI();;
+						setSearchResultsPanelLsiUI();;*/
+						System.out.println("Terms");
+						lsi.printTermsVector();
+						System.out.println("Documents");
+						lsi.printDocumentsVector();
 					}
 				});
 	}
@@ -80,7 +90,7 @@ public class ConceptLocatorLsiFrame extends JFrame {
 	private void setProjectExplorerViewPanel() {
 		setAllPanelInvisible();
 		projectExplorerViewPanel = new ProjectExplorerViewPanel(new Bound(0, 0,
-				1300 - 100, 800 - 50), new File("."));
+				1300 - 100, 800 - 50), new File(projectPath));
 		projectExplorerViewPanel.setBounds(UIConstants.PADDING_LEFT,
 				UIConstants.Menu_Height + UIConstants.PADDING_TOP, 1300, 800);
 		projectExplorerViewPanel.setVisible(true);
@@ -173,12 +183,18 @@ public class ConceptLocatorLsiFrame extends JFrame {
 				int returnValue = projectPathChooser
 						.showOpenDialog(ConceptLocatorLsiFrame.this);
 				if (returnValue == JFileChooser.APPROVE_OPTION) {
-					projectPath = projectPathChooser.getSelectedFile()
+					String selectedPath = projectPathChooser.getSelectedFile()
 							.getAbsolutePath();
-					// projectExplorerViewPanel.setProjectTreePanel(new
-					// FileTree(new File(projectPath)));
-					// projectExplorerViewPanel.projectTreePanel = new
-					// FileTree();
+					File file = new File(selectedPath);
+					if (file.isDirectory()) {
+						File [] files = file.listFiles(new JavaFileFilter());
+						if (files.length > 0) {
+							projectPath = selectedPath;
+							System.out.println(projectPath);
+							setProjectExplorerViewPanel();
+						}
+					}
+					
 				}
 			}
 		});

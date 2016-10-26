@@ -1,28 +1,25 @@
 package com.geet.concept_location.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Vector;
 
-import javax.swing.BoxLayout;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import com.geet.concept_location.utils.StringUtils;
+import com.geet.concept_location.utils.JavaFileFilter;
 
 public class FileTree extends JPanel {
 	
 	JTree tree;
+	List<String> javaFilePaths = new ArrayList<String>();
+	
 	/** Construct a FileTree */
 	  public FileTree(File dir) {
 	    setLayout(new BorderLayout());
@@ -53,7 +50,7 @@ public class FileTree extends JPanel {
 
 	/** Add nodes from under "dir" into curTop. Highly recursive. */
 	  DefaultMutableTreeNode addNodes(DefaultMutableTreeNode curTop, File dir) {
-	    String curPath = dir.getPath();
+		  String curPath = dir.getPath();
 	    DefaultMutableTreeNode curDir = new DefaultMutableTreeNode(curPath);
 	    if (curTop != null) { // should only be null at root
 	      curTop.add(curDir);
@@ -69,14 +66,24 @@ public class FileTree extends JPanel {
 	    for (int i = 0; i < ol.size(); i++) {
 	      String thisObject = (String) ol.elementAt(i);
 	      String newPath;
-	      if (curPath.equals("."))
+	      if (curPath.equals(".")){
 	        newPath = thisObject;
-	      else
+	      }
+	      else{
 	        newPath = curPath + File.separator + thisObject;
-	      if ((f = new File(newPath)).isDirectory())
+	      }
+	      
+	      f = new File(newPath);
+	      if (f.isDirectory() && !f.isHidden()){
 	        addNodes(curDir, f);
-	      else
-	        files.addElement(thisObject);
+	      }
+	      else if(!f.isHidden()){
+	    	  if (new JavaFileFilter().accept(new File(newPath))) {
+			        javaFilePaths.add(newPath);
+			        System.out.println(newPath);
+		        }  
+	    	files.addElement(thisObject);
+	      }
 	    }
 	    // Pass two: for files.
 	    for (int fnum = 0; fnum < files.size(); fnum++)
@@ -84,6 +91,8 @@ public class FileTree extends JPanel {
 	    return curDir;
 	  }
 
+	  
+	  
 	  public Dimension getMinimumSize() {
 	    return new Dimension(200, 400);
 	  }

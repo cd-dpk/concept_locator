@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import com.geet.concept_location.indexing_vsm.Term;
+import com.geet.concept_location.utils.StringUtils;
 import com.github.javaparser.Position;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
@@ -139,7 +140,12 @@ public class Document {
 		List<Term> terms = new ArrayList<Term>();
 		StringTokenizer stringTokenizer = new StringTokenizer(getArticle(), JavaLanguage.getWhiteSpace(), false);
 		while (stringTokenizer.hasMoreTokens()) {
-			Term candidateTerm = new Term(stringTokenizer.nextToken().toLowerCase(), 1);
+			String token = stringTokenizer.nextToken();
+			// stem the token if token is a word
+			/*if (StringUtils.isWord(token)) {
+				token = new Stemmer(token.toLowerCase()).toString();
+			}*/
+			Term candidateTerm = new Term(token.toLowerCase(), 1);
 			int pass = -1;
 			for (int i = 0; i < terms.size(); i++) {
 				if (terms.get(i).isSame(candidateTerm)) {

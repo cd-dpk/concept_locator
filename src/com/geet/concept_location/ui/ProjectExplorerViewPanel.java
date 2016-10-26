@@ -3,6 +3,7 @@ package com.geet.concept_location.ui;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javax.swing.JPanel;
 import javax.swing.event.TreeSelectionEvent;
@@ -32,25 +33,24 @@ public class ProjectExplorerViewPanel extends JPanel{
 		sourceViewPanel = new SourceViewPanel(source,new Bound(0,0, bound.width - UIConstants.FILE_TREE_WIDTH, bound.height));
 		sourceViewPanel.setBounds(UIConstants.FILE_TREE_WIDTH+20, 0, bound.width - UIConstants.FILE_TREE_WIDTH, bound.height);
 		add(sourceViewPanel);
-		
-		projectTreePanel.tree.addTreeSelectionListener(new TreeSelectionListener() {
-			@Override
-			public void valueChanged(TreeSelectionEvent e) {
-				// TODO Auto-generated method stub
-				JavaFileReader javaFileReader = new JavaFileReader();
-				String filePath = StringUtils.getFilePathName(e.getPath().toString());
-				sourceViewPanel.setFilePath(filePath);
-				try {
-					FileInputStream in = new FileInputStream(filePath);
-					if(javaFileReader.openFile(new File (filePath))){
-						sourceViewPanel.getSourceTextArea().setText(javaFileReader.getText());
+		projectTreePanel.tree
+				.addTreeSelectionListener(new TreeSelectionListener() {
+					@Override
+					public void valueChanged(TreeSelectionEvent e) {
+						// TODO Auto-generated method stub
+						JavaFileReader javaFileReader = new JavaFileReader();
+						String filePath = StringUtils.getFilePathName(e
+								.getPath().toString());
+						File selectedFile = new File(filePath);
+						if (!selectedFile.isDirectory()) {
+							sourceViewPanel.setFilePath(filePath);
+							if (javaFileReader.openFile(selectedFile)) {
+								sourceViewPanel.getSourceTextArea().setText(
+										javaFileReader.getText());
+							}
+						}
 					}
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
+				});
 	}
 
 	public FileTree getProjectTreePanel() {

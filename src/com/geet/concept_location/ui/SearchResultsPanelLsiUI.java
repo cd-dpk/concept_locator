@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
+import javax.swing.Scrollable;
 
 import com.geet.concept_location.indexing_lsi.LsiDocument;
 import com.geet.concept_location.indexing_vsm.VectorDocument;
@@ -47,7 +48,7 @@ public class SearchResultsPanelLsiUI extends JPanel{
 		add(scrollPane);
 	}
 	
-	private class TextAreaListItem extends JTextArea implements ListCellRenderer{
+	private class TextAreaListItem extends JTextArea implements ListCellRenderer, Scrollable{
 		protected TextAreaListItem(int rows, int cols){
 			super(rows, cols);
 	         setBorder(BorderFactory.createLineBorder(Color.blue));

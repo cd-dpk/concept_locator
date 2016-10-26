@@ -46,7 +46,7 @@ public class Term {
 			}
 		}
 		inverseDocumentFrequency = 1+Math.log10((double)vectorDocuments.size()/(double)documentFrequency);
-		System.out.println(inverseDocumentFrequency);
+		//System.out.println(inverseDocumentFrequency);
 	}
 	
 	public void setTermFrequencyFromDocument(VectorDocument vectorDocument){
