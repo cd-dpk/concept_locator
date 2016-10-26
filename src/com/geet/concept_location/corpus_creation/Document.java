@@ -2,8 +2,10 @@ package com.geet.concept_location.corpus_creation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+
 import com.geet.concept_location.indexing_vsm.Term;
-import com.geet.concept_location.utils.StringUtils;
+import com.geet.concept_location.utils.CommentStringTokenizer;
+import com.geet.concept_location.utils.ImplementationStringTokenizer;
 import com.github.javaparser.Position;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
@@ -16,7 +18,6 @@ public class Document {
 	protected String implementionBody = "";
 	protected String article="";
 	public Document() {
-		// TODO Auto-generated constructor stub
 	}
 	public String getDocInJavaFile() {
 		return docInJavaFile;
@@ -89,7 +90,7 @@ public class Document {
 	public String getArticle() {
 		article = "";
 	//	article += javaDocComments.toString()+"\n"+ implementationComments.toString()+"\n"+ implementionBody.toString()+"\n";
-		for (String term : new TermExtractorFromDocument().getTermsFromDocument(this)) {
+		for (String term : getTermsFromDocument()) {
 			article += term+" ";
 		}
 		return article;
@@ -129,4 +130,59 @@ public class Document {
 	public String toIndentity(){
 		return docName+" "+docInJavaFile;
 	}
+	
+	private List<String> getTermsFromDocument(){
+		List<String> terms = new ArrayList<String>();
+		for (String term : getTermsFromJavaDocComments()) {
+			terms.add(term);
+		}
+		terms.add("\n");
+		for (String term : getTermsFromComment()) {
+			terms.add(term);
+		}
+		terms.add("\n");
+		for (String term : getTermsFromImplementation()) {
+			terms.add(term);
+		}
+		terms.add("\n");
+		return terms;
+	}
+	private List<String> getTermsFromJavaDocComments(){
+		/*
+		 * remove *, programming syntax, @tag, <tag>, </tag>
+		 */
+		List<String> terms = new ArrayList<String>();
+		for (JavadocComment javadocComment : javaDocComments) {
+			CommentStringTokenizer customStringTokenizer = new CommentStringTokenizer(javadocComment.getContent()," ", false);
+			String documentString = "";
+			while (customStringTokenizer.hasMoreTokens()) {
+				documentString = customStringTokenizer.nextToken();
+				terms.add(documentString);
+			}
+		}
+		return terms;
+	}
+	private List<String> getTermsFromComment(){
+		List<String> terms = new ArrayList<String>();
+		// remove *, programming syntax, @tag, <tag>, </tag>
+		for (Comment comment : implementationComments) {
+			CommentStringTokenizer customStringTokenizer = new CommentStringTokenizer(comment.getContent(), " ", false);
+			String documentString = "";
+			while (customStringTokenizer.hasMoreTokens()) {
+				documentString = customStringTokenizer.nextToken();
+				terms.add(documentString);
+			}
+		}
+		return terms;
+	}
+	private List<String> getTermsFromImplementation(){
+		List<String> terms = new ArrayList<String>();
+		// remove all programming syntax, operators, keywords
+		ImplementationStringTokenizer implementationStringTokenizer = new ImplementationStringTokenizer(implementionBody," ", false);
+		while (implementationStringTokenizer.hasMoreTokens()) {
+			terms.add(implementationStringTokenizer.nextToken());
+		}
+		return terms;
+	}
+
 }
