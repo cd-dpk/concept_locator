@@ -240,5 +240,4 @@ public class Document  implements Comparable<Document>{
 		}
 		return tf;
 	}
-
 }

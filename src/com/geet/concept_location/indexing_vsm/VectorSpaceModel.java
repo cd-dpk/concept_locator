@@ -6,8 +6,6 @@ import java.util.Set;
 import com.geet.concept_location.corpus_creation.Document;
 public class VectorSpaceModel {
 	public List<Document> documents = new ArrayList<Document>();
-	 
-	
 	public VectorSpaceModel(List<Document> documentList) {
 		this.documents = documentList;
 		String[] terms = getTermsFromDocuments(documents);
@@ -17,7 +15,6 @@ public class VectorSpaceModel {
 		}
 		System.out.println("Loading...");
 		System.out.println("Documents "+documents.size()+" terms "+terms.length);
-		
 	/*	for (Document document : documents) {
 			for (Term term : document.getTerms()) {
 				System.out.println(term.toString());
@@ -30,7 +27,6 @@ public class VectorSpaceModel {
 		System.out.println("Term Size " + getTERMS().length);
 		String[] documents = getDOCS();
 		System.out.println("Doc Size "+ getDOCS().length);
-		
 		/*dont calculate idf from terms rather compute it from matrix*/
 		double [] idf = new double[terms.length];
 		double [][] TERM_DOCUMENT_MATRIX = new double[terms.length][documents.length];
