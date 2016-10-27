@@ -36,6 +36,7 @@ public class Lsi {
 		double[][] docVectors = matrix.rightSingularVectors();
 		String[] TERMS;
 		TERMS = vectorSpaceModel.getTERMS();
+		System.out.println("Loading...");
 		/* term vectors into lsi terms*/
 		for (int i = 0; i < termVectors.length; i++) {
 				Vector vector = new Vector(NUM_FACTORS);
@@ -49,8 +50,9 @@ public class Lsi {
 				Vector vector = new Vector(NUM_FACTORS);
 				vector.dimensionValue[0] = docVectors[i][0];
 				vector.dimensionValue[1] = docVectors[i][1];
-				lsiDocuments.add(new LsiDocument(vectorSpaceModel.vectorDocuments.get(i),vector));
+				lsiDocuments.add(new LsiDocument(vectorSpaceModel.documents.get(i),vector));
 		}
+		System.out.println("Loading...");
 	}
 	public void search(LsiQuery lsiQuery){
 		for (int j = 0; j < lsiDocuments.size(); ++j) {

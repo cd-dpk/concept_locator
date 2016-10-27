@@ -54,5 +54,13 @@ public class Vector {
 			return true;
 		}
 		return false;
-	} 
+	}
+	public String toCSVString() {
+		// TODO Auto-generated method stub
+		String string="";
+		for (int i = 0; i < dimensionValue.length; i++) {
+			string+=dimensionValue[i]+",";
+		}
+		return string;
+	}
 }

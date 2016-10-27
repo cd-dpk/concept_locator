@@ -1,4 +1,4 @@
-package com.geet.concept_location.ui;
+/*package com.geet.concept_location.ui;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -130,7 +130,7 @@ public class ConceptLocatorFrame extends JFrame {
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
-	/** Main: make a Frame, add a FileTree */
+	*//** Main: make a Frame, add a FileTree *//*
 	public static void main(String[] av) {
 		new ConceptLocatorFrame();
 	}
@@ -166,3 +166,4 @@ public class ConceptLocatorFrame extends JFrame {
 		return;
 	}
 }
+*/

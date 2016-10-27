@@ -37,4 +37,7 @@ public class LsiTerm {
 		}
 		return false;
 	}
+	public String toCSVString() {
+		return term+","+vector.toCSVString();
+	}
 }

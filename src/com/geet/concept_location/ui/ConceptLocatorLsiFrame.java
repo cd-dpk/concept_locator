@@ -3,8 +3,9 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -13,23 +14,18 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import com.geet.concept_location.constants.UIConstants;
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.DocumentExtractor;
-import com.geet.concept_location.corpus_creation.QueryDocument;
 import com.geet.concept_location.indexing_lsi.Lsi;
 import com.geet.concept_location.indexing_lsi.LsiDocument;
-import com.geet.concept_location.indexing_lsi.LsiQuery;
-import com.geet.concept_location.indexing_lsi.Vector;
-import com.geet.concept_location.indexing_vsm.VectorDocument;
+import com.geet.concept_location.indexing_lsi.LsiTerm;
+import com.geet.concept_location.indexing_vsm.Term;
 import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
 import com.geet.concept_location.io.JavaFileReader;
 import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
-import com.geet.concept_location.utils.FileUtils;
 import com.geet.concept_location.utils.JavaFileFilter;
-import com.geet.concept_location.utils.StringUtils;
 public class ConceptLocatorLsiFrame extends JFrame {
 	String projectPath = ".";
 	String javaClassPath = "src/com/geet/concept_location/corpus_creation/DocumentExtractor.java";
@@ -39,6 +35,7 @@ public class ConceptLocatorLsiFrame extends JFrame {
 	List<LsiDocument> lsiDocuments = new ArrayList<LsiDocument>();
 	SearchBoxPanelUI searchBoxPanel;
 	FileNameExtensionFilter javaFileNameExtensionFilter = new FileNameExtensionFilter("Java Files Only", ".java");
+	private Lsi myLsi;
 	public ConceptLocatorLsiFrame() {
 		super("Concept Locator");
 		setLayout(null);
@@ -78,6 +75,48 @@ public class ConceptLocatorLsiFrame extends JFrame {
 					}
 				});
 	}
+	private void initIndexing(List<String> javaClassPathList){
+		// read all the documents
+		List<Document> allDocuments = new ArrayList<Document>();
+		for (String path : javaClassPathList) {
+			if (new JavaClassPreprocessor().processJavaFile(new File(path))) {
+				DocumentExtractor documentExtractor = new DocumentExtractor(
+						new File(path));
+				for (Document document : documentExtractor.getAllDocuments()) {
+					allDocuments.add(document);
+				}
+			}
+		}
+		// turn into vector documents
+		// get the vector space model
+		VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(allDocuments);
+		// LSI indexing
+		myLsi = new Lsi(vectorSpaceModel);
+	}
+	private void writeTermsIntoFile(){
+		try {
+			FileWriter fileWriter = new FileWriter(new File("Terms.csv"));
+			for (LsiTerm lsiTerm : myLsi.lsiTerms) {
+				fileWriter.write(lsiTerm.toCSVString()+"\n");
+			}
+			fileWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	private void writeDocumentsIntoFile(){
+		try {
+			FileWriter fileWriter = new FileWriter(new File("Terms.csv"));
+			for (LsiDocument lsiDocument : myLsi.lsiDocuments) {
+				fileWriter.write(lsiDocument.toCSVString()+"\n");
+			}
+			fileWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	private void setProjectExplorerViewPanel() {
 		setAllPanelInvisible();
 		projectExplorerViewPanel = new ProjectExplorerViewPanel(new Bound(0, 0,
@@ -87,11 +126,7 @@ public class ConceptLocatorLsiFrame extends JFrame {
 		projectExplorerViewPanel.setVisible(true);
 		add(projectExplorerViewPanel);
 		projectExplorerViewPanel.revalidate();
-		for (String str: projectExplorerViewPanel.getProjectTreePanel().javaFilePaths) {
-			if (!new JavaClassPreprocessor().processJavaFile(new File(str))) {
-				System.out.println("Not Processed");
-			}
-		}
+		initIndexing(projectExplorerViewPanel.getProjectTreePanel().javaFilePaths);
 	}
 	private void setSearchResultsPanelLsiUI() {
 		setAllPanelInvisible();
@@ -182,5 +217,9 @@ public class ConceptLocatorLsiFrame extends JFrame {
 			}
 		});
 		return;
+	}
+	// disable the view when the  background task is loading
+	private void enableView(){
+		// TODO do later time
 	}
 }

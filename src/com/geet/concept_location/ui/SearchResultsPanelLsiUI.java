@@ -13,7 +13,6 @@ import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
 import javax.swing.Scrollable;
 import com.geet.concept_location.indexing_lsi.LsiDocument;
-import com.geet.concept_location.indexing_vsm.VectorDocument;
 /**
  * 
  * @author geet

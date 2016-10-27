@@ -2,14 +2,13 @@ package com.geet.concept_location.corpus_creation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-
 import com.geet.concept_location.indexing_vsm.Term;
 import com.geet.concept_location.utils.CommentStringTokenizer;
 import com.geet.concept_location.utils.ImplementationStringTokenizer;
 import com.github.javaparser.Position;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
-public class Document {
+public class Document  implements Comparable<Document>{
 	protected String docInJavaFile;
 	protected String docName;
 	protected Position startPosition, endPosition;
@@ -130,7 +129,6 @@ public class Document {
 	public String toIndentity(){
 		return docName+" "+docInJavaFile;
 	}
-	
 	private List<String> getTermsFromDocument(){
 		List<String> terms = new ArrayList<String>();
 		for (String term : getTermsFromJavaDocComments()) {
@@ -184,5 +182,53 @@ public class Document {
 		}
 		return terms;
 	}
-
+	public double getScalarValue(){
+		double scalarValue = 0.0;
+		for (Term term : getTerms()) {
+				scalarValue += term.getTF_IDF()* term.getTF_IDF();
+		}
+		scalarValue = Math.sqrt(scalarValue);
+		return scalarValue;
+	}
+	/**
+	 * 
+	 * @param document
+	 * @return dotProduct dotProduct between two documents
+	 */
+	public double getDotProduct(Document document){
+		double dotProduct = 1.0;
+		double scalarValue = 0.0;
+		for (Term term : getTerms()) {
+			for (Term trm : document.getTerms()) {
+				if (term.isSame(trm)) {
+					dotProduct *= term.getTF_IDF() * term.getTF_IDF();
+					scalarValue += term.getTF_IDF() * term.getTF_IDF();
+					break;
+				}
+			}
+		}
+		// cosine similarity
+		return dotProduct;
+	}
+	@Override
+	public String toString() {
+		return "Ram and Sham are good friends.\nThey are good man also";
+	}
+	public double dotProduct=0.0;
+	@Override
+	public int compareTo(Document document) {
+		if (dotProduct > document.dotProduct) {
+			return 1;
+		}
+		return -1;
+	}
+	public double getTF_IDF(String termString){
+		double tf_idf = 0.0;
+		for (Term term : getTerms()) {
+			if (term.isSame(new Term(termString))) {
+				return term.getTF_IDF();
+			}
+		}
+		return tf_idf;
+	}
 }

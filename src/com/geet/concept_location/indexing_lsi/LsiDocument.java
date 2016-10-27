@@ -1,8 +1,8 @@
 package com.geet.concept_location.indexing_lsi;
-import com.geet.concept_location.indexing_vsm.VectorDocument;
+import com.geet.concept_location.corpus_creation.Document;
 import com.github.javaparser.Position;
 public class LsiDocument implements Comparable<LsiDocument>{
-	public LsiDocument(VectorDocument vectorDocument, Vector vector) {
+	public LsiDocument(Document vectorDocument, Vector vector) {
 		super();
 		this.docInJavaFile = vectorDocument.getDocInJavaFile();
 		this.docName = vectorDocument.getDocName();
@@ -65,5 +65,8 @@ public class LsiDocument implements Comparable<LsiDocument>{
 			return 1;
 		}
 		return -1;
+	}
+	public String toCSVString() {
+		return docName+","+docInJavaFile+","+startPosition+","+endPosition+","+vector.toCSVString();
 	}
 }

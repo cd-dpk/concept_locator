@@ -27,8 +27,8 @@ public class Term {
 		} 
 		return false;
 	}
-	public void setDocumentFrequencyAndInverseDocumentFrequency(List<VectorDocument>vectorDocuments){
-		for (VectorDocument document : vectorDocuments) {
+	public void setDocumentFrequencyAndInverseDocumentFrequency(List<Document>documents){
+		for (Document document : documents) {
 			for (Term term : document.getTerms()) {
 				if (isSame(term)) {
 					documentFrequency++;
@@ -36,11 +36,11 @@ public class Term {
 				}
 			}
 		}
-		inverseDocumentFrequency = 1+Math.log10((double)vectorDocuments.size()/(double)documentFrequency);
+		inverseDocumentFrequency = 1+Math.log10((double)documents.size()/(double)documentFrequency);
 		//System.out.println(inverseDocumentFrequency);
 	}
-	public void setTermFrequencyFromDocument(VectorDocument vectorDocument){
-		for (Term term : vectorDocument.getTerms()) {
+	public void setTermFrequencyFromDocument(Document document){
+		for (Term term : document.getTerms()) {
 			if (isSame(term)) {
 				termFrequency = term.termFrequency;
 				return ;
