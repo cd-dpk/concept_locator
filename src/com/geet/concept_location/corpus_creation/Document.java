@@ -231,4 +231,14 @@ public class Document  implements Comparable<Document>{
 		}
 		return tf_idf;
 	}
+	public double getTF(String termString){
+		double tf = 0.0;
+		for (Term term : getTerms()) {
+			if (term.isSame(new Term(termString))) {
+				return term.termFrequency;
+			}
+		}
+		return tf;
+	}
+
 }
