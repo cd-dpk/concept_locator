@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -15,13 +16,13 @@ import javax.swing.JMenuItem;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
 import com.geet.concept_location.constants.UIConstants;
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.DocumentExtractor;
 import com.geet.concept_location.indexing_lsi.Lsi;
 import com.geet.concept_location.indexing_lsi.LsiDocument;
 import com.geet.concept_location.indexing_lsi.LsiTerm;
-import com.geet.concept_location.indexing_vsm.Term;
 import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
 import com.geet.concept_location.io.JavaFileReader;
 import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
@@ -78,18 +79,30 @@ public class ConceptLocatorLsiFrame extends JFrame {
 	private void initIndexing(List<String> javaClassPathList){
 		// read all the documents
 		List<Document> allDocuments = new ArrayList<Document>();
-		for (String path : javaClassPathList) {
+		int classNo = 0;
+	//	for (String path : javaClassPathList) {
+		String path ="src/com/geet/concept_location/corpus_creation/DocumentExtractor.java";
 			if (new JavaClassPreprocessor().processJavaFile(new File(path))) {
 				DocumentExtractor documentExtractor = new DocumentExtractor(
 						new File(path));
+				int size=0;
 				for (Document document : documentExtractor.getAllDocuments()) {
 					allDocuments.add(document);
+					size++;
 				}
+				classNo++;
+				System.out.println(path+" has "+ size +" document(s)");
 			}
-		}
+/*			if (classNo > 10) {
+				break;
+			}
+*///		}
+		System.out.println("Size "+allDocuments.size());
 		// turn into vector documents
 		// get the vector space model
 		VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(allDocuments);
+		
+//		System.exit(0);
 		// LSI indexing
 		myLsi = new Lsi(vectorSpaceModel);
 	}

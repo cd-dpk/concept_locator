@@ -240,4 +240,11 @@ public class Document  implements Comparable<Document>{
 		}
 		return tf;
 	}
+	public List<String> getTermsInString(){
+		List<String> termsInString = new ArrayList<String>();
+		for (Term term : getTerms()) {
+			termsInString.add(term.termString);
+		}
+		return termsInString;
+	}
 }

@@ -16,12 +16,12 @@ import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 public class DocumentExtractor {
 	CompilationUnit compilationUnit;
-	private static List<MethodOrConstructorDocument> myMethodOrConstructorDocuments = new ArrayList<MethodOrConstructorDocument>();
-	private static List<ClassDocument> myClassDocuments = new ArrayList<ClassDocument>();
-	private static List<Document> allDocuments = new ArrayList<Document>();
+	private  List<MethodOrConstructorDocument> myMethodOrConstructorDocuments = new ArrayList<MethodOrConstructorDocument>();
+	private  List<ClassDocument> myClassDocuments = new ArrayList<ClassDocument>();
+	private  List<Document> allDocuments = new ArrayList<Document>();
 	static String fileName;
 	public DocumentExtractor(File javaFile) {
-		// TODO Auto-generated constructor stub
+		allDocuments = new ArrayList<Document>();
 		try {
 			fileName = javaFile.getAbsolutePath();
 			compilationUnit = JavaParser.parse(javaFile);
@@ -44,7 +44,7 @@ public class DocumentExtractor {
 		allDocuments.addAll(myClassDocuments);
 		return allDocuments;
 	}
-	private static class MethodVisitor extends VoidVisitorAdapter{
+	private  class MethodVisitor extends VoidVisitorAdapter{
 		@Override
 		public void visit(MethodDeclaration methodDeclaration, Object arg1) {
 			Comment methodComment = methodDeclaration.getComment();
@@ -67,7 +67,7 @@ public class DocumentExtractor {
 			myMethodOrConstructorDocuments.add(methodOrConstructorDocument);
 		}
 	}
-	private static class ConstructorVisitor extends VoidVisitorAdapter{
+	private class ConstructorVisitor extends VoidVisitorAdapter{
 		@Override
 		public void visit(ConstructorDeclaration constructorDeclaration, Object arg1) {
 			Comment methodComment = constructorDeclaration.getComment();
@@ -90,7 +90,7 @@ public class DocumentExtractor {
 			myMethodOrConstructorDocuments.add(methodOrConstructorDocument);
 		}
 	}
-	private static class ClassOrInterfaceVisitor extends VoidVisitorAdapter{
+	private class ClassOrInterfaceVisitor extends VoidVisitorAdapter{
 		@Override
 		public void visit(ClassOrInterfaceDeclaration classOrInterfaceDeclaration, Object arg1) {
 			Comment classComment = classOrInterfaceDeclaration.getComment();
@@ -156,5 +156,11 @@ public class DocumentExtractor {
 			return true;
 		}
 		return false;
+	}
+	public static void main(String[] args) {
+			String path ="src/com/geet/concept_location/corpus_creation/Document.java";
+			DocumentExtractor documentExtractor = new DocumentExtractor(
+					new File(path));
+			System.out.println(path+" has "+documentExtractor.getAllDocuments().size()+" document(s)");
 	}
 }

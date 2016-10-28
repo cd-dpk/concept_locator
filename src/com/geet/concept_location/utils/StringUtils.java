@@ -38,6 +38,7 @@ public class StringUtils {
 		}
 		return false;
 	}
+	
 	/**
 	 * @param target identifier
 	 * @return resultant 
@@ -62,6 +63,26 @@ public class StringUtils {
 		}
 		return resultant+" "+ target;
 	}	
+
+	/**
+	 * @param target identifier
+	 * @return resultant 
+	 * separate the identifiers written in camel case or underscore case into multiple words
+	 * also the identifier itself 
+	 */
+	public static String getIdentifierSeparationsWithCamelCase(String target){
+		String resultant ="";
+		StringTokenizer stringTokenizer = new StringTokenizer(target,"_",false);
+		while (stringTokenizer.hasMoreTokens()) {
+			String token = stringTokenizer.nextToken();
+			resultant = resultant +" "+ splitCamelCase(token); 
+		}
+		if (resultant.equals(target)) {
+			return target;
+		}
+		return resultant+" "+ target;
+	}
+	
 	public static boolean allUpperCaseCharacters(String target){
 		for (int i = 0; i < target.length(); i++) {
 			char ch = target.charAt(i);
@@ -109,4 +130,19 @@ public class StringUtils {
 		}
 		return returnPath;
 	}
+	/**
+	 * split camel case
+	 * @param str
+	 * @return
+	 */
+    private static String splitCamelCase(String str) {
+ 	   return str.replaceAll(
+ 	      String.format("%s|%s|%s",
+ 	         "(?<=[A-Z])(?=[A-Z][a-z])",
+ 	         "(?<=[^A-Z])(?=[A-Z])",
+ 	         "(?<=[A-Za-z])(?=[^A-Za-z])"
+ 	      ),
+ 	      " "
+ 	   );
+ 	}
 }

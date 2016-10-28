@@ -10,8 +10,6 @@ public class Lsi {
 	public static final int NUM_FACTORS = 2;
 	double [] scales = new double[NUM_FACTORS];
 	public Lsi(VectorSpaceModel vectorSpaceModel){
-		double[][] TERM_DOCUMENT_MATRIX;
-		TERM_DOCUMENT_MATRIX = vectorSpaceModel.getTERM_DOCUMENT_MATRIX();
 		double featureInit = 0.01;
 		double initialLearningRate = 0.005;
 		int annealingRate = 1000;
@@ -28,29 +26,33 @@ public class Lsi {
 		System.out.println("    minImprovement=" + minImprovement);
 		System.out.println("    minEpochs=" + minEpochs);
 		System.out.println("    maxEpochs=" + maxEpochs);
-		SvdMatrix matrix = SvdMatrix.svd(TERM_DOCUMENT_MATRIX, NUM_FACTORS,
+		SvdMatrix matrix = SvdMatrix.svd(vectorSpaceModel.getTERM_DOCUMENT_MATRIX(), NUM_FACTORS,
 				featureInit, initialLearningRate, annealingRate,
 				regularization, null, minImprovement, minEpochs, maxEpochs);
 		scales = matrix.singularValues();
 		double[][] termVectors = matrix.leftSingularVectors();
 		double[][] docVectors = matrix.rightSingularVectors();
-		String[] TERMS;
-		TERMS = vectorSpaceModel.getTERMS();
-		System.out.println("Loading...");
+		List<String> terms;
+		terms = vectorSpaceModel.terms;
+		System.out.println("Terms...");
 		/* term vectors into lsi terms*/
 		for (int i = 0; i < termVectors.length; i++) {
 				Vector vector = new Vector(NUM_FACTORS);
 				vector.dimensionValue[0] = termVectors[i][0];
 				vector.dimensionValue[1] = termVectors[i][1];
-				lsiTerms.add(new LsiTerm(TERMS[i], vector));
+				LsiTerm lsiTerm = new LsiTerm(terms.get(i), vector); 
+				System.out.println(lsiTerm.toCSVString());
+				lsiTerms.add(lsiTerm);
 		}
-		System.out.println("DOC VECTORS "+ TERM_DOCUMENT_MATRIX[0].length);
+		System.out.println("DOCS...");
 		/* document vectors into lsi docs*/
 		for (int i = 0; i < docVectors.length; i++) {
 				Vector vector = new Vector(NUM_FACTORS);
 				vector.dimensionValue[0] = docVectors[i][0];
 				vector.dimensionValue[1] = docVectors[i][1];
-				lsiDocuments.add(new LsiDocument(vectorSpaceModel.documents.get(i),vector));
+				LsiDocument lsiDocument = new LsiDocument(vectorSpaceModel.documents.get(i),vector);
+				System.out.println(lsiDocument.toCSVString());
+				lsiDocuments.add(lsiDocument);
 		}
 		System.out.println("Loading...");
 	}

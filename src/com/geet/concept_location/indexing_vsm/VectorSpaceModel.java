@@ -4,66 +4,82 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import com.geet.concept_location.corpus_creation.Document;
+
 public class VectorSpaceModel {
+	
 	public List<Document> documents = new ArrayList<Document>();
+	public List<String> terms = new ArrayList<String>();
+	
+	private int totalTerm=0;
+	private int totalDocs=0;
+	
 	public VectorSpaceModel(List<Document> documentList) {
-		this.documents = documentList;
-		String[] terms = getTermsFromDocuments(documents);
-		List<Term> uniqueTerms = new ArrayList<Term>();
-		for (int i = 0; i < terms.length; i++) {
-			uniqueTerms.add(new Term(terms[i]));
-		}
-		System.out.println("Loading...");
-		System.out.println("Documents "+documents.size()+" terms "+terms.length);
-	/*	for (Document document : documents) {
-			for (Term term : document.getTerms()) {
-				System.out.println(term.toString());
-				term.setDocumentFrequencyAndInverseDocumentFrequency(documents);
-			}
-		}
-	*/}
+		documents = documentList;
+		totalTerm = getTermS().size();
+		totalDocs = getDocuments().size();
+		terms = getTermS();
+		System.out.println("Terms "+totalTerm+" Documents "+totalDocs);
+		System.out.println(terms.toString());
+	}
+	
 	public double [][] getTERM_DOCUMENT_MATRIX(){
-		String[] terms= getTERMS();
-		System.out.println("Term Size " + getTERMS().length);
-		String[] documents = getDOCS();
-		System.out.println("Doc Size "+ getDOCS().length);
-		/*dont calculate idf from terms rather compute it from matrix*/
-		double [] idf = new double[terms.length];
-		double [][] TERM_DOCUMENT_MATRIX = new double[terms.length][documents.length];
-		for (int i = 0; i < terms.length; i++) {
+		/* dont calculate idf from terms rather compute it from matrix*/
+		double [] idf = new double[totalTerm];
+		double [][] TERM_DOCUMENT_MATRIX = new double[totalTerm][totalDocs];
+		for (int i = 0; i < totalTerm; i++) {
+			// df
 			idf[i] = 0;
-			for (int j = 0; j < documents.length; j++) {
-				double tf = this.documents.get(j).getTF(terms[i]);
-				if (tf!=0.0) {
-					idf[i] += idf[i];
+			for (int j = 0; j < documents.size(); j++) {
+				double tf = this.documents.get(j).getTF(terms.get(i).toString());
+				if (tf !=0.0) {
+						idf[i]++;
 				}
 				TERM_DOCUMENT_MATRIX[i][j]= tf;
 			}
-			idf[i] = 1 + Math.log10((double)documents.length/idf[i]); 
-			for (int j = 0; j < documents.length; j++) {
+			// idf
+			idf[i] = 1 + Math.log10((double)documents.size()/idf[i]);
+			for (int j = 0; j < documents.size(); j++) {
 				TERM_DOCUMENT_MATRIX[i][j]= TERM_DOCUMENT_MATRIX[i][j] * idf[i];
+				System.out.print(TERM_DOCUMENT_MATRIX[i][j]+" ");
 			}
+			System.out.println();
 		}
 		return TERM_DOCUMENT_MATRIX;
 	}
+	
+	/**
+	 * @deprecated
+	 * @param documents
+	 * @return
+	 */
 	public String[] getTermsFromDocuments(List<Document> documents){
 		Set<String> termSet = new HashSet<String>();
 		for (Document document : documents) {
-			for (Term term : document.getTerms()) {
-				termSet.add(term.termString);
-			}
+				Set<String> candidateSet = new HashSet<String>(document.getTermsInString());
+				termSet.addAll(candidateSet);
 		}
 		return termSet.toArray(new String[termSet.size()]);
 	}
+	public List<String> getTermS(){
+		Set<String> termSet = new HashSet<String>();
+		for (Document document : documents) {
+				Set<String> candidateSet = new HashSet<String>(document.getTermsInString());
+				termSet.addAll(candidateSet);
+		}
+		return new ArrayList<String>(termSet);
+	}
+	
+	
 	public String[] getTERMS(){
 		Set<String> termSet = new HashSet<String>();
 		for (Document document : documents) {
-			for (Term term : document.getTerms()) {
-				termSet.add(term.termString);
-			}
+				Set<String> candidateSet = new HashSet<String>(document.getTermsInString());
+				termSet.addAll(candidateSet);
 		}
 		return termSet.toArray(new String[termSet.size()]);
 	}
+	
+	
 	public String [] getDOCS(){
 		Set<String> documentSet = new HashSet<String>();
 		for (Document document : documents) {
@@ -71,6 +87,21 @@ public class VectorSpaceModel {
 		}
 		return documentSet.toArray(new String[documentSet.size()]);
 	}
+	
+	public Document [] getDocumentArray(){
+		Set<Document> documentSet = new HashSet<Document>(documents);
+		return documentSet.toArray(new Document[documentSet.size()]);
+		
+	}
+	
+	public List<Document> getDocuments(){
+		return documents;
+		
+	}
+	/**
+	 * 
+	 * @return
+	 */
 	public String TERM_DOCUMENT_MATRIX_TO_STRING(){
 		String text="";
 		String[] terms= getTERMS();
