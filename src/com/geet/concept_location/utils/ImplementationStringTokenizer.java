@@ -1,6 +1,7 @@
 package com.geet.concept_location.utils;
 import java.util.StringTokenizer;
 import com.geet.concept_location.corpus_creation.JavaLanguage;
+import com.geet.concept_location.query_formulation.StopWords;
 public class ImplementationStringTokenizer extends StringTokenizer{
 	public ImplementationStringTokenizer(String str, String delim,
 			boolean returnDelims) {
@@ -21,13 +22,13 @@ public class ImplementationStringTokenizer extends StringTokenizer{
 		String token = super.nextToken();
 		// if token has a substring of programming syntax then replace with " "
 		// if token has a substring of operators then replace with " "
-		StringTokenizer stringTokenizer = new StringTokenizer(token,JavaLanguage.getProgrammingLanguageSyntax(),false);
+		StringTokenizer stringTokenizer = new StringTokenizer(token,JavaLanguage.getProgrammingLanguageSyntax()+JavaLanguage.getOperators(),false);
 		while (stringTokenizer.hasMoreTokens()) {
 			String nestedToken = stringTokenizer.nextToken();
 			// if token is equal to any  keywords, or operators then replace with " "
-			if (!StringUtils.hasStringInList(nestedToken, JavaLanguage.KEYWORDS) && !StringUtils.hasStringInList(nestedToken, JavaLanguage.OPERATORS)) {
+			if (!StringUtils.hasStringInList(nestedToken, JavaLanguage.KEYWORDS) && !StringUtils.hasStringInList(nestedToken, JavaLanguage.OPERATORS_CONTAINED_ONLY_CHAR) && !StringUtils.hasStringInList(nestedToken, JavaLanguage.LITERALS)) {
 				// get identifier separation
-				largeToken += StringUtils.getIdentifierSeparations(nestedToken)+" ";
+				largeToken += StringUtils.getIdentifierSeparationsWithCamelCase(nestedToken)+" ";
 			}
 		}
 		return largeToken;

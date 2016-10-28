@@ -1,5 +1,5 @@
 package com.geet.concept_location.indexing_lsi;
-public class LsiTerm {
+public class LsiTerm  implements Comparable<LsiTerm>{
 	public String term;
 	public Vector vector;
 	public double score= -1;
@@ -39,5 +39,12 @@ public class LsiTerm {
 	}
 	public String toCSVString() {
 		return term+","+vector.toCSVString();
+	}
+	@Override
+	public int compareTo(LsiTerm lsiTerm) {
+		if (score > lsiTerm.score) {
+			return 1;
+		}
+		return -1;
 	}
 }

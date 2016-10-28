@@ -22,13 +22,14 @@ public class JavaLanguage {
 	}
 	public final static String OPERATORS[]={
 			"=","+","-","*","/","%","++","--","!","+=",
-			"==","!=",">",">=","<","<=","&&","||",
-			"?:","instanceof","~","<<",">>",">>>",
+			"==","!=",">",">=","<","<=","&&","||","*=","/=",
+			"?:","~","<<",">>",">>>",
 			"&","^","|" };
+	public final static String OPERATORS_CONTAINED_ONLY_CHAR[]={"instanceof"};
 	public static String getOperators(){
 		return getInStringFromStringArray(OPERATORS);
 	}
-	public final static String PROGRAMING_LANGUAGE_SYNTAX[]={"()","{}","[]",",",".",";",":","->","&"," ","?","<>"};
+	public final static String PROGRAMING_LANGUAGE_SYNTAX[]={"()","{}","[]",",",".",";",":","->","&"," ","?","<>","//","'","\"",":","\\"};
 	public static String getProgrammingLanguageSyntax(){
 		return getInStringFromStringArray(PROGRAMING_LANGUAGE_SYNTAX);
 	}
@@ -49,7 +50,7 @@ public class JavaLanguage {
 	public final static String LITERALS[]={
 			"true", "false","null","\n","\r",
 			"\f","\\","\'","\"","\t","\b"};
-	public String getLiterals(){
+	public static String getLiterals(){
 		return getInStringFromStringArray(LITERALS);
 	}
 	public final static String INLINE_COMMENT = "//";

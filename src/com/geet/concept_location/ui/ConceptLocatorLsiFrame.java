@@ -1,5 +1,6 @@
 package com.geet.concept_location.ui;
 import java.awt.Color;
+import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -7,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -22,6 +24,7 @@ import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.DocumentExtractor;
 import com.geet.concept_location.indexing_lsi.Lsi;
 import com.geet.concept_location.indexing_lsi.LsiDocument;
+import com.geet.concept_location.indexing_lsi.LsiQuery;
 import com.geet.concept_location.indexing_lsi.LsiTerm;
 import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
 import com.geet.concept_location.io.JavaFileReader;
@@ -33,6 +36,8 @@ public class ConceptLocatorLsiFrame extends JFrame {
 	ProjectExplorerViewPanel projectExplorerViewPanel;
 	JavaClassViewPanelUI javaClassViewPanelUI;
 	SearchResultsPanelLsiUI searchResultsPanelLsiUI;
+	SearchTermResultsPanelLsiUI searchTermResultsPanelLsiUI;
+	List<LsiTerm> lsiTerms = new ArrayList<LsiTerm>();
 	List<LsiDocument> lsiDocuments = new ArrayList<LsiDocument>();
 	SearchBoxPanelUI searchBoxPanel;
 	FileNameExtensionFilter javaFileNameExtensionFilter = new FileNameExtensionFilter("Java Files Only", ".java");
@@ -65,14 +70,10 @@ public class ConceptLocatorLsiFrame extends JFrame {
 								.getAllDocuments();
 						VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(
 								documents);
-						Lsi lsi = new Lsi(vectorSpaceModel);
-						/*lsi.search(new LsiQuery(searchBoxPanel.getSearchTextField().getText(), new Vector(Lsi.NUM_FACTORS)));
-						lsiDocuments = lsi.lsiDocuments;
-						setSearchResultsPanelLsiUI();;*/
-						System.out.println("Terms");
-						lsi.printTermsVector();
-						System.out.println("Documents");
-						lsi.printDocumentsVector();
+						myLsi.searchTerm(new LsiQuery(searchBoxPanel.getSearchTextField().getText(), new com.geet.concept_location.indexing_lsi.Vector(Lsi.NUM_FACTORS)));
+						lsiDocuments = myLsi.lsiDocuments;
+						lsiTerms = myLsi.lsiTerms;
+						setSearchTermsResultsPanelLsiUI();
 					}
 				});
 	}
@@ -80,23 +81,27 @@ public class ConceptLocatorLsiFrame extends JFrame {
 		// read all the documents
 		List<Document> allDocuments = new ArrayList<Document>();
 		int classNo = 0;
-	//	for (String path : javaClassPathList) {
-		String path ="src/com/geet/concept_location/corpus_creation/DocumentExtractor.java";
+//		String path="src/com/geet/concept_location/corpus_creation/DocumentExtractor.java";
+		for (String path : javaClassPathList) {
+			
 			if (new JavaClassPreprocessor().processJavaFile(new File(path))) {
+				if (path.equals("src/com/geet/concept_location/corpus_creation/JavaLanguage.java")) {
+					continue;
+				}
 				DocumentExtractor documentExtractor = new DocumentExtractor(
 						new File(path));
-				int size=0;
+				int size = 0;
 				for (Document document : documentExtractor.getAllDocuments()) {
 					allDocuments.add(document);
 					size++;
 				}
 				classNo++;
-				System.out.println(path+" has "+ size +" document(s)");
+				System.out.println(path + " has " + size + " document(s)");
 			}
-/*			if (classNo > 10) {
+			if (classNo > 5) {
 				break;
 			}
-*///		}
+		}
 		System.out.println("Size "+allDocuments.size());
 		// turn into vector documents
 		// get the vector space model
@@ -105,11 +110,14 @@ public class ConceptLocatorLsiFrame extends JFrame {
 //		System.exit(0);
 		// LSI indexing
 		myLsi = new Lsi(vectorSpaceModel);
+		writeTermsIntoFile();
+		writeDocumentsIntoFile();
 	}
 	private void writeTermsIntoFile(){
 		try {
 			FileWriter fileWriter = new FileWriter(new File("Terms.csv"));
 			for (LsiTerm lsiTerm : myLsi.lsiTerms) {
+				System.out.println(lsiTerm.toCSVString());
 				fileWriter.write(lsiTerm.toCSVString()+"\n");
 			}
 			fileWriter.close();
@@ -120,8 +128,9 @@ public class ConceptLocatorLsiFrame extends JFrame {
 	}
 	private void writeDocumentsIntoFile(){
 		try {
-			FileWriter fileWriter = new FileWriter(new File("Terms.csv"));
+			FileWriter fileWriter = new FileWriter(new File("Documents.csv"));
 			for (LsiDocument lsiDocument : myLsi.lsiDocuments) {
+				System.out.println(lsiDocument.toCSVString());
 				fileWriter.write(lsiDocument.toCSVString()+"\n");
 			}
 			fileWriter.close();
@@ -160,7 +169,17 @@ public class ConceptLocatorLsiFrame extends JFrame {
 					}
 				});
 	}
-	private void setJavaClassViewPanelUI() {
+
+	private void setSearchTermsResultsPanelLsiUI() {
+		setAllPanelInvisible();
+		searchTermResultsPanelLsiUI = new SearchTermResultsPanelLsiUI(lsiTerms,
+				new Bound(0, 0, 1300 - 100, 800 - 50));
+		searchTermResultsPanelLsiUI.setBounds(UIConstants.PADDING_LEFT,
+				UIConstants.Menu_Height + UIConstants.PADDING_TOP, 1300, 800);
+		add(searchTermResultsPanelLsiUI);
+		searchTermResultsPanelLsiUI.revalidate();
+	}
+private void setJavaClassViewPanelUI() {
 		setAllPanelInvisible();
 		String src = "Source";
 		JavaFileReader javaFileReader = new JavaFileReader();
@@ -235,4 +254,5 @@ public class ConceptLocatorLsiFrame extends JFrame {
 	private void enableView(){
 		// TODO do later time
 	}
+	
 }

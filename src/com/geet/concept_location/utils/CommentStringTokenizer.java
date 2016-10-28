@@ -1,6 +1,7 @@
 package com.geet.concept_location.utils;
 import java.util.StringTokenizer;
 import com.geet.concept_location.corpus_creation.JavaLanguage;
+import com.geet.concept_location.query_formulation.StopWords;
 public class CommentStringTokenizer extends StringTokenizer{
 	public CommentStringTokenizer(String str) {
 		super(str);
@@ -24,14 +25,14 @@ public class CommentStringTokenizer extends StringTokenizer{
 		while (stringTokenizer.hasMoreTokens()) {
 			String nestedToken = stringTokenizer.nextToken();
 			// in line comment or 
-			if (nestedToken.equals(JavaLanguage.INLINE_COMMENT) || nestedToken.equals(JavaLanguage.BLOCK_OR_JAVADOC_CONTINUE)) {
+			if (nestedToken.equals(JavaLanguage.INLINE_COMMENT) || nestedToken.equals(JavaLanguage.BLOCK_OR_JAVADOC_CONTINUE)|| StringUtils.hasStringInList(nestedToken, JavaLanguage.OPERATORS)) {
 				continue;
 			}
 			if (findAtSign(nestedToken)) {
 				nestedToken = replaceWordWithAtSign(nestedToken, " ");
 			}
 			nestedToken = replaceWordWithHTMLTag(nestedToken, " ");
-			largeToken += StringUtils.getIdentifierSeparations(nestedToken)+" ";
+			largeToken += StringUtils.getIdentifierSeparationsWithCamelCase(nestedToken)+" ";
 		}
 		return largeToken;
 	}

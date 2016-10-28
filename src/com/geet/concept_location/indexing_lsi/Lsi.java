@@ -58,10 +58,18 @@ public class Lsi {
 	}
 	public void search(LsiQuery lsiQuery){
 		for (int j = 0; j < lsiDocuments.size(); ++j) {
-			lsiDocuments.get(j).score = lsiQuery.getVectorFromLSI(lsiTerms, scales).getDotProductWith(lsiDocuments.get(j).vector, scales);
+			lsiDocuments.get(j).score = lsiQuery.getVectorFromLSI(lsiTerms, scales).cosine(lsiDocuments.get(j).vector, scales);
 		}
 		Collections.sort(lsiDocuments);
 		Collections.reverse(lsiDocuments);
+	}
+
+	public void searchTerm(LsiQuery lsiQuery){
+		for (int j = 0; j < lsiTerms.size(); ++j) {
+			lsiTerms.get(j).score = lsiQuery.getVectorFromLSI(lsiTerms, scales).cosine(lsiTerms.get(j).vector, scales);
+		}
+		Collections.sort(lsiTerms);
+		Collections.reverse(lsiTerms);
 	}
 	public void printDocumentsVector(){
 		for (LsiDocument lsiDocument : lsiDocuments) {

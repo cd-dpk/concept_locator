@@ -82,7 +82,6 @@ public class StringUtils {
 		}
 		return resultant+" "+ target;
 	}
-	
 	public static boolean allUpperCaseCharacters(String target){
 		for (int i = 0; i < target.length(); i++) {
 			char ch = target.charAt(i);

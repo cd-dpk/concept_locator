@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 import com.geet.concept_location.indexing_vsm.Term;
+import com.geet.concept_location.query_formulation.StopWords;
 import com.geet.concept_location.utils.CommentStringTokenizer;
 import com.geet.concept_location.utils.ImplementationStringTokenizer;
 import com.github.javaparser.Position;
@@ -103,6 +104,10 @@ public class Document  implements Comparable<Document>{
 			/*if (StringUtils.isWord(token)) {
 				token = new Stemmer(token.toLowerCase()).toString();
 			}*/
+			// if stop word then continue
+			if (StopWords.isStopword(token)) {
+				continue;
+			}
 			Term candidateTerm = new Term(token.toLowerCase(), 1);
 			int pass = -1;
 			for (int i = 0; i < terms.size(); i++) {
