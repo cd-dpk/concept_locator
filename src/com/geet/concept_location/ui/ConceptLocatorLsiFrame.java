@@ -110,34 +110,6 @@ public class ConceptLocatorLsiFrame extends JFrame {
 //		System.exit(0);
 		// LSI indexing
 		myLsi = new Lsi(vectorSpaceModel);
-		writeTermsIntoFile();
-		writeDocumentsIntoFile();
-	}
-	private void writeTermsIntoFile(){
-		try {
-			FileWriter fileWriter = new FileWriter(new File("Terms.csv"));
-			for (LsiTerm lsiTerm : myLsi.lsiTerms) {
-				System.out.println(lsiTerm.toCSVString());
-				fileWriter.write(lsiTerm.toCSVString()+"\n");
-			}
-			fileWriter.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	private void writeDocumentsIntoFile(){
-		try {
-			FileWriter fileWriter = new FileWriter(new File("Documents.csv"));
-			for (LsiDocument lsiDocument : myLsi.lsiDocuments) {
-				System.out.println(lsiDocument.toCSVString());
-				fileWriter.write(lsiDocument.toCSVString()+"\n");
-			}
-			fileWriter.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	private void setProjectExplorerViewPanel() {
 		setAllPanelInvisible();

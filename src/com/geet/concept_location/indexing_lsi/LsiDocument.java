@@ -67,6 +67,6 @@ public class LsiDocument implements Comparable<LsiDocument>{
 		return -1;
 	}
 	public String toCSVString() {
-		return docName+","+docInJavaFile+","+startPosition+","+endPosition+","+vector.toCSVString();
+		return docName+","+docInJavaFile+","+startPosition.toString()+","+endPosition.toString()+","+vector.toCSVString();
 	}
 }

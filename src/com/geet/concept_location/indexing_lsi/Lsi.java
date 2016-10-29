@@ -1,7 +1,11 @@
 package com.geet.concept_location.indexing_lsi;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import com.aliasi.matrix.SvdMatrix;
 import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
 public class Lsi {
@@ -35,27 +39,45 @@ public class Lsi {
 		List<String> terms;
 		terms = vectorSpaceModel.terms;
 		System.out.println("Terms...");
-		/* term vectors into lsi terms*/
-		for (int i = 0; i < termVectors.length; i++) {
+		/* term vectors into lsi terms and terms file*/
+		try {
+			FileWriter fileWriter = new FileWriter(new File("Terms.csv"));
+			for (int i = 0; i < termVectors.length; i++) {
 				Vector vector = new Vector(NUM_FACTORS);
 				vector.dimensionValue[0] = termVectors[i][0];
 				vector.dimensionValue[1] = termVectors[i][1];
 				LsiTerm lsiTerm = new LsiTerm(terms.get(i), vector); 
 				System.out.println(lsiTerm.toCSVString());
+				fileWriter.write(lsiTerm.toCSVString()+"\n");
 				lsiTerms.add(lsiTerm);
+			}
+			fileWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		System.out.println("DOCS...");
 		/* document vectors into lsi docs*/
-		for (int i = 0; i < docVectors.length; i++) {
+		try {
+			FileWriter fileWriter = new FileWriter(new File("Documents.csv"));
+			for (int i = 0; i < docVectors.length; i++) {
 				Vector vector = new Vector(NUM_FACTORS);
 				vector.dimensionValue[0] = docVectors[i][0];
 				vector.dimensionValue[1] = docVectors[i][1];
 				LsiDocument lsiDocument = new LsiDocument(vectorSpaceModel.documents.get(i),vector);
 				System.out.println(lsiDocument.toCSVString());
+				fileWriter.write(lsiDocument.toCSVString()+"\n");
 				lsiDocuments.add(lsiDocument);
+			}
+			fileWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 		System.out.println("Loading...");
 	}
+
 	public void search(LsiQuery lsiQuery){
 		for (int j = 0; j < lsiDocuments.size(); ++j) {
 			lsiDocuments.get(j).score = lsiQuery.getVectorFromLSI(lsiTerms, scales).cosine(lsiDocuments.get(j).vector, scales);
@@ -70,6 +92,7 @@ public class Lsi {
 		}
 		Collections.sort(lsiTerms);
 		Collections.reverse(lsiTerms);
+		
 	}
 	public void printDocumentsVector(){
 		for (LsiDocument lsiDocument : lsiDocuments) {
