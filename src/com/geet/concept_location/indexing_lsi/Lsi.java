@@ -24,6 +24,7 @@ public class Lsi {
 		double regularization = 0.00;
 		double minImprovement = 0.0000;
 		int minEpochs = 10;
+		// simple comment
 		int maxEpochs = 50000;
 		System.out.println("  Computing SVD");
 		System.out.println("    maxFactors=" + NUM_FACTORS);
