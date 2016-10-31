@@ -1,7 +1,7 @@
 package com.geet.concept_location.indexing_lsi;
 public class LsiTerm  implements Comparable<LsiTerm>{
 	public String term;
-	public Vector vector;
+	public Vector vector = new Vector(2);
 	public double score= -1;
 	public double getScore() {
 		return score;

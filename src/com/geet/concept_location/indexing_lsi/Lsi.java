@@ -1,11 +1,7 @@
 package com.geet.concept_location.indexing_lsi;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,6 +13,7 @@ public class Lsi {
 	public List<LsiDocument> lsiDocuments = new ArrayList<LsiDocument>();
 	public static final int NUM_FACTORS = 2;
 	double [] scales = new double[NUM_FACTORS];
+	
 	public Lsi(VectorSpaceModel vectorSpaceModel){
 		double featureInit = 0.01;
 		double initialLearningRate = 0.005;
@@ -50,6 +47,7 @@ public class Lsi {
 				Vector vector = new Vector(NUM_FACTORS);
 				vector.dimensionValue[0] = termVectors[i][0];
 				vector.dimensionValue[1] = termVectors[i][1];
+				System.out.println(vector.toCSVString());
 				LsiTerm lsiTerm = new LsiTerm(terms.get(i), vector); 
 				System.out.println(lsiTerm.toCSVString());
 				fileWriter.write(lsiTerm.toCSVString()+"\n");
@@ -57,40 +55,39 @@ public class Lsi {
 			}
 			fileWriter.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println("DOCS...");
 		/* document vectors into lsi docs*/
 		try {
-//			FileWriter fileWriter = new FileWriter(new File("Documents.csv"));
-	
-			FileOutputStream file = new FileOutputStream("Documents.ser");
-			ObjectOutputStream objectOutputStream = new ObjectOutputStream(file);
+			FileWriter fileWriter = new FileWriter(new File("Documents.csv"));
+//			FileOutputStream file = new FileOutputStream("Documents.ser");
+//			ObjectOutputStream objectOutputStream = new ObjectOutputStream(file);
 			for (int i = 0; i < docVectors.length; i++) {
+				System.out.println("Writing Documents");
 				Vector vector = new Vector(NUM_FACTORS);
 				vector.dimensionValue[0] = docVectors[i][0];
 				vector.dimensionValue[1] = docVectors[i][1];
+				System.out.println(vector.toCSVString());
 				LsiDocument lsiDocument = new LsiDocument(vectorSpaceModel.documents.get(i),vector);
 				System.out.println(lsiDocument.toCSVString());
-				//fileWriter.write(lsiDocument.toCSVString()+"\n");
+				fileWriter.write(lsiDocument.toCSVString()+"\n");
 			//	objectOutputStream.writeObject(lsiDocument);
-				objectOutputStream.reset();
+//				objectOutputStream.reset();
 				lsiDocuments.add(lsiDocument);
 			}
-			objectOutputStream.writeObject(lsiDocuments);
-				objectOutputStream.close();
-		//	fileWriter.close();
+//			objectOutputStream.writeObject(lsiDocuments);
+//			objectOutputStream.close();
+			fileWriter.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println("Loading...");
-		// temp 
-		/* document vectors reading in serializable into lsi docs*/
+		/*// temp 
+		 document vectors reading in serializable into lsi docs
 		try {
 //			FileWriter fileWriter = new FileWriter(new File("Documents.csv"));
-	
 			FileInputStream file = new FileInputStream("Documents.ser");
 			ObjectInputStream objectInputStream = new ObjectInputStream(file);
 			try {
@@ -109,8 +106,8 @@ public class Lsi {
 			e.printStackTrace();
 		}
 		// temp
-	}
-
+*/	}
+	
 	public void search(LsiQuery lsiQuery){
 		for (int j = 0; j < lsiDocuments.size(); ++j) {
 			lsiDocuments.get(j).score = lsiQuery.getVectorFromLSI(lsiTerms, scales).cosine(lsiDocuments.get(j).vector, scales);
@@ -118,14 +115,12 @@ public class Lsi {
 		Collections.sort(lsiDocuments);
 		Collections.reverse(lsiDocuments);
 	}
-
 	public void searchTerm(LsiQuery lsiQuery){
 		for (int j = 0; j < lsiTerms.size(); ++j) {
 			lsiTerms.get(j).score = lsiQuery.getVectorFromLSI(lsiTerms, scales).cosine(lsiTerms.get(j).vector, scales);
 		}
 		Collections.sort(lsiTerms);
 		Collections.reverse(lsiTerms);
-		
 	}
 	public void printDocumentsVector(){
 		for (LsiDocument lsiDocument : lsiDocuments) {
@@ -137,8 +132,4 @@ public class Lsi {
 			System.out.println(lsiTerm.vector.toString());
 		}
 	}
-	
-	
-	
-	
 }

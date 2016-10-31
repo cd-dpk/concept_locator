@@ -1,7 +1,5 @@
 package com.geet.concept_location.indexing_lsi;
-
 import java.io.Serializable;
-
 public class Vector implements Serializable{
 	private final double nullVectorValue = -2; 
 	public double [] dimensionValue;
@@ -17,7 +15,6 @@ public class Vector implements Serializable{
 		}
 		return this;
 	}
-	
 	public double getDotProductWith(Vector vector, double[] scales){
 		double dotProduct = 0.0;
 		for (int i = 0; i < scales.length; i++) {
@@ -39,7 +36,6 @@ public class Vector implements Serializable{
 	    }
 	    return product / Math.sqrt(xsLengthSquared * ysLengthSquared);
 	}
-	
 	public double dotProduct(Vector vector, double[] scales) {
 		double sum = 0.0;
 		for (int k = 0; k < scales.length; ++k){
@@ -47,7 +43,6 @@ public class Vector implements Serializable{
 		}
 		return sum;
 	}
-
 	public double scalarValue(double [] scales){
 		double scalarValue = 0;
 		for (int i = 0; i < scales.length; i++) {
