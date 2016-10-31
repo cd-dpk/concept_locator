@@ -17,37 +17,74 @@ import com.geet.concept_location.indexing_lsi.Vector;
 public class VectorSpaceModel {
 	public List<Document> documents = new ArrayList<Document>();
 	public List<String> terms = new ArrayList<String>();
-	
+	public double [][]TERM_DOCUMENT_MATRIX;
+	public double [] df;
 	private int totalTerm=0;
 	private int totalDocs=0;
-	
 	public VectorSpaceModel(List<Document> documentList) {
 		documents = documentList;
 		totalTerm = getTermS().size();
 		totalDocs = getDocuments().size();
 		terms = getTermS();
+		TERM_DOCUMENT_MATRIX = new double[totalTerm][totalDocs];
+		df = new double [totalTerm];
 		System.out.println("Terms "+totalTerm+" Documents "+totalDocs);
 		System.out.println(terms.toString());
 	}
 	
-	public double [][] getTERM_DOCUMENT_MATRIX(){
+	/*
+	 * for vsm
+	 */
+	public void setTERM_DOCUMENT_MATRIX(){
+		/**
+		 * get all terms 
+		 * for query vector, query[terms.length][2], 
+		 * column 1 <- tf in query
+		 * column 2 <- df in all documents
+		 * 
+		 * compute score of all documents with query vector
+		 * ( query[i][0] * ( 1+ log 10((1+doucuments.size())/query[i][1])) ) * (TERM_DOCUMENT_MATRIX[j][i]( 1+ log 10((1+doucuments.size())/query[i][1])))
+		 */
+		
 		/* dont calculate idf from terms rather compute it from matrix*/
-		double [] idf = new double[totalTerm];
-		double [][] TERM_DOCUMENT_MATRIX = new double[totalTerm][totalDocs];
 		for (int i = 0; i < totalTerm; i++) {
 			// df
-			idf[i] = 0;
+			df[i] = 0;
 			for (int j = 0; j < documents.size(); j++) {
 				double tf = this.documents.get(j).getTF(terms.get(i).toString());
 				if (tf !=0.0) {
-						idf[i]++;
+						df[i]++;
+				}
+				TERM_DOCUMENT_MATRIX[i][j]= tf;
+			}
+		}
+	}
+	
+	public void adjustWithQuery(List<String> terms){
+		
+		
+		
+	}
+	
+	
+	public double [][] getTERM_DOCUMENT_MATRIX(){
+		/* dont calculate idf from terms rather compute it from matrix*/
+		double [] df = new double[totalTerm];
+		double [][] TERM_DOCUMENT_MATRIX = new double[totalTerm][totalDocs];
+		for (int i = 0; i < totalTerm; i++) {
+			// df
+			df[i] = 0;
+			for (int j = 0; j < documents.size(); j++) {
+				double tf = this.documents.get(j).getTF(terms.get(i).toString());
+				if (tf !=0.0) {
+						df[i]++;
 				}
 				TERM_DOCUMENT_MATRIX[i][j]= tf;
 			}
 			// idf
-			idf[i] = 1 + Math.log10((double)documents.size()/idf[i]);
+			df[i] = 1 + Math.log10((double)documents.size()/df[i]);
 			for (int j = 0; j < documents.size(); j++) {
-				TERM_DOCUMENT_MATRIX[i][j]= TERM_DOCUMENT_MATRIX[i][j] * idf[i];
+				TERM_DOCUMENT_MATRIX[i][j]= TERM_DOCUMENT_MATRIX[i][j] * df[i];
 				System.out.print(TERM_DOCUMENT_MATRIX[i][j]+" ");
 			}
 			System.out.println();
