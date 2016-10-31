@@ -1,7 +1,11 @@
 package com.geet.concept_location.indexing_lsi;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -59,23 +63,52 @@ public class Lsi {
 		System.out.println("DOCS...");
 		/* document vectors into lsi docs*/
 		try {
-			FileWriter fileWriter = new FileWriter(new File("Documents.csv"));
+//			FileWriter fileWriter = new FileWriter(new File("Documents.csv"));
+	
+			FileOutputStream file = new FileOutputStream("Documents.ser");
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream(file);
 			for (int i = 0; i < docVectors.length; i++) {
 				Vector vector = new Vector(NUM_FACTORS);
 				vector.dimensionValue[0] = docVectors[i][0];
 				vector.dimensionValue[1] = docVectors[i][1];
 				LsiDocument lsiDocument = new LsiDocument(vectorSpaceModel.documents.get(i),vector);
 				System.out.println(lsiDocument.toCSVString());
-				fileWriter.write(lsiDocument.toCSVString()+"\n");
+				//fileWriter.write(lsiDocument.toCSVString()+"\n");
+			//	objectOutputStream.writeObject(lsiDocument);
+				objectOutputStream.reset();
 				lsiDocuments.add(lsiDocument);
 			}
-			fileWriter.close();
+			objectOutputStream.writeObject(lsiDocuments);
+				objectOutputStream.close();
+		//	fileWriter.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		System.out.println("Loading...");
+		// temp 
+		/* document vectors reading in serializable into lsi docs*/
+		try {
+//			FileWriter fileWriter = new FileWriter(new File("Documents.csv"));
+	
+			FileInputStream file = new FileInputStream("Documents.ser");
+			ObjectInputStream objectInputStream = new ObjectInputStream(file);
+			try {
+				List<LsiDocument> lsiDocuments = (ArrayList<LsiDocument>) objectInputStream.readObject();
+				for (LsiDocument lsiDocument : lsiDocuments) {
+					System.out.println(lsiDocument.toCSVString());
+				}
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			objectInputStream.close();
+		//	fileWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// temp
 	}
 
 	public void search(LsiQuery lsiQuery){
@@ -104,4 +137,8 @@ public class Lsi {
 			System.out.println(lsiTerm.vector.toString());
 		}
 	}
+	
+	
+	
+	
 }

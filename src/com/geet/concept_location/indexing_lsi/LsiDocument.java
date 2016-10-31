@@ -1,7 +1,9 @@
 package com.geet.concept_location.indexing_lsi;
+import java.io.Serializable;
+
 import com.geet.concept_location.corpus_creation.Document;
 import com.github.javaparser.Position;
-public class LsiDocument implements Comparable<LsiDocument>{
+public class LsiDocument implements Comparable<LsiDocument>,Serializable{
 	public LsiDocument(Document vectorDocument, Vector vector) {
 		super();
 		this.docInJavaFile = vectorDocument.getDocInJavaFile();
@@ -15,7 +17,7 @@ public class LsiDocument implements Comparable<LsiDocument>{
 	public String docName;
 	public String article = "";
 	public Vector vector;
-	public Position startPosition, endPosition;
+	public com.geet.concept_location.corpus_creation.Position startPosition, endPosition;
 	public double score= -1;
 	public String getDocInJavaFile() {
 		return docInJavaFile;
@@ -41,16 +43,16 @@ public class LsiDocument implements Comparable<LsiDocument>{
 	public void setVector(Vector vector) {
 		this.vector = vector;
 	}
-	public Position getStartPosition() {
+	public com.geet.concept_location.corpus_creation.Position getStartPosition() {
 		return startPosition;
 	}
-	public void setStartPosition(Position startPosition) {
+	public void setStartPosition(com.geet.concept_location.corpus_creation.Position startPosition) {
 		this.startPosition = startPosition;
 	}
-	public Position getEndPosition() {
+	public com.geet.concept_location.corpus_creation.Position getEndPosition() {
 		return endPosition;
 	}
-	public void setEndPosition(Position endPosition) {
+	public void setEndPosition(com.geet.concept_location.corpus_creation.Position endPosition) {
 		this.endPosition = endPosition;
 	}
 	public double getScore() {

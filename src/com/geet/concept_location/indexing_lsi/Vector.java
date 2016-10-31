@@ -1,5 +1,8 @@
 package com.geet.concept_location.indexing_lsi;
-public class Vector {
+
+import java.io.Serializable;
+
+public class Vector implements Serializable{
 	private final double nullVectorValue = -2; 
 	public double [] dimensionValue;
 	public Vector(int dimensions){

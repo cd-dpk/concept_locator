@@ -50,7 +50,7 @@ public class DocumentExtractor {
 			Comment methodComment = methodDeclaration.getComment();
 			Position startPosition = new Position(methodDeclaration.getBeginLine(), methodDeclaration.getBeginColumn());
 			Position endPosition = new Position(methodDeclaration.getEndLine(), methodDeclaration.getEndLine());
-			MethodOrConstructorDocument methodOrConstructorDocument = new MethodOrConstructorDocument(fileName,methodDeclaration.getName(),startPosition, endPosition);
+			MethodOrConstructorDocument methodOrConstructorDocument = new MethodOrConstructorDocument(fileName,methodDeclaration.getName(),new com.geet.concept_location.corpus_creation.Position(startPosition), new com.geet.concept_location.corpus_creation.Position(endPosition));
 			if (methodComment != null && methodComment instanceof JavadocComment) {
 				methodOrConstructorDocument.javaDocComments.add((JavadocComment) methodComment);
 			}else if ((methodComment != null )&& (methodComment instanceof JavadocComment == false)) {
@@ -73,7 +73,7 @@ public class DocumentExtractor {
 			Comment methodComment = constructorDeclaration.getComment();
 			Position startPosition = new Position(constructorDeclaration.getBeginLine(), constructorDeclaration.getBeginColumn());
 			Position endPosition = new Position(constructorDeclaration.getEndLine(), constructorDeclaration.getEndLine());
-			MethodOrConstructorDocument methodOrConstructorDocument = new MethodOrConstructorDocument(fileName,constructorDeclaration.getName(),startPosition, endPosition);
+			MethodOrConstructorDocument methodOrConstructorDocument = new MethodOrConstructorDocument(fileName,constructorDeclaration.getName(),new com.geet.concept_location.corpus_creation.Position(startPosition), new com.geet.concept_location.corpus_creation.Position(endPosition));
 			if (methodComment != null && methodComment instanceof JavadocComment) {
 				methodOrConstructorDocument.javaDocComments.add((JavadocComment) methodComment);
 			}else if ((methodComment != null )&& (methodComment instanceof JavadocComment == false)) {
@@ -96,7 +96,7 @@ public class DocumentExtractor {
 			Comment classComment = classOrInterfaceDeclaration.getComment();
 			Position startPosition = new Position(classOrInterfaceDeclaration.getBeginLine(), classOrInterfaceDeclaration.getBeginColumn());
 			Position endPosition = new Position(classOrInterfaceDeclaration.getEndLine(), classOrInterfaceDeclaration.getEndLine());
-			ClassDocument classDocument = new ClassDocument(fileName,classOrInterfaceDeclaration.getName(),startPosition, endPosition);
+			ClassDocument classDocument = new ClassDocument(fileName,classOrInterfaceDeclaration.getName(),new com.geet.concept_location.corpus_creation.Position(startPosition), new com.geet.concept_location.corpus_creation.Position(endPosition));
 			if (classComment != null && classComment instanceof JavadocComment) {
 				classDocument.javaDocComments.add((JavadocComment) classComment);
 			}else if ((classComment != null )&& (classComment instanceof JavadocComment == false)) {

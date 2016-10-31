@@ -15,7 +15,7 @@ import com.github.javaparser.ast.comments.JavadocComment;
 public class Document  implements Comparable<Document>{
 	protected String docInJavaFile;
 	protected String docName;
-	protected Position startPosition, endPosition;
+	protected com.geet.concept_location.corpus_creation.Position startPosition, endPosition;
 	protected List<JavadocComment> javaDocComments = new ArrayList<JavadocComment>();
 	protected List<Comment> implementationComments = new ArrayList<Comment>();
 	protected String implementionBody = "";
@@ -34,16 +34,16 @@ public class Document  implements Comparable<Document>{
 	public void setDocName(String docName) {
 		this.docName = docName;
 	}
-	public Position getStartPosition() {
+	public com.geet.concept_location.corpus_creation.Position getStartPosition() {
 		return startPosition;
 	}
-	public void setStartPosition(Position startPosition) {
+	public void setStartPosition(com.geet.concept_location.corpus_creation.Position startPosition) {
 		this.startPosition = startPosition;
 	}
-	public Position getEndPosition() {
+	public com.geet.concept_location.corpus_creation.Position getEndPosition() {
 		return endPosition;
 	}
-	public void setEndPosition(Position endPosition) {
+	public void setEndPosition(com.geet.concept_location.corpus_creation.Position endPosition) {
 		this.endPosition = endPosition;
 	}
 	public List<JavadocComment> getJavaDocComments() {
@@ -68,7 +68,7 @@ public class Document  implements Comparable<Document>{
 		this.article = article;
 	}
 	public Document(String docInJavaFile, String docName,
-			Position startPosition, Position endPosition) {
+			com.geet.concept_location.corpus_creation.Position startPosition, com.geet.concept_location.corpus_creation.Position endPosition) {
 		super();
 		this.docInJavaFile = docInJavaFile;
 		this.docName = docName;
@@ -88,7 +88,7 @@ public class Document  implements Comparable<Document>{
 		return false;
 	}
 	public Range getRange(){
-		return new Range(startPosition, endPosition);
+		return new Range(startPosition.toParserPosition(), endPosition.toParserPosition());
 	}
 	public String getArticle() {
 		article = "";
