@@ -107,11 +107,8 @@ public class ConceptLocatorLsiFrame extends JFrame {
 		// turn into vector documents
 		// get the vector space model
 		VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(allDocuments);
-		
-//		System.exit(0);
-		// LSI indexing
-		myLsi = new Lsi(vectorSpaceModel);
-	}
+		myLsi = vectorSpaceModel.getLsi();
+}
 	private void setProjectExplorerViewPanel() {
 		setAllPanelInvisible();
 		projectExplorerViewPanel = new ProjectExplorerViewPanel(new Bound(0, 0,

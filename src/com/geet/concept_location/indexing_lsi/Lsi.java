@@ -1,8 +1,6 @@
 package com.geet.concept_location.indexing_lsi;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -16,7 +14,15 @@ public class Lsi {
 	public List<LsiTerm> lsiTerms = new ArrayList<LsiTerm>();
 	public List<LsiDocument> lsiDocuments = new ArrayList<LsiDocument>();
 	public static final int NUM_FACTORS = 2;
-	double [] scales = new double[NUM_FACTORS];
+	public double [] scales = new double[NUM_FACTORS];
+	
+	public Lsi(){
+		
+	}
+	/**
+	 * @deprecated
+	 * @param vectorSpaceModel
+	 */
 	public Lsi(VectorSpaceModel vectorSpaceModel){
 		double featureInit = 0.01;
 		double initialLearningRate = 0.005;
@@ -41,78 +47,85 @@ public class Lsi {
 		scales = matrix.singularValues();
 		double[][] termVectors = matrix.leftSingularVectors();
 		double[][] docVectors = matrix.rightSingularVectors();
-		List<String> terms;
-		terms = vectorSpaceModel.terms;
+		
 		System.out.println("Terms...");
-		/* term vectors into lsi terms and terms file*/
+		/* term vectors into lsi terms*/
 		try {
-			FileWriter fileWriter = new FileWriter(new File("Terms.csv"));
+			FileOutputStream file = new FileOutputStream("Terms.ser");
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream(file);
+			List<LsiTerm> lsiTerms = new ArrayList<LsiTerm>();
 			for (int i = 0; i < termVectors.length; i++) {
 				Vector vector = new Vector(NUM_FACTORS);
-				vector.dimensionValue[0] = termVectors[i][0];
-				vector.dimensionValue[1] = termVectors[i][1];
-				LsiTerm lsiTerm = new LsiTerm(terms.get(i), vector); 
+				vector.dimensionValue[0] = docVectors[i][0];
+				vector.dimensionValue[1] = docVectors[i][1];
+				LsiTerm lsiTerm = new LsiTerm(vectorSpaceModel.terms.get(i),vector);
 				System.out.println(lsiTerm.toCSVString());
-				fileWriter.write(lsiTerm.toCSVString()+"\n");
 				lsiTerms.add(lsiTerm);
 			}
-			fileWriter.close();
+			objectOutputStream.writeObject(lsiTerms);
+			objectOutputStream.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		
 		System.out.println("DOCS...");
 		/* document vectors into lsi docs*/
 		try {
-//			FileWriter fileWriter = new FileWriter(new File("Documents.csv"));
-	
 			FileOutputStream file = new FileOutputStream("Documents.ser");
 			ObjectOutputStream objectOutputStream = new ObjectOutputStream(file);
+			List<LsiDocument> lsiDocuments = new ArrayList<LsiDocument>();
 			for (int i = 0; i < docVectors.length; i++) {
 				Vector vector = new Vector(NUM_FACTORS);
 				vector.dimensionValue[0] = docVectors[i][0];
 				vector.dimensionValue[1] = docVectors[i][1];
 				LsiDocument lsiDocument = new LsiDocument(vectorSpaceModel.documents.get(i),vector);
 				System.out.println(lsiDocument.toCSVString());
-				//fileWriter.write(lsiDocument.toCSVString()+"\n");
-			//	objectOutputStream.writeObject(lsiDocument);
-				objectOutputStream.reset();
 				lsiDocuments.add(lsiDocument);
 			}
 			objectOutputStream.writeObject(lsiDocuments);
-				objectOutputStream.close();
-		//	fileWriter.close();
+			objectOutputStream.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("Loading...");
-		// temp 
-		/* document vectors reading in serializable into lsi docs*/
+		
+	}
+
+	public void setLsiTerms() {
+		lsiTerms = new ArrayList<LsiTerm>();
 		try {
-//			FileWriter fileWriter = new FileWriter(new File("Documents.csv"));
-	
-			FileInputStream file = new FileInputStream("Documents.ser");
+			FileInputStream file = new FileInputStream("Terms.ser");
 			ObjectInputStream objectInputStream = new ObjectInputStream(file);
 			try {
-				List<LsiDocument> lsiDocuments = (ArrayList<LsiDocument>) objectInputStream.readObject();
-				for (LsiDocument lsiDocument : lsiDocuments) {
-					System.out.println(lsiDocument.toCSVString());
-				}
+				lsiTerms = (ArrayList<LsiTerm>) objectInputStream.readObject();
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			objectInputStream.close();
-		//	fileWriter.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// temp
 	}
-
+	
+	public void setLsiDocuments() {
+		lsiDocuments = new ArrayList<LsiDocument>();
+		try {
+			FileInputStream file = new FileInputStream("Documents.ser");
+			ObjectInputStream objectInputStream = new ObjectInputStream(file);
+			try {
+				lsiDocuments = (ArrayList<LsiDocument>) objectInputStream.readObject();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			objectInputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void search(LsiQuery lsiQuery){
+		setLsiTerms();
+		setLsiDocuments();
 		for (int j = 0; j < lsiDocuments.size(); ++j) {
 			lsiDocuments.get(j).score = lsiQuery.getVectorFromLSI(lsiTerms, scales).cosine(lsiDocuments.get(j).vector, scales);
 		}
@@ -121,6 +134,8 @@ public class Lsi {
 	}
 
 	public void searchTerm(LsiQuery lsiQuery){
+		setLsiDocuments();
+		setLsiTerms();
 		for (int j = 0; j < lsiTerms.size(); ++j) {
 			lsiTerms.get(j).score = lsiQuery.getVectorFromLSI(lsiTerms, scales).cosine(lsiTerms.get(j).vector, scales);
 		}
