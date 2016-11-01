@@ -90,13 +90,14 @@ public class Document  implements Comparable<Document>{
 	public Range getRange(){
 		return new Range(startPosition.toParserPosition(), endPosition.toParserPosition());
 	}
+	
 	public String getArticle() {
-		article = "";
+	/*	article = "";
 	//	article += javaDocComments.toString()+"\n"+ implementationComments.toString()+"\n"+ implementionBody.toString()+"\n";
 		for (String term : getTermsFromDocument()) {
 			article += term+" ";
 		}
-		return article;
+	*/	return article;
 	}
 	public List<Term> getTerms() {
 		List<Term> terms = new ArrayList<Term>();

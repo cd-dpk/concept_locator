@@ -9,44 +9,43 @@ public class Vector implements Serializable{
 			dimensionValue[i]= 0;
 		}
 	}
-	public Vector addWithVector(Vector vector, double[] scales){
-		for (int i = 0; i < scales.length; i++) {
-			dimensionValue[i] = (dimensionValue[i]+vector.dimensionValue[i]) * scales[i];
+	public Vector addWithVector(Vector vector){
+		for (int i = 0; i < dimensionValue.length; i++) {
+			dimensionValue[i] = (dimensionValue[i]+vector.dimensionValue[i]);
 		}
 		return this;
 	}
-	public double getDotProductWith(Vector vector, double[] scales){
+	public double getDotProductWith(Vector vector){
 		double dotProduct = 0.0;
-		for (int i = 0; i < scales.length; i++) {
-			dotProduct += (dimensionValue[i]*scales[i])*(vector.dimensionValue[i]*scales[i]); 
+		for (int i = 0; i < dimensionValue.length; i++) {
+			dotProduct += (dimensionValue[i])*(vector.dimensionValue[i]); 
 		}
 		return dotProduct;
 	}
-	public double cosine(Vector vector, double[] scales) {
+	public double cosine(Vector vector) {
 	    double product = 0.0;
 	    double xsLengthSquared = 0.0;
 	    double ysLengthSquared = 0.0;
-	    for (int k = 0; k < scales.length; ++k) {
-	        double sqrtScale = Math.sqrt(scales[k]);
-	        double scaledXs = sqrtScale * dimensionValue[k];
-	        double scaledYs = sqrtScale * vector.dimensionValue[k];
+	    for (int k = 0; k < dimensionValue.length; ++k) {
+	        double scaledXs = dimensionValue[k];
+	        double scaledYs = vector.dimensionValue[k];
 	        xsLengthSquared += scaledXs * scaledXs;
 	        ysLengthSquared += scaledYs * scaledYs;
 	        product += scaledXs * scaledYs;
 	    }
 	    return product / Math.sqrt(xsLengthSquared * ysLengthSquared);
 	}
-	public double dotProduct(Vector vector, double[] scales) {
+	public double dotProduct(Vector vector) {
 		double sum = 0.0;
-		for (int k = 0; k < scales.length; ++k){
-			sum += dimensionValue[k] * vector.dimensionValue[k] * scales[k];
+		for (int k = 0; k < dimensionValue.length; ++k){
+			sum += dimensionValue[k] * vector.dimensionValue[k] ;
 		}
 		return sum;
 	}
-	public double scalarValue(double [] scales){
+	public double scalarValue(){
 		double scalarValue = 0;
-		for (int i = 0; i < scales.length; i++) {
-			scalarValue += dimensionValue[i]* scales[i]; 
+		for (int i = 0; i < dimensionValue.length; i++) {
+			scalarValue += dimensionValue[i]; 
 		}
 		return Math.sqrt(scalarValue);
 	}
@@ -59,16 +58,16 @@ public class Vector implements Serializable{
 		string += "\n";
 		return string;
 	}
-	public Vector getUnitVector(double [] scales){
-		Vector unitVector = new Vector(scales.length);
-		double scalarValue = scalarValue(scales);
-		for (int i = 0; i < scales.length; i++) {
-			unitVector.dimensionValue[i] = (dimensionValue[i]* scales[i])/scalarValue; 
+	public Vector getUnitVector(){
+		Vector unitVector = new Vector(dimensionValue.length);
+		double scalarValue = scalarValue();
+		for (int i = 0; i < dimensionValue.length; i++) {
+			unitVector.dimensionValue[i] = (dimensionValue[i])/scalarValue; 
 		}
 		return unitVector;
 	}
 	public boolean isNullVector(double [] scales){
-		if (scalarValue(scales)==0) {
+		if (scalarValue()==0) {
 			return true;
 		}
 		return false;

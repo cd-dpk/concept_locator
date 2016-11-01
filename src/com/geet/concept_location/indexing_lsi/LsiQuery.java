@@ -22,11 +22,11 @@ public class LsiQuery {
 	public void setVector(Vector vector) {
 		this.vector = vector;
 	}
-	public Vector getVectorFromLSI(List<LsiTerm> lsiTerms, double [] scales){
+	public Vector getVectorFromLSI(List<LsiTerm> lsiTerms){
 		for (String queryTerm : getTerms()) {
 			for (LsiTerm lsiTerm : lsiTerms) {
 				if (lsiTerm.isSame(queryTerm)) {
-					vector.addWithVector(lsiTerm.vector, scales);
+					vector.addWithVector(lsiTerm.vector);
 					break;
 				}
 			}

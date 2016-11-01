@@ -3,7 +3,6 @@ import java.io.Serializable;
 import com.geet.concept_location.corpus_creation.Document;
 import com.github.javaparser.Position;
 public class LsiDocument implements Comparable<LsiDocument>,Serializable{
-	
 	public LsiDocument(Document vectorDocument, Vector vector) {
 		super();
 		this.docInJavaFile = vectorDocument.getDocInJavaFile();
@@ -63,12 +62,10 @@ public class LsiDocument implements Comparable<LsiDocument>,Serializable{
 	}
 	@Override
 	public int compareTo(LsiDocument lsiDocument) {
-		if (score >= lsiDocument.score ) {
-			return 1;
-		}
-		return -1;
+		return Double.compare(score, lsiDocument.score);
 	}
 	public String toCSVString() {
-		return docName+","+docInJavaFile+","+startPosition.toString()+","+endPosition.toString()+","+vector.toCSVString();
+	//	return docName+","+docInJavaFile+","+startPosition.toString()+","+endPosition.toString()+","+vector.toCSVString();
+		return vector.toCSVString();
 	}
 }

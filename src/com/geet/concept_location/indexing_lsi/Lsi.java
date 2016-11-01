@@ -1,5 +1,4 @@
 package com.geet.concept_location.indexing_lsi;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -8,7 +7,6 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import com.aliasi.matrix.SvdMatrix;
 import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
 public class Lsi {
@@ -16,11 +14,8 @@ public class Lsi {
 	public List<LsiDocument> lsiDocuments = new ArrayList<LsiDocument>();
 	public static final int NUM_FACTORS = 2;
 	public double [] scales = new double[NUM_FACTORS];
-
 	public Lsi(){
-		
 	}
-	
 	/**
 	 * @deprecated
 	 * @param vectorSpaceModel
@@ -49,7 +44,6 @@ public class Lsi {
 		scales = matrix.singularValues();
 		double[][] termVectors = matrix.leftSingularVectors();
 		double[][] docVectors = matrix.rightSingularVectors();
-		
 		System.out.println("Terms...");
 		/* term vectors into lsi terms*/
 		try {
@@ -58,8 +52,8 @@ public class Lsi {
 			List<LsiTerm> lsiTerms = new ArrayList<LsiTerm>();
 			for (int i = 0; i < termVectors.length; i++) {
 				Vector vector = new Vector(NUM_FACTORS);
-				vector.dimensionValue[0] = termVectors[i][0];
-				vector.dimensionValue[1] = termVectors[i][1];
+				vector.dimensionValue[0] = termVectors[i][0]*scales[i];
+				vector.dimensionValue[1] = termVectors[i][1]*scales[i];
 				LsiTerm lsiTerm = new LsiTerm(vectorSpaceModel.terms.get(i),vector);
 				System.out.println(lsiTerm.toCSVString());
 				lsiTerms.add(lsiTerm);
@@ -69,8 +63,6 @@ public class Lsi {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		
 		System.out.println("DOCS...");
 		/* document vectors into lsi docs*/
 		try {
@@ -80,8 +72,8 @@ public class Lsi {
 			for (int i = 0; i < docVectors.length; i++) {
 				System.out.println("Writing Documents");
 				Vector vector = new Vector(NUM_FACTORS);
-				vector.dimensionValue[0] = docVectors[i][0];
-				vector.dimensionValue[1] = docVectors[i][1];
+				vector.dimensionValue[0] = docVectors[i][0]*scales[i];
+				vector.dimensionValue[1] = docVectors[i][1]*scales[i];
 				System.out.println(vector.toCSVString());
 				LsiDocument lsiDocument = new LsiDocument(vectorSpaceModel.documents.get(i),vector);
 				System.out.println(lsiDocument.toCSVString());
@@ -93,7 +85,6 @@ public class Lsi {
 			e.printStackTrace();
 		}
 	}
-
 	public void setLsiTerms() {
 		lsiTerms = new ArrayList<LsiTerm>();
 		try {
@@ -109,7 +100,6 @@ public class Lsi {
 			e.printStackTrace();
 		}
 	}
-	
 	public void setLsiDocuments() {
 		lsiDocuments = new ArrayList<LsiDocument>();
 		try {
@@ -125,20 +115,29 @@ public class Lsi {
 			e.printStackTrace();
 		}
 	}
-	public void search(LsiQuery lsiQuery){
+	public List<LsiDocument> search(LsiQuery lsiQuery){
 		setLsiTerms();
 		setLsiDocuments();
-		for (int j = 0; j < lsiDocuments.size(); ++j) {
-			lsiDocuments.get(j).score = lsiQuery.getVectorFromLSI(lsiTerms, scales).cosine(lsiDocuments.get(j).vector, scales);
+		List<LsiDocument> lsiDocuments = new ArrayList<LsiDocument>();
+		Vector queryVector = lsiQuery.getVectorFromLSI(lsiTerms);
+		System.out.println(queryVector.toCSVString());
+		for (int j = 0; j < this.lsiDocuments.size(); ++j) {
+			this.lsiDocuments.get(j).score = queryVector.cosine(this.lsiDocuments.get(j).vector);
+			if (this.lsiDocuments.get(j).score > .50) {
+				lsiDocuments.add(this.lsiDocuments.get(j));
+			}
 		}
 		Collections.sort(lsiDocuments);
-		Collections.reverse(lsiDocuments);
+//		Collections.reverse(lsiDocuments);
+		System.out.println("Terms "+ lsiTerms.size() +","+" Documents "+lsiDocuments.size());
+		return lsiDocuments;
 	}
 	public void searchTerm(LsiQuery lsiQuery){
 		setLsiDocuments();
 		setLsiTerms();
 		for (int j = 0; j < lsiTerms.size(); ++j) {
-			lsiTerms.get(j).score = lsiQuery.getVectorFromLSI(lsiTerms, scales).cosine(lsiTerms.get(j).vector, scales);
+			lsiTerms.get(j).score = lsiQuery.getVectorFromLSI(lsiTerms).cosine(lsiTerms.get(j).vector);
+			System.out.println(lsiTerms.get(j).score);
 		}
 		Collections.sort(lsiTerms);
 		Collections.reverse(lsiTerms);

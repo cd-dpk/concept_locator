@@ -1,7 +1,5 @@
 package com.geet.concept_location.indexing_lsi;
-
 import java.io.Serializable;
-
 public class LsiTerm  implements Comparable<LsiTerm>, Serializable{
 	public String term;
 	public Vector vector = new Vector(2);

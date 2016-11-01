@@ -6,14 +6,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import com.aliasi.matrix.SvdMatrix;
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.indexing_lsi.Lsi;
 import com.geet.concept_location.indexing_lsi.LsiDocument;
 import com.geet.concept_location.indexing_lsi.LsiTerm;
 import com.geet.concept_location.indexing_lsi.Vector;
-
 public class VectorSpaceModel {
 	public List<Document> documents = new ArrayList<Document>();
 	public List<String> terms = new ArrayList<String>();
@@ -115,7 +113,6 @@ public class VectorSpaceModel {
 	public List<Document> getDocuments(){
 		return documents;
 	}
-	
 	/**
 	 * 
 	 * @return
@@ -160,7 +157,6 @@ public class VectorSpaceModel {
 		lsi.scales = matrix.singularValues();
 		double[][] termVectors = matrix.leftSingularVectors();
 		double[][] docVectors = matrix.rightSingularVectors();
-		
 		System.out.println("Terms...");
 		/* term vectors into lsi terms*/
 		try {
@@ -180,8 +176,6 @@ public class VectorSpaceModel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		
 		System.out.println("DOCS...");
 		/* document vectors into lsi docs*/
 		try {
@@ -201,10 +195,8 @@ public class VectorSpaceModel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		return lsi;
 	}
-
 	private double getNormalizedValue(double value){
 		double normalizedValue = (value - MIN)/(MAX-MIN);
 		normalizedValue = normalizedValue * (b-a);
