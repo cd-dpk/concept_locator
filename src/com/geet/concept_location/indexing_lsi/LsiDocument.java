@@ -1,6 +1,5 @@
 package com.geet.concept_location.indexing_lsi;
 import java.io.Serializable;
-
 import com.geet.concept_location.corpus_creation.Document;
 import com.github.javaparser.Position;
 public class LsiDocument implements Comparable<LsiDocument>,Serializable{

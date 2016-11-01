@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -19,7 +18,6 @@ import javax.swing.JMenuItem;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
 import com.geet.concept_location.constants.UIConstants;
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.DocumentExtractor;
@@ -83,12 +81,9 @@ public class ConceptLocatorLsiFrame extends JFrame {
 		List<Document> allDocuments = new ArrayList<Document>();
 		int classNo = 0;
 //		String path="src/com/geet/concept_location/corpus_creation/DocumentExtractor.java";
+		System.out.println("Size "+javaClassPathList.size());
 		for (String path : javaClassPathList) {
-			
 			if (new JavaClassPreprocessor().processJavaFile(new File(path))) {
-				if (path.equals("src/com/geet/concept_location/corpus_creation/JavaLanguage.java")) {
-					continue;
-				}
 				DocumentExtractor documentExtractor = new DocumentExtractor(
 						new File(path));
 				int size = 0;
@@ -99,7 +94,7 @@ public class ConceptLocatorLsiFrame extends JFrame {
 				classNo++;
 				System.out.println(path + " has " + size + " document(s)");
 			}
-			if (classNo > 5) {
+			if (classNo > 30) {
 				break;
 			}
 		}
@@ -139,7 +134,6 @@ public class ConceptLocatorLsiFrame extends JFrame {
 					}
 				});
 	}
-
 	private void setSearchTermsResultsPanelLsiUI() {
 		setAllPanelInvisible();
 		searchTermResultsPanelLsiUI = new SearchTermResultsPanelLsiUI(lsiTerms,
@@ -224,5 +218,4 @@ private void setJavaClassViewPanelUI() {
 	private void enableView(){
 		// TODO do later time
 	}
-	
 }
