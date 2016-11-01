@@ -1,4 +1,4 @@
-package com.geet.concept_location.ui;
+/*package com.geet.concept_location.ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.io.IOException;
@@ -14,11 +14,11 @@ import javax.swing.ListCellRenderer;
 import javax.swing.Scrollable;
 import com.geet.concept_location.indexing_lsi.LsiDocument;
 import com.geet.concept_location.indexing_lsi.LsiTerm;
-/**
+*//**
  * 
  * @author geet
  * show the the search results in a text area
- */
+ *//*
 public class SearchTermResultsPanelLsiUI extends JPanel{
 	DefaultListModel listModel = new DefaultListModel();
 	public JList searchResultList = new JList(listModel);
@@ -52,3 +52,4 @@ public class SearchTermResultsPanelLsiUI extends JPanel{
 		}
 	}
 }
+*/

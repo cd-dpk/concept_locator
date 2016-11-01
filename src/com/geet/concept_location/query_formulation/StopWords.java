@@ -30,7 +30,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
-
 import com.geet.concept_location.utils.StringUtils;
 /**
  * Class that can test whether a given string is a stop word.
@@ -473,7 +472,6 @@ public class StopWords{
 	    add("y");
 	    add("z");
   }
-  
   public StopWords() {
     m_Words = new HashSet<String>();
     //Stopwords list from Rainbow
@@ -1004,11 +1002,9 @@ public class StopWords{
     add("z");
     add("zero");
   }
-  
   public  Set<String> getStopWords(){
 	  return m_Words;
   }
-  
   /**
    * removes all stopwords
    */

@@ -4,7 +4,6 @@ import java.awt.Component;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -13,9 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
 import javax.swing.Scrollable;
-
 import com.geet.concept_location.corpus_creation.Document;
-import com.geet.concept_location.indexing_lsi.LsiDocument;
 /**
  * 
  * @author geet

@@ -38,7 +38,6 @@ public class StringUtils {
 		}
 		return false;
 	}
-	
 	/**
 	 * @param target identifier
 	 * @return resultant 
@@ -63,7 +62,6 @@ public class StringUtils {
 		}
 		return resultant+" "+ target;
 	}	
-
 	/**
 	 * @param target identifier
 	 * @return resultant 

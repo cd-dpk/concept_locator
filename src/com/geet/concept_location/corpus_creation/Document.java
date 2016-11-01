@@ -12,14 +12,13 @@ import com.geet.concept_location.utils.StringUtils;
 import com.github.javaparser.Position;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
-public class Document  implements Comparable<Document>{
+public class Document  extends SimpleDocument {
 	protected String docInJavaFile;
 	protected String docName;
 	protected com.geet.concept_location.corpus_creation.Position startPosition, endPosition;
 	protected List<JavadocComment> javaDocComments = new ArrayList<JavadocComment>();
 	protected List<Comment> implementationComments = new ArrayList<Comment>();
 	protected String implementionBody = "";
-	protected String article="";
 	public Document() {
 	}
 	public String getDocInJavaFile() {
@@ -90,6 +89,7 @@ public class Document  implements Comparable<Document>{
 	public Range getRange(){
 		return new Range(startPosition.toParserPosition(), endPosition.toParserPosition());
 	}
+	@Override
 	public String getArticle() {
 		article = "";
 	//	article += javaDocComments.toString()+"\n"+ implementationComments.toString()+"\n"+ implementionBody.toString()+"\n";
@@ -98,6 +98,7 @@ public class Document  implements Comparable<Document>{
 		}
 		return article;
 	}
+	@Override
 	public List<Term> getTerms() {
 		List<Term> terms = new ArrayList<Term>();
 		StringTokenizer stringTokenizer = new StringTokenizer(getArticle(), JavaLanguage.getWhiteSpace(), false);
@@ -125,17 +126,6 @@ public class Document  implements Comparable<Document>{
 			}
 		}
 		return terms;
-	}
-	public boolean hasTerm(Term term){
-		for (Term trm : getTerms()) {
-			if (trm.isSame(term)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	public String toIndentity(){
-		return docName+" "+docInJavaFile;
 	}
 	private List<String> getTermsFromDocument(){
 		Set<String> terms = new HashSet<String>();
@@ -190,74 +180,6 @@ public class Document  implements Comparable<Document>{
 		}
 		return new ArrayList<String>(termSet);
 	}
-	public double getScalarValue(){
-		double scalarValue = 0.0;
-		for (Term term : getTerms()) {
-				scalarValue += term.getTF_IDF()* term.getTF_IDF();
-		}
-		scalarValue = Math.sqrt(scalarValue);
-		return scalarValue;
-	}
-	/**
-	 * 
-	 * @param document
-	 * @return dotProduct dotProduct between two documents
-	 */
-	public double getDotProduct(Document document){
-		double dotProduct = 1.0;
-		double scalarValue = 0.0;
-		for (Term term : getTerms()) {
-			for (Term trm : document.getTerms()) {
-				if (term.isSame(trm)) {
-					dotProduct *= term.getTF_IDF() * term.getTF_IDF();
-					scalarValue += term.getTF_IDF() * term.getTF_IDF();
-					break;
-				}
-			}
-		}
-		// cosine similarity
-		return dotProduct;
-	}
-	@Override
-	public String toString() {
-		return "Ram and Sham are good friends.\nThey are good man also";
-	}
-
-	public double score = -1;
-	
-	@Override
-	public int compareTo(Document document) {
-		if (score > document.score) {
-			return 1;
-		}
-		return -1;
-	}
-	public double getTF_IDF(String termString){
-		double tf_idf = 0.0;
-		for (Term term : getTerms()) {
-			if (term.isSame(new Term(termString))) {
-				return term.getTF_IDF();
-			}
-		}
-		return tf_idf;
-	}
-	public double getTF(String termString){
-		double tf = 0.0;
-		for (Term term : getTerms()) {
-			if (term.isSame(new Term(termString))) {
-				return term.termFrequency;
-			}
-		}
-		return tf;
-	}
-	public List<String> getTermsInString(){
-		List<String> termsInString = new ArrayList<String>();
-		for (Term term : getTerms()) {
-			termsInString.add(term.termString);
-		}
-		return termsInString;
-	}
-	
 	/**
 	 * @return true when the two document is same 
 	 */

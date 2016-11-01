@@ -3,11 +3,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import com.geet.concept_location.corpus_creation.Document;
-
+import com.geet.concept_location.corpus_creation.SimpleDocument;
 public class VectorSpaceModel {
-	public List<Document> documents = new ArrayList<Document>();
+	public List<SimpleDocument> documents = new ArrayList<SimpleDocument>();
 	public List<String> terms = new ArrayList<String>();
 	public double [][]TERM_DOCUMENT_MATRIX;
 	public double [] df;
@@ -17,8 +16,7 @@ public class VectorSpaceModel {
 	private double a = 1.0;
 	private double b = 2.0;
 	private double MIN = 0;
-	
-	public VectorSpaceModel(List<Document> documentList) {
+	public VectorSpaceModel(List<SimpleDocument> documentList) {
 		documents = documentList;
 		totalTerm = getTermS().size();
 		totalDocs = getDocuments().size();
@@ -28,9 +26,9 @@ public class VectorSpaceModel {
 		df = new double [totalTerm];
 		System.out.println("Terms "+totalTerm+" Documents "+totalDocs);
 		System.out.println(terms.toString());
+		setTERM_DOCUMENT_MATRIX(terms, documents);
 	}
-
-	public void setTERM_DOCUMENT_MATRIX(List<Term> terms,List<Document>documents){
+	public void setTERM_DOCUMENT_MATRIX(List<String> terms,List<SimpleDocument>documents){
 		/* dont calculate idf from terms rather compute it from matrix*/
 		System.out.println("Term Document Matrix getting...");
 		for (int i = 0; i < totalTerm; i++) {
@@ -58,17 +56,7 @@ public class VectorSpaceModel {
 				}
 			}
 		}
-		System.out.println("Normalizing...");
-		for (int i = 0; i < TERM_DOCUMENT_MATRIX.length; i++) {
-			for (int j = 0; j < TERM_DOCUMENT_MATRIX[i].length; j++) {
-				TERM_DOCUMENT_MATRIX[i][j] = getNormalizedValue(TERM_DOCUMENT_MATRIX[i][j]);
-				System.out.print(TERM_DOCUMENT_MATRIX[i][j]+" ");
-			}
-			System.out.println();
-		}
 	}
-	
-	
 	public List<Document> search(){
 		List<Document>lsiDocuments = new ArrayList<Document>();	
 		for (int i = 1; i < documents.size(); i++) {
@@ -76,18 +64,17 @@ public class VectorSpaceModel {
 				double scalarOne = 0.0;
 				double scalarTwo = 0.0;
 				for (int j = 0; j < terms.size(); j++) {
-					dotProduct += TERM_DOCUMENT_MATRIX[0][j] * TERM_DOCUMENT_MATRIX[0][i];
-					scalarOne += TERM_DOCUMENT_MATRIX[0][j] * TERM_DOCUMENT_MATRIX[0][j];
-					scalarTwo += TERM_DOCUMENT_MATRIX[0][i] * TERM_DOCUMENT_MATRIX[0][i];
+					dotProduct += TERM_DOCUMENT_MATRIX[j][0] * TERM_DOCUMENT_MATRIX[j][i];
+					scalarOne += TERM_DOCUMENT_MATRIX[j][0] * TERM_DOCUMENT_MATRIX[j][0];
+					scalarTwo += TERM_DOCUMENT_MATRIX[j][i] * TERM_DOCUMENT_MATRIX[j][i];
 				}
 				documents.get(i).score = (dotProduct)/(Math.sqrt(scalarOne)*Math.sqrt(scalarTwo));
-				if (documents.get(i).score > 0.75 ) {
-					lsiDocuments.add(documents.get(i));
+				if (documents.get(i).score > 0) {
+					lsiDocuments.add((Document) documents.get(i));
 				}
 		}
 		return lsiDocuments;
 	}
-	
 	private double getNormalizedValue(double value){
 		double normalizedValue = (value - MIN)/(MAX-MIN);
 		normalizedValue = normalizedValue * (b-a);
@@ -107,7 +94,6 @@ public class VectorSpaceModel {
 		 * compute score of all documents with query vector
 		 * ( query[i][0] * ( 1+ log 10((1+doucuments.size())/query[i][1])) ) * (TERM_DOCUMENT_MATRIX[j][i]( 1+ log 10((1+doucuments.size())/query[i][1])))
 		 */
-		
 		/* dont calculate idf from terms rather compute it from matrix*/
 		for (int i = 0; i < totalTerm; i++) {
 			// df
@@ -121,8 +107,6 @@ public class VectorSpaceModel {
 			}
 		}
 	}
-	
-	
 	public double [][] getTERM_DOCUMENT_MATRIX(){
 		/* dont calculate idf from terms rather compute it from matrix*/
 		double [] df = new double[totalTerm];
@@ -147,7 +131,6 @@ public class VectorSpaceModel {
 		}
 		return TERM_DOCUMENT_MATRIX;
 	}
-	
 	/**
 	 * @deprecated
 	 * @param documents
@@ -155,7 +138,7 @@ public class VectorSpaceModel {
 	 */
 	public String[] getTermsFromDocuments(List<Document> documents){
 		Set<String> termSet = new HashSet<String>();
-		for (Document document : documents) {
+		for (SimpleDocument document : documents) {
 				Set<String> candidateSet = new HashSet<String>(document.getTermsInString());
 				termSet.addAll(candidateSet);
 		}
@@ -163,41 +146,29 @@ public class VectorSpaceModel {
 	}
 	public List<String> getTermS(){
 		Set<String> termSet = new HashSet<String>();
-		for (Document document : documents) {
+		for (SimpleDocument document : documents) {
 				Set<String> candidateSet = new HashSet<String>(document.getTermsInString());
 				termSet.addAll(candidateSet);
 		}
 		return new ArrayList<String>(termSet);
 	}
-	
-	
 	public String[] getTERMS(){
 		Set<String> termSet = new HashSet<String>();
-		for (Document document : documents) {
+		for (SimpleDocument document : documents) {
 				Set<String> candidateSet = new HashSet<String>(document.getTermsInString());
 				termSet.addAll(candidateSet);
 		}
 		return termSet.toArray(new String[termSet.size()]);
 	}
-	
-	
 	public String [] getDOCS(){
 		Set<String> documentSet = new HashSet<String>();
-		for (Document document : documents) {
+		for (SimpleDocument document : documents) {
 				documentSet.add(document.getArticle());
 		}
 		return documentSet.toArray(new String[documentSet.size()]);
 	}
-	
-	public Document [] getDocumentArray(){
-		Set<Document> documentSet = new HashSet<Document>(documents);
-		return documentSet.toArray(new Document[documentSet.size()]);
-		
-	}
-	
-	public List<Document> getDocuments(){
+	public List<SimpleDocument> getDocuments(){
 		return documents;
-		
 	}
 	/**
 	 * 

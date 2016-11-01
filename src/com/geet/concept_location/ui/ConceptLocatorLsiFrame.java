@@ -8,9 +8,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
-
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -19,31 +20,25 @@ import javax.swing.JMenuItem;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
 import com.geet.concept_location.constants.UIConstants;
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.DocumentExtractor;
-import com.geet.concept_location.indexing_lsi.Lsi;
-import com.geet.concept_location.indexing_lsi.LsiDocument;
-import com.geet.concept_location.indexing_lsi.LsiQuery;
-import com.geet.concept_location.indexing_lsi.LsiTerm;
+import com.geet.concept_location.corpus_creation.SimpleDocument;
 import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
 import com.geet.concept_location.io.JavaFileReader;
 import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
 import com.geet.concept_location.utils.JavaFileFilter;
 public class ConceptLocatorLsiFrame extends JFrame {
 	String projectPath = ".";
-	List<Document> allDocuments = new ArrayList<Document>();
+	List<SimpleDocument> allDocuments = new ArrayList<SimpleDocument>();
 	String javaClassPath = "src/com/geet/concept_location/corpus_creation/DocumentExtractor.java";
 	ProjectExplorerViewPanel projectExplorerViewPanel;
 	JavaClassViewPanelUI javaClassViewPanelUI;
 	SearchResultsPanelLsiUI searchResultsPanelLsiUI;
-	SearchTermResultsPanelLsiUI searchTermResultsPanelLsiUI;
 	List<Document> documents = new ArrayList<Document>();
 	SearchBoxPanelUI searchBoxPanel;
 	FileNameExtensionFilter javaFileNameExtensionFilter = new FileNameExtensionFilter("Java Files Only", ".java");
 	VectorSpaceModel vectorSpaceModel;
-	
 	public ConceptLocatorLsiFrame() {
 		super("Concept Locator");
 		setLayout(null);
@@ -66,21 +61,24 @@ public class ConceptLocatorLsiFrame extends JFrame {
 				new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						Document document = new Document();
-						document.setArticle(searchBoxPanel.getSearchTextField().getText());
-						allDocuments.add(document);
-						vectorSpaceModel = new VectorSpaceModel(allDocuments);
+						SimpleDocument queryDocument = new SimpleDocument(searchBoxPanel.getSearchTextField().getText());
+						List<SimpleDocument> simpleDocuments = new ArrayList<SimpleDocument>();
+						simpleDocuments.add(queryDocument);
+						simpleDocuments.addAll(allDocuments);
+						vectorSpaceModel = new VectorSpaceModel(simpleDocuments);
 						documents = vectorSpaceModel.search();
+						Collections.sort(documents);
+						Collections.reverse(documents);
+						setSearchResultsPanelLsiUI();
 					}
 				});
 	}
 	private void initIndexing(List<String> javaClassPathList){
 		// read all the documents
-		allDocuments = new ArrayList<Document>();
+		allDocuments = new ArrayList<SimpleDocument>();
 		int classNo = 0;
 //		String path="src/com/geet/concept_location/corpus_creation/DocumentExtractor.java";
 		for (String path : javaClassPathList) {
-			
 			if (new JavaClassPreprocessor().processJavaFile(new File(path))) {
 				if (path.equals("src/com/geet/concept_location/corpus_creation/JavaLanguage.java")) {
 					continue;
@@ -94,9 +92,6 @@ public class ConceptLocatorLsiFrame extends JFrame {
 				}
 				classNo++;
 				System.out.println(path + " has " + size + " document(s)");
-			}
-			if (classNo > 5) {
-				break;
 			}
 		}
 		System.out.println("Size "+allDocuments.size());
@@ -133,7 +128,6 @@ public class ConceptLocatorLsiFrame extends JFrame {
 					}
 				});
 	}
-
 private void setJavaClassViewPanelUI() {
 		setAllPanelInvisible();
 		String src = "Source";
@@ -209,5 +203,4 @@ private void setJavaClassViewPanelUI() {
 	private void enableView(){
 		// TODO do later time
 	}
-	
 }

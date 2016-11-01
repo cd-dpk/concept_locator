@@ -163,5 +163,4 @@ public class DocumentExtractor {
 					new File(path));
 			System.out.println(path+" has "+documentExtractor.getAllDocuments().size()+" document(s)");
 	}
-	
 }
