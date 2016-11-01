@@ -3,6 +3,7 @@ import java.io.Serializable;
 import com.geet.concept_location.corpus_creation.Document;
 import com.github.javaparser.Position;
 public class LsiDocument implements Comparable<LsiDocument>,Serializable{
+	
 	public LsiDocument(Document vectorDocument, Vector vector) {
 		super();
 		this.docInJavaFile = vectorDocument.getDocInJavaFile();

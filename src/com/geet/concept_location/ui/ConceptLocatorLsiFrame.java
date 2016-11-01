@@ -94,9 +94,6 @@ public class ConceptLocatorLsiFrame extends JFrame {
 				classNo++;
 				System.out.println(path + " has " + size + " document(s)");
 			}
-			if (classNo > 30) {
-				break;
-			}
 		}
 		System.out.println("Size "+allDocuments.size());
 		// turn into vector documents
