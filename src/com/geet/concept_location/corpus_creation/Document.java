@@ -255,7 +255,6 @@ public class Document  implements Comparable<Document>{
 		}
 		return termsInString;
 	}
-	
 	/**
 	 * @return true when the two document is same 
 	 */

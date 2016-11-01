@@ -169,8 +169,8 @@ public class VectorSpaceModel {
 			List<LsiTerm> lsiTerms = new ArrayList<LsiTerm>();
 			for (int i = 0; i < termVectors.length; i++) {
 				Vector vector = new Vector(Lsi.NUM_FACTORS);
-				vector.dimensionValue[0] = docVectors[i][0];
-				vector.dimensionValue[1] = docVectors[i][1];
+				vector.dimensionValue[0] = termVectors[i][0];
+				vector.dimensionValue[1] = termVectors[i][1];
 				LsiTerm lsiTerm = new LsiTerm(terms.get(i),vector);
 				System.out.println(lsiTerm.toCSVString());
 				lsiTerms.add(lsiTerm);

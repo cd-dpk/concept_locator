@@ -69,10 +69,10 @@ public class ConceptLocatorLsiFrame extends JFrame {
 								.getAllDocuments();
 						VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(
 								documents);
-						myLsi.searchTerm(new LsiQuery(searchBoxPanel.getSearchTextField().getText(), new com.geet.concept_location.indexing_lsi.Vector(Lsi.NUM_FACTORS)));
+						myLsi.search(new LsiQuery(searchBoxPanel.getSearchTextField().getText(), new com.geet.concept_location.indexing_lsi.Vector(Lsi.NUM_FACTORS)));
 						lsiDocuments = myLsi.lsiDocuments;
 						lsiTerms = myLsi.lsiTerms;
-						setSearchTermsResultsPanelLsiUI();
+						setSearchResultsPanelLsiUI();
 					}
 				});
 	}
@@ -93,6 +93,10 @@ public class ConceptLocatorLsiFrame extends JFrame {
 				}
 				classNo++;
 				System.out.println(path + " has " + size + " document(s)");
+			}
+			
+			if (classNo > 5) {
+				break;
 			}
 		}
 		System.out.println("Size "+allDocuments.size());
