@@ -222,10 +222,12 @@ public class Document  implements Comparable<Document>{
 	public String toString() {
 		return "Ram and Sham are good friends.\nThey are good man also";
 	}
-	public double dotProduct=0.0;
+
+	public double score = -1;
+	
 	@Override
 	public int compareTo(Document document) {
-		if (dotProduct > document.dotProduct) {
+		if (score > document.score) {
 			return 1;
 		}
 		return -1;

@@ -33,16 +33,17 @@ import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
 import com.geet.concept_location.utils.JavaFileFilter;
 public class ConceptLocatorLsiFrame extends JFrame {
 	String projectPath = ".";
+	List<Document> allDocuments = new ArrayList<Document>();
 	String javaClassPath = "src/com/geet/concept_location/corpus_creation/DocumentExtractor.java";
 	ProjectExplorerViewPanel projectExplorerViewPanel;
 	JavaClassViewPanelUI javaClassViewPanelUI;
 	SearchResultsPanelLsiUI searchResultsPanelLsiUI;
 	SearchTermResultsPanelLsiUI searchTermResultsPanelLsiUI;
-	List<LsiTerm> lsiTerms = new ArrayList<LsiTerm>();
-	List<LsiDocument> lsiDocuments = new ArrayList<LsiDocument>();
+	List<Document> documents = new ArrayList<Document>();
 	SearchBoxPanelUI searchBoxPanel;
 	FileNameExtensionFilter javaFileNameExtensionFilter = new FileNameExtensionFilter("Java Files Only", ".java");
-	private Lsi myLsi;
+	VectorSpaceModel vectorSpaceModel;
+	
 	public ConceptLocatorLsiFrame() {
 		super("Concept Locator");
 		setLayout(null);
@@ -65,22 +66,17 @@ public class ConceptLocatorLsiFrame extends JFrame {
 				new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						DocumentExtractor documentExtractor = new DocumentExtractor(
-								new File(javaClassPath));
-						List<Document> documents = documentExtractor
-								.getAllDocuments();
-						VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(
-								documents);
-						myLsi.searchTerm(new LsiQuery(searchBoxPanel.getSearchTextField().getText(), new com.geet.concept_location.indexing_lsi.Vector(Lsi.NUM_FACTORS)));
-						lsiDocuments = myLsi.lsiDocuments;
-						lsiTerms = myLsi.lsiTerms;
-						setSearchTermsResultsPanelLsiUI();
+						Document document = new Document();
+						document.setArticle(searchBoxPanel.getSearchTextField().getText());
+						allDocuments.add(document);
+						vectorSpaceModel = new VectorSpaceModel(allDocuments);
+						documents = vectorSpaceModel.search();
 					}
 				});
 	}
 	private void initIndexing(List<String> javaClassPathList){
 		// read all the documents
-		List<Document> allDocuments = new ArrayList<Document>();
+		allDocuments = new ArrayList<Document>();
 		int classNo = 0;
 //		String path="src/com/geet/concept_location/corpus_creation/DocumentExtractor.java";
 		for (String path : javaClassPathList) {
@@ -106,8 +102,6 @@ public class ConceptLocatorLsiFrame extends JFrame {
 		System.out.println("Size "+allDocuments.size());
 		// turn into vector documents
 		// get the vector space model
-		VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(allDocuments);
-		myLsi = vectorSpaceModel.getLsi();
 }
 	private void setProjectExplorerViewPanel() {
 		setAllPanelInvisible();
@@ -122,7 +116,7 @@ public class ConceptLocatorLsiFrame extends JFrame {
 	}
 	private void setSearchResultsPanelLsiUI() {
 		setAllPanelInvisible();
-		searchResultsPanelLsiUI = new SearchResultsPanelLsiUI(lsiDocuments,
+		searchResultsPanelLsiUI = new SearchResultsPanelLsiUI(documents,
 				new Bound(0, 0, 1300 - 100, 800 - 50));
 		searchResultsPanelLsiUI.setBounds(UIConstants.PADDING_LEFT,
 				UIConstants.Menu_Height + UIConstants.PADDING_TOP, 1300, 800);
@@ -140,15 +134,6 @@ public class ConceptLocatorLsiFrame extends JFrame {
 				});
 	}
 
-	private void setSearchTermsResultsPanelLsiUI() {
-		setAllPanelInvisible();
-		searchTermResultsPanelLsiUI = new SearchTermResultsPanelLsiUI(lsiTerms,
-				new Bound(0, 0, 1300 - 100, 800 - 50));
-		searchTermResultsPanelLsiUI.setBounds(UIConstants.PADDING_LEFT,
-				UIConstants.Menu_Height + UIConstants.PADDING_TOP, 1300, 800);
-		add(searchTermResultsPanelLsiUI);
-		searchTermResultsPanelLsiUI.revalidate();
-	}
 private void setJavaClassViewPanelUI() {
 		setAllPanelInvisible();
 		String src = "Source";

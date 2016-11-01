@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -12,6 +13,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
 import javax.swing.Scrollable;
+
+import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.indexing_lsi.LsiDocument;
 /**
  * 
@@ -21,18 +24,18 @@ import com.geet.concept_location.indexing_lsi.LsiDocument;
 public class SearchResultsPanelLsiUI extends JPanel{
 	DefaultListModel listModel = new DefaultListModel();
 	public JList searchResultList = new JList(listModel);
-	public List<LsiDocument> lsiDocuments = new ArrayList<LsiDocument>();
-	public SearchResultsPanelLsiUI(List<LsiDocument>vectorDocuments, Bound bound) {
+	public List<Document> lsiDocuments = new ArrayList<Document>();
+	public SearchResultsPanelLsiUI(List<Document>vectorDocuments, Bound bound) {
 		super();
 		setLayout(null);
 		this.lsiDocuments = vectorDocuments;
 		searchResultList.setCellRenderer(new TextAreaListItem(10, 20));
-		for (LsiDocument document : lsiDocuments) {
+		for (Document document : lsiDocuments) {
 			String str="";
-			str += document.getScore()+"\n";
+			str += document.score+"\n";
 			str += document.getDocName()+"\n";
 			str += document.getDocInJavaFile()+"\n";
-			str += document.article+"\n";
+			str += document.getArticle()+"\n";
 			listModel.addElement(str);
 		}
 		JScrollPane scrollPane =new JScrollPane(searchResultList);
