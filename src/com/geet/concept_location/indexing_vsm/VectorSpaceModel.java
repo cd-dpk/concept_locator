@@ -55,9 +55,9 @@ public class VectorSpaceModel {
 				double scalarOne = 0.0;
 				double scalarTwo = 0.0;
 				for (int j = 0; j < terms.size(); j++) {
-					dotProduct += TERM_DOCUMENT_MATRIX[j][0] * TERM_DOCUMENT_MATRIX[j][i];
-					scalarOne += TERM_DOCUMENT_MATRIX[j][0] * TERM_DOCUMENT_MATRIX[j][0];
-					scalarTwo += TERM_DOCUMENT_MATRIX[j][i] * TERM_DOCUMENT_MATRIX[j][i];
+					dotProduct += TERM_DOCUMENT_MATRIX[j][0] *(1 + (Math.log10((double)(documents.size())/(df[j]))/Math.log10(2.0)))* TERM_DOCUMENT_MATRIX[j][i] * (1 + (Math.log10((double)(documents.size())/(df[j]))/Math.log10(2.0)));
+					scalarOne += TERM_DOCUMENT_MATRIX[j][0] * (1 + (Math.log10((double)(documents.size())/(df[j]))/Math.log10(2.0)))* TERM_DOCUMENT_MATRIX[j][0] * (1 + (Math.log10((double)(documents.size())/(df[j]))/Math.log10(2.0)));
+					scalarTwo += TERM_DOCUMENT_MATRIX[j][i] * (1 + (Math.log10((double)(documents.size())/(df[j]))/Math.log10(2.0)))* TERM_DOCUMENT_MATRIX[j][i]*(1 + (Math.log10((double)(documents.size())/(df[j]))/Math.log10(2.0)));
 				}
 				documents.get(i).score = (dotProduct)/(Math.sqrt(scalarOne)*Math.sqrt(scalarTwo));
 				if (documents.get(i).score > 0) {
@@ -84,7 +84,8 @@ public class VectorSpaceModel {
 				}
 				newDocumentMatrix[i] = 0;
 			}
-			if (flag != 0) {
+			if (flag == 0) {
+				System.out.println("Not in term_document_matrix"+term);
 				extensionTerms.add(term);
 			}
 		}
@@ -107,13 +108,16 @@ public class VectorSpaceModel {
 					scalarTwo += (TERM_DOCUMENT_MATRIX[j][i] * tempDf)* (TERM_DOCUMENT_MATRIX[j][i]* tempDf);
 				}
 				for (int j = 0; j < extensionTerms.size(); j++) {
+					System.out.println(j);
 					double tempDf =  1 + (Math.log10((double)(totalDocument)/(1))/Math.log10(2.0));
 					scalarOne += (extensionTerms.get(j).termFrequency * tempDf)* (extensionTerms.get(j).termFrequency* tempDf);
+					System.out.println(scalarOne);
 				}
 				documents.get(i).score = (dotProduct)/(Math.sqrt(scalarOne)*Math.sqrt(scalarTwo));
-				if (documents.get(i).score > 0) {
+				System.out.println(documents.get(i).score);;
+			//	if (documents.get(i).score > 0) {
 					lsiDocuments.add((Document) documents.get(i));
-				}
+			//	}
 		}
 		return lsiDocuments;
 	}

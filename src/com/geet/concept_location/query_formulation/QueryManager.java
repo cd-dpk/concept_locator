@@ -1,5 +1,6 @@
 package com.geet.concept_location.query_formulation;
 import java.util.StringTokenizer;
+import com.geet.concept_location.corpus_creation.Stemmer;
 import com.geet.concept_location.corpus_creation.StopWords;
 import com.geet.concept_location.utils.StringUtils;
 public class QueryManager {
@@ -20,7 +21,9 @@ public class QueryManager {
 			}
 			String token = stringTokenizer.nextToken();
 			if (!StopWords.isStopword(token)) {
-				tokens += token+" ";
+				Stemmer stemmer = new Stemmer(token);
+				stemmer.stem();
+				token = stemmer.toString();
 			}
 		}
 		if (!tokens.equals(query)) {
@@ -29,7 +32,7 @@ public class QueryManager {
 	}
 	public String getProcessedQuery() {
 		processQuery();
-		return StringUtils.getIdentifierSeparations(query);
+		return StringUtils.getIdentifierSeparationsWithCamelCase(query);
 	}
 	public static void main(String[] args) {
 		System.out.println(new QueryManager("methodLove").getProcessedQuery());
