@@ -1,7 +1,6 @@
 package com.geet.concept_location.indexing_lsi;
 import java.io.Serializable;
 public class Vector implements Serializable{
-	private final double nullVectorValue = -2; 
 	public double [] dimensionValue;
 	public Vector(int dimensions){
 		dimensionValue = new double[dimensions];
@@ -22,6 +21,7 @@ public class Vector implements Serializable{
 		}
 		return dotProduct;
 	}
+	// refined
 	public double cosine(Vector vector) {
 	    double product = 0.0;
 	    double xsLengthSquared = 0.0;
@@ -33,6 +33,9 @@ public class Vector implements Serializable{
 	        ysLengthSquared += scaledYs * scaledYs;
 	        product += scaledXs * scaledYs;
 	    }
+	    if (xsLengthSquared ==0 || ysLengthSquared == 0) {
+			return -1;
+		}
 	    return product / Math.sqrt(xsLengthSquared * ysLengthSquared);
 	}
 	public double dotProduct(Vector vector) {
@@ -58,19 +61,11 @@ public class Vector implements Serializable{
 		string += "\n";
 		return string;
 	}
-	public Vector getUnitVector(){
-		Vector unitVector = new Vector(dimensionValue.length);
-		double scalarValue = scalarValue();
-		for (int i = 0; i < dimensionValue.length; i++) {
-			unitVector.dimensionValue[i] = (dimensionValue[i])/scalarValue; 
+	public boolean isNull(){
+		if (scalarValue()!=0) {
+			return false;
 		}
-		return unitVector;
-	}
-	public boolean isNullVector(double [] scales){
-		if (scalarValue()==0) {
-			return true;
-		}
-		return false;
+		return true;
 	}
 	public String toCSVString() {
 		String string="";

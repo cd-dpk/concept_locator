@@ -1,90 +1,15 @@
 package com.geet.concept_location.indexing_lsi;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import com.aliasi.matrix.SvdMatrix;
-import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
 public class Lsi {
 	public List<LsiTerm> lsiTerms = new ArrayList<LsiTerm>();
 	public List<LsiDocument> lsiDocuments = new ArrayList<LsiDocument>();
 	public static final int NUM_FACTORS = 2;
 	public double [] scales = new double[NUM_FACTORS];
-	public Lsi(){
-	}
-	/**
-	 * @deprecated
-	 * @param vectorSpaceModel
-	 */
-	public Lsi(VectorSpaceModel vectorSpaceModel){
-		double featureInit = 0.01;
-		double initialLearningRate = 0.005;
-		int annealingRate = 1000;
-		double regularization = 0.00;
-		double minImprovement = 0.0000;
-		int minEpochs = 10;
-		// simple comment
-		int maxEpochs = 50000;
-		System.out.println("  Computing SVD");
-		System.out.println("    maxFactors=" + NUM_FACTORS);
-		System.out.println("    featureInit=" + featureInit);
-		System.out.println("    initialLearningRate=" + initialLearningRate);
-		System.out.println("    annealingRate=" + annealingRate);
-		System.out.println("    regularization" + regularization);
-		System.out.println("    minImprovement=" + minImprovement);
-		System.out.println("    minEpochs=" + minEpochs);
-		System.out.println("    maxEpochs=" + maxEpochs);
-		SvdMatrix matrix = SvdMatrix.svd(vectorSpaceModel.getTERM_DOCUMENT_MATRIX(), NUM_FACTORS,
-				featureInit, initialLearningRate, annealingRate,
-				regularization, null, minImprovement, minEpochs, maxEpochs);
-		scales = matrix.singularValues();
-		double[][] termVectors = matrix.leftSingularVectors();
-		double[][] docVectors = matrix.rightSingularVectors();
-		System.out.println("Terms...");
-		/* term vectors into lsi terms*/
-		try {
-			FileOutputStream file = new FileOutputStream("Terms.ser");
-			ObjectOutputStream objectOutputStream = new ObjectOutputStream(file);
-			List<LsiTerm> lsiTerms = new ArrayList<LsiTerm>();
-			for (int i = 0; i < termVectors.length; i++) {
-				Vector vector = new Vector(NUM_FACTORS);
-				vector.dimensionValue[0] = termVectors[i][0]*scales[i];
-				vector.dimensionValue[1] = termVectors[i][1]*scales[i];
-				LsiTerm lsiTerm = new LsiTerm(vectorSpaceModel.terms.get(i),vector);
-				System.out.println(lsiTerm.toCSVString());
-				lsiTerms.add(lsiTerm);
-			}
-			objectOutputStream.writeObject(lsiTerms);
-			objectOutputStream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("DOCS...");
-		/* document vectors into lsi docs*/
-		try {
-			FileOutputStream file = new FileOutputStream("Documents.ser");
-			ObjectOutputStream objectOutputStream = new ObjectOutputStream(file);
-			List<LsiDocument> lsiDocuments = new ArrayList<LsiDocument>();
-			for (int i = 0; i < docVectors.length; i++) {
-				System.out.println("Writing Documents");
-				Vector vector = new Vector(NUM_FACTORS);
-				vector.dimensionValue[0] = docVectors[i][0]*scales[i];
-				vector.dimensionValue[1] = docVectors[i][1]*scales[i];
-				System.out.println(vector.toCSVString());
-				LsiDocument lsiDocument = new LsiDocument(vectorSpaceModel.documents.get(i),vector);
-				System.out.println(lsiDocument.toCSVString());
-				lsiDocuments.add(lsiDocument);
-			}
-			objectOutputStream.writeObject(lsiDocuments);
-			objectOutputStream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 	public void setLsiTerms() {
 		lsiTerms = new ArrayList<LsiTerm>();
 		try {
@@ -92,6 +17,7 @@ public class Lsi {
 			ObjectInputStream objectInputStream = new ObjectInputStream(file);
 			try {
 				lsiTerms = (ArrayList<LsiTerm>) objectInputStream.readObject();
+				System.out.println(lsiTerms.toString());
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -107,6 +33,7 @@ public class Lsi {
 			ObjectInputStream objectInputStream = new ObjectInputStream(file);
 			try {
 				lsiDocuments = (ArrayList<LsiDocument>) objectInputStream.readObject();
+				System.out.println(lsiDocuments.toString());
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -118,25 +45,27 @@ public class Lsi {
 	public List<LsiDocument> search(LsiQuery lsiQuery){
 		setLsiTerms();
 		setLsiDocuments();
-		List<LsiDocument> lsiDocuments = new ArrayList<LsiDocument>();
-		Vector queryVector = lsiQuery.getVectorFromLSI(lsiTerms);
+		List<LsiDocument> resultantLsiDocuments = new ArrayList<LsiDocument>();
+		Vector queryVector = getVectorFromLSI(lsiQuery);
 		System.out.println(queryVector.toCSVString());
-		for (int j = 0; j < this.lsiDocuments.size(); ++j) {
-			this.lsiDocuments.get(j).score = queryVector.cosine(this.lsiDocuments.get(j).vector);
-		//	if (this.lsiDocuments.get(j).score > .50) {
-				lsiDocuments.add(this.lsiDocuments.get(j));
-		//	}
+		if (!queryVector.isNull()) {
+			for (int j = 0; j < lsiDocuments.size(); ++j) {
+				lsiDocuments.get(j).score = queryVector.cosine(lsiDocuments.get(j).vector);
+				if (this.lsiDocuments.get(j).score > .50) {
+					resultantLsiDocuments.add(lsiDocuments.get(j));
+				}
+			}
+			Collections.sort(resultantLsiDocuments);
+			Collections.reverse(resultantLsiDocuments);
+			System.out.println("Terms "+ lsiTerms.size() +","+" Documents "+resultantLsiDocuments.size());
 		}
-		Collections.sort(lsiDocuments);
-		Collections.reverse(lsiDocuments);
-		System.out.println("Terms "+ lsiTerms.size() +","+" Documents "+lsiDocuments.size());
-		return lsiDocuments;
+		return resultantLsiDocuments;
 	}
 	public void searchTerm(LsiQuery lsiQuery){
 		setLsiDocuments();
 		setLsiTerms();
 		for (int j = 0; j < lsiTerms.size(); ++j) {
-			lsiTerms.get(j).score = lsiQuery.getVectorFromLSI(lsiTerms).cosine(lsiTerms.get(j).vector);
+			lsiTerms.get(j).score = getVectorFromLSI(lsiQuery).cosine(lsiTerms.get(j).vector);
 			System.out.println(lsiTerms.get(j).score);
 		}
 		Collections.sort(lsiTerms);
@@ -151,5 +80,16 @@ public class Lsi {
 		for (LsiTerm lsiTerm : lsiTerms) {
 			System.out.println(lsiTerm.vector.toString());
 		}
+	}
+	public Vector getVectorFromLSI(LsiQuery lsiQuery){
+		for (String queryTerm : lsiQuery.getTerms()) {
+			for (LsiTerm lsiTerm : lsiTerms) {
+				if (lsiTerm.isSame(queryTerm)) {
+					lsiQuery.vector.addWithVector(lsiTerm.vector);
+					break;
+				}
+			}
+		}
+		return lsiQuery.vector;
 	}
 }

@@ -22,18 +22,7 @@ public class LsiQuery {
 	public void setVector(Vector vector) {
 		this.vector = vector;
 	}
-	public Vector getVectorFromLSI(List<LsiTerm> lsiTerms){
-		for (String queryTerm : getTerms()) {
-			for (LsiTerm lsiTerm : lsiTerms) {
-				if (lsiTerm.isSame(queryTerm)) {
-					vector.addWithVector(lsiTerm.vector);
-					break;
-				}
-			}
-		}
-		return vector;
-	}
-	private List<String> getTerms(){
+	public List<String> getTerms(){
 		List<String> terms = new ArrayList<String>();
 		StringTokenizer stringTokenizer = new StringTokenizer(query," ", false);
 		while (stringTokenizer.hasMoreTokens()) {

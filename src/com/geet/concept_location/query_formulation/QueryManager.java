@@ -1,6 +1,5 @@
 package com.geet.concept_location.query_formulation;
 import java.util.StringTokenizer;
-
 import com.geet.concept_location.corpus_creation.StopWords;
 import com.geet.concept_location.utils.StringUtils;
 public class QueryManager {

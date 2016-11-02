@@ -1,9 +1,7 @@
 package com.geet.concept_location.corpus_creation;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-
 import com.geet.concept_location.indexing_vsm.Term;
 public class SimpleDocument implements Comparable<SimpleDocument>{
 	protected String article= "";
@@ -35,10 +33,7 @@ public class SimpleDocument implements Comparable<SimpleDocument>{
 			String token = stringTokenizer.nextToken();
 			// stem the token if token is a word
 			if (!StopWords.isStopword(token)) {
-				Stemmer stemmer = new Stemmer(token);
-				stemmer.stem();
-				token = stemmer.toString();
-				System.out.println(token);
+				continue;
 			}
 			Term candidateTerm = new Term(token.toLowerCase(), 1);
 			int pass = -1;

@@ -23,9 +23,9 @@ public class VectorSpaceModel {
 	private double MIN = 0;
 	public VectorSpaceModel(List<Document> documentList) {
 		documents = documentList;
-		totalTerm = getTermS().size();
 		totalDocs = getDocuments().size();
 		terms = getTermS();
+		totalTerm = getTermS().size();
 		System.out.println("Terms "+totalTerm+" Documents "+totalDocs);
 		System.out.println(terms.toString());
 		//
