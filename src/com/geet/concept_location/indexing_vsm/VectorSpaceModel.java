@@ -16,6 +16,7 @@ public class VectorSpaceModel {
 	private double a = 1.0;
 	private double b = 2.0;
 	private double MIN = 0;
+	// add relevance feedback
 	public VectorSpaceModel(List<SimpleDocument> documentList) {
 		documents = documentList;
 		totalTerm = getTermS().size();
