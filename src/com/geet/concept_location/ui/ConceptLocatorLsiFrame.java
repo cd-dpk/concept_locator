@@ -1,17 +1,11 @@
 package com.geet.concept_location.ui;
 import java.awt.Color;
-import java.awt.Dialog;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Vector;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -64,9 +58,7 @@ public class ConceptLocatorLsiFrame extends JFrame {
 						SimpleDocument queryDocument = new SimpleDocument(searchBoxPanel.getSearchTextField().getText());
 						List<SimpleDocument> simpleDocuments = new ArrayList<SimpleDocument>();
 						simpleDocuments.add(queryDocument);
-						simpleDocuments.addAll(allDocuments);
-						vectorSpaceModel = new VectorSpaceModel(simpleDocuments);
-						documents = vectorSpaceModel.search();
+						documents = vectorSpaceModel.search(queryDocument);
 						Collections.sort(documents);
 						Collections.reverse(documents);
 						setSearchResultsPanelLsiUI();
@@ -97,6 +89,7 @@ public class ConceptLocatorLsiFrame extends JFrame {
 		System.out.println("Size "+allDocuments.size());
 		// turn into vector documents
 		// get the vector space model
+		vectorSpaceModel = new VectorSpaceModel(allDocuments);
 }
 	private void setProjectExplorerViewPanel() {
 		setAllPanelInvisible();

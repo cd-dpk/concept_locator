@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 import com.geet.concept_location.indexing_vsm.Term;
-import com.geet.concept_location.query_formulation.StopWords;
 import com.geet.concept_location.utils.CommentStringTokenizer;
 import com.geet.concept_location.utils.ImplementationStringTokenizer;
 import com.geet.concept_location.utils.StringUtils;
@@ -134,7 +133,7 @@ public class Document  extends SimpleDocument {
 		StringTokenizer stringTokenizer = new StringTokenizer(StringUtils.getIdentifierSeparationsWithCamelCase(getDocName()), JavaLanguage.getWhiteSpace(), false);
 		while (stringTokenizer.hasMoreTokens()) {
 			terms.add(stringTokenizer.nextToken());
-		}		
+		}
 		terms.addAll(new HashSet<String>(getTermsFromJavaDocComments()));
 		terms.addAll(new HashSet<String>(getTermsFromComment()));
 		terms.addAll(new HashSet<String>(getTermsFromImplementation()));
@@ -151,6 +150,12 @@ public class Document  extends SimpleDocument {
 			String documentString = "";
 			while (customStringTokenizer.hasMoreTokens()) {
 				documentString = customStringTokenizer.nextToken();
+				if (!StopWords.isStopword(documentString)) {	
+					// make stemming
+					Stemmer stemmer = new Stemmer(documentString);
+					stemmer.stem();
+					documentString = stemmer.toString();
+				}
 				termSet.add(documentString);
 			}
 		}
@@ -165,6 +170,13 @@ public class Document  extends SimpleDocument {
 			String documentString = "";
 			while (customStringTokenizer.hasMoreTokens()) {
 				documentString = customStringTokenizer.nextToken();
+				// remove stop words
+				if (!StopWords.isStopword(documentString)) {	
+					// make stemming
+					Stemmer stemmer = new Stemmer(documentString);
+					stemmer.stem();
+					documentString = stemmer.toString();
+				}
 				termSet.add(documentString);
 			}
 		}

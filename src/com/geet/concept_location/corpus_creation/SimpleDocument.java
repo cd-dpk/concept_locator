@@ -1,13 +1,8 @@
 package com.geet.concept_location.corpus_creation;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.StringTokenizer;
 import com.geet.concept_location.indexing_vsm.Term;
-import com.geet.concept_location.query_formulation.QueryManager;
-import com.geet.concept_location.query_formulation.StopWords;
-import com.geet.concept_location.utils.StringUtils;
 public class SimpleDocument implements Comparable<SimpleDocument>{
 	protected String article= "";
 	public double score = 0.0;
@@ -37,12 +32,11 @@ public class SimpleDocument implements Comparable<SimpleDocument>{
 		while (stringTokenizer.hasMoreTokens()) {
 			String token = stringTokenizer.nextToken();
 			// stem the token if token is a word
-			/*if (StringUtils.isWord(token)) {
-				token = new Stemmer(token.toLowerCase()).toString();
-			}*/
-			// if stop word then continue
-			if (StopWords.isStopword(token)) {
-				continue;
+			if (!StopWords.isStopword(token)) {
+				Stemmer stemmer = new Stemmer(token);
+				stemmer.stem();
+				token = stemmer.toString();
+				System.out.println(token);
 			}
 			Term candidateTerm = new Term(token.toLowerCase(), 1);
 			int pass = -1;

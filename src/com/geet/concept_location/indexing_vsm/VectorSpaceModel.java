@@ -43,17 +43,8 @@ public class VectorSpaceModel {
 			}
 			// idf
 			if (df[i] == 0) {
+				System.err.println("Something is going wrong");
 				System.exit(i);
-			}
-			df[i] = 1 + (Math.log10((double)documents.size()/df[i])/Math.log10(2.0));
-			for (int j = 0; j < documents.size(); j++) {
-				TERM_DOCUMENT_MATRIX[i][j]= TERM_DOCUMENT_MATRIX[i][j] * df[i];
-				double value = TERM_DOCUMENT_MATRIX[i][j];
-				if (value > MAX) {
-					MAX = value;
-				}else if(value < MIN){
-					MIN = value;
-				}
 			}
 		}
 	}
@@ -75,6 +66,58 @@ public class VectorSpaceModel {
 		}
 		return lsiDocuments;
 	}
+	/**
+	 * search with a new Document
+	 * @param value
+	 * @return
+	 */
+	public List<Document> search(SimpleDocument newSimpleDocument){
+		double [] newDocumentMatrix = new double[terms.size()];
+		List<Term> extensionTerms = new ArrayList<Term>();
+		for (Term term : newSimpleDocument.getTerms()) {
+			int flag =0;
+			for (int i = 0; i < newDocumentMatrix.length; i++) {
+				if (term.termString.equals(terms.get(i))) {
+					newDocumentMatrix[i] = term.termFrequency;
+					flag = 1;
+					break;
+				}
+				newDocumentMatrix[i] = 0;
+			}
+			if (flag != 0) {
+				extensionTerms.add(term);
+			}
+		}
+		int totalDocument = documents.size() + 1 ;
+		List<Document>lsiDocuments = new ArrayList<Document>();	
+		for (int i = 0; i < documents.size(); i++) {
+				double dotProduct = 0.0;
+				double scalarOne = 0.0;
+				double scalarTwo = 0.0;
+				for (int j = 0; j < terms.size(); j++) {
+					double tempDf = df[j];
+					if (newDocumentMatrix[j] != 0) {
+						tempDf =  1 + (Math.log10((double)(totalDocument)/(tempDf+1))/Math.log10(2.0));
+					}
+					else{
+						tempDf =  1 + (Math.log10((double)(totalDocument)/(tempDf))/Math.log10(2.0));
+					}
+					dotProduct +=( newDocumentMatrix[j] * tempDf )* (TERM_DOCUMENT_MATRIX[j][i]* tempDf);
+					scalarOne += (newDocumentMatrix[j] * tempDf)* (newDocumentMatrix[j] * tempDf);
+					scalarTwo += (TERM_DOCUMENT_MATRIX[j][i] * tempDf)* (TERM_DOCUMENT_MATRIX[j][i]* tempDf);
+				}
+				for (int j = 0; j < extensionTerms.size(); j++) {
+					double tempDf =  1 + (Math.log10((double)(totalDocument)/(1))/Math.log10(2.0));
+					scalarOne += (extensionTerms.get(j).termFrequency * tempDf)* (extensionTerms.get(j).termFrequency* tempDf);
+				}
+				documents.get(i).score = (dotProduct)/(Math.sqrt(scalarOne)*Math.sqrt(scalarTwo));
+				if (documents.get(i).score > 0) {
+					lsiDocuments.add((Document) documents.get(i));
+				}
+		}
+		return lsiDocuments;
+	}
+	/* for normalization*/
 	private double getNormalizedValue(double value){
 		double normalizedValue = (value - MIN)/(MAX-MIN);
 		normalizedValue = normalizedValue * (b-a);

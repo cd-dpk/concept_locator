@@ -1,7 +1,6 @@
 package com.geet.concept_location.utils;
 import java.util.StringTokenizer;
 import com.geet.concept_location.corpus_creation.JavaLanguage;
-import com.geet.concept_location.query_formulation.StopWords;
 public class CommentStringTokenizer extends StringTokenizer{
 	public CommentStringTokenizer(String str) {
 		super(str);

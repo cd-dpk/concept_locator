@@ -1,1 +1,0 @@
-indexing package deals with indexing the corpus 

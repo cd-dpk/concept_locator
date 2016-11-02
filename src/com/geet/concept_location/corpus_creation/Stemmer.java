@@ -284,6 +284,7 @@ class Stemmer
     * @author iit
     */
    public Stemmer(String term){
+	   this();
 	   for (int i = 0; i < term.length(); i++) {
 		char ch = term.charAt(i);
 		add(ch);
