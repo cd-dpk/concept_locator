@@ -45,13 +45,16 @@ public class Lsi {
 	public List<LsiDocument> search(LsiQuery lsiQuery){
 		setLsiTerms();
 		setLsiDocuments();
+		for (LsiTerm lsiTerm : lsiTerms) {
+			System.out.println(lsiTerm.term);
+		}
 		List<LsiDocument> resultantLsiDocuments = new ArrayList<LsiDocument>();
-		Vector queryVector = getVectorFromLSI(lsiQuery);
-		System.out.println(queryVector.toCSVString());
-		if (!queryVector.isNull()) {
+		lsiQuery.vector = getVectorFromLSI(lsiQuery.getTerms());
+		System.out.println(lsiQuery.vector.toCSVString());
+		if (!lsiQuery.vector.isNull()) {
 			for (int j = 0; j < lsiDocuments.size(); ++j) {
-				lsiDocuments.get(j).score = queryVector.cosine(lsiDocuments.get(j).vector);
-				if (this.lsiDocuments.get(j).score > .50) {
+				lsiDocuments.get(j).score = lsiQuery.vector.cosine(lsiDocuments.get(j).vector);
+				if (this.lsiDocuments.get(j).score > .75) {
 					resultantLsiDocuments.add(lsiDocuments.get(j));
 				}
 			}
@@ -59,13 +62,16 @@ public class Lsi {
 			Collections.reverse(resultantLsiDocuments);
 			System.out.println("Terms "+ lsiTerms.size() +","+" Documents "+resultantLsiDocuments.size());
 		}
+		else{
+			System.out.println("Terms not present in search space");
+		}
 		return resultantLsiDocuments;
 	}
 	public void searchTerm(LsiQuery lsiQuery){
 		setLsiDocuments();
 		setLsiTerms();
 		for (int j = 0; j < lsiTerms.size(); ++j) {
-			lsiTerms.get(j).score = getVectorFromLSI(lsiQuery).cosine(lsiTerms.get(j).vector);
+			lsiTerms.get(j).score = getVectorFromLSI(lsiQuery.getTerms()).cosine(lsiTerms.get(j).vector);
 			System.out.println(lsiTerms.get(j).score);
 		}
 		Collections.sort(lsiTerms);
@@ -81,15 +87,23 @@ public class Lsi {
 			System.out.println(lsiTerm.vector.toString());
 		}
 	}
-	public Vector getVectorFromLSI(LsiQuery lsiQuery){
-		for (String queryTerm : lsiQuery.getTerms()) {
+	public Vector getVectorFromLSI(List<String> terms){
+		Vector vector = new Vector(NUM_FACTORS);
+		for (String queryTerm : terms) {
 			for (LsiTerm lsiTerm : lsiTerms) {
-				if (lsiTerm.isSame(queryTerm)) {
-					lsiQuery.vector.addWithVector(lsiTerm.vector);
+				System.out.print(lsiTerm+" ");
+				if (lsiTerm.term.equals(queryTerm)) {
+					System.out.println(lsiTerm.vector.toCSVString());
+					vector.addWithVector(lsiTerm.vector);
 					break;
 				}
 			}
 		}
-		return lsiQuery.vector;
+		return vector;
+	}
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return super.toString();
 	}
 }
