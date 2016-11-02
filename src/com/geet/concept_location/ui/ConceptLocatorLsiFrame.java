@@ -63,36 +63,13 @@ public class ConceptLocatorLsiFrame extends JFrame {
 				new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
+						Lsi myLsi= new Lsi();
 						lsiDocuments = myLsi.search(new LsiQuery(searchBoxPanel.getSearchTextField().getText(), new com.geet.concept_location.indexing_lsi.Vector(Lsi.NUM_FACTORS)));
 //						lsiTerms = myLsi.lsiTerms;
 						setSearchResultsPanelLsiUI();
 					}
 				});
 	}
-	
-	
-	private void indexing(){
-		List<Document> allDocuments = new ArrayList<Document>();
-		String article[]={
-				"Human machine interface for Lab ABC computer applications",
-		        "A survey of user opinion of computer system response time",
-		        "The EPS user interface management system",
-		        "System and human system engineering testing of EPS",
-		        "Relation of user-perceived response time to error measurement",
-		        "The generation of random, binary, unordered trees",
-		        "The intersection graph of paths in trees",
-		        "Graph minors IV: Widths of trees and well-quasi-ordering",
-		        "Graph minors: A survey"
-		       };
-		for (int i = 0; i < article.length; i++) {
-			Document document = new Document();
-			document.setArticle(article[i]);
-			allDocuments.add(document);
-		}
-		VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(allDocuments);
-		myLsi = vectorSpaceModel.getLsi();
-	}
-	
 	private void initIndexing(List<String> javaClassPathList){
 		// read all the documents
 		List<Document> allDocuments = new ArrayList<Document>();
@@ -118,7 +95,6 @@ public class ConceptLocatorLsiFrame extends JFrame {
 		System.out.println("Size "+allDocuments.size());
 		// turn into vector documents
 		// get the vector space model
-
 		VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(allDocuments);
 		myLsi = vectorSpaceModel.getLsi();
 }
@@ -132,7 +108,6 @@ public class ConceptLocatorLsiFrame extends JFrame {
 		add(projectExplorerViewPanel);
 		projectExplorerViewPanel.revalidate();
 		initIndexing(projectExplorerViewPanel.getProjectTreePanel().javaFilePaths);
-		indexing();
 	}
 	private void setSearchResultsPanelLsiUI() {
 		setAllPanelInvisible();

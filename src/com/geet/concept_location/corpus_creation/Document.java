@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 import com.geet.concept_location.indexing_vsm.Term;
-import com.geet.concept_location.query_formulation.StopWords;
 import com.geet.concept_location.utils.CommentStringTokenizer;
 import com.geet.concept_location.utils.ImplementationStringTokenizer;
 import com.geet.concept_location.utils.StringUtils;
@@ -90,7 +89,6 @@ public class Document  implements Comparable<Document>{
 	public Range getRange(){
 		return new Range(startPosition.toParserPosition(), endPosition.toParserPosition());
 	}
-	
 	public String getArticle() {
 	/*	article = "";
 	//	article += javaDocComments.toString()+"\n"+ implementationComments.toString()+"\n"+ implementionBody.toString()+"\n";

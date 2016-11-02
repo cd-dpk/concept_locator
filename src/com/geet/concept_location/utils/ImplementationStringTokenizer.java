@@ -1,7 +1,6 @@
 package com.geet.concept_location.utils;
 import java.util.StringTokenizer;
 import com.geet.concept_location.corpus_creation.JavaLanguage;
-import com.geet.concept_location.query_formulation.StopWords;
 public class ImplementationStringTokenizer extends StringTokenizer{
 	public ImplementationStringTokenizer(String str, String delim,
 			boolean returnDelims) {

@@ -123,12 +123,12 @@ public class Lsi {
 		System.out.println(queryVector.toCSVString());
 		for (int j = 0; j < this.lsiDocuments.size(); ++j) {
 			this.lsiDocuments.get(j).score = queryVector.cosine(this.lsiDocuments.get(j).vector);
-			if (this.lsiDocuments.get(j).score > .50) {
+		//	if (this.lsiDocuments.get(j).score > .50) {
 				lsiDocuments.add(this.lsiDocuments.get(j));
-			}
+		//	}
 		}
 		Collections.sort(lsiDocuments);
-//		Collections.reverse(lsiDocuments);
+		Collections.reverse(lsiDocuments);
 		System.out.println("Terms "+ lsiTerms.size() +","+" Documents "+lsiDocuments.size());
 		return lsiDocuments;
 	}
