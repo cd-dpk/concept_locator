@@ -7,7 +7,7 @@ import java.io.*;
   * word can be provided a character at time (by calling add()), or at once
   * by calling one of the various stem(something) methods.
   */
-class Stemmer
+public class Stemmer
 {  private char[] b;
    private int i,     /* offset into b */
                i_end, /* offset to end of stemmed word */
@@ -284,6 +284,7 @@ class Stemmer
     * @author iit
     */
    public Stemmer(String term){
+	   this();
 	   for (int i = 0; i < term.length(); i++) {
 		char ch = term.charAt(i);
 		add(ch);

@@ -67,15 +67,30 @@ public class Lsi {
 		}
 		return resultantLsiDocuments;
 	}
-	public void searchTerm(LsiQuery lsiQuery){
-		setLsiDocuments();
+	public List<LsiTerm> searchTerm(LsiQuery lsiQuery){
 		setLsiTerms();
-		for (int j = 0; j < lsiTerms.size(); ++j) {
-			lsiTerms.get(j).score = getVectorFromLSI(lsiQuery.getTerms()).cosine(lsiTerms.get(j).vector);
-			System.out.println(lsiTerms.get(j).score);
+		setLsiDocuments();
+		for (LsiTerm lsiTerm : lsiTerms) {
+			System.out.println(lsiTerm.term);
 		}
-		Collections.sort(lsiTerms);
-		Collections.reverse(lsiTerms);
+		List<LsiTerm> resultantLsiTerms = new ArrayList<LsiTerm>();
+		lsiQuery.vector = getVectorFromLSI(lsiQuery.getTerms());
+		System.out.println(lsiQuery.vector.toCSVString());
+		if (!lsiQuery.vector.isNull()) {
+			for (int j = 0; j < lsiTerms.size(); ++j) {
+				lsiTerms.get(j).score = lsiQuery.vector.cosine(lsiTerms.get(j).vector);
+				if (this.lsiTerms.get(j).score > .75) {
+					resultantLsiTerms.add(lsiTerms.get(j));
+				}
+			}
+			Collections.sort(resultantLsiTerms);
+			Collections.reverse(resultantLsiTerms);
+			System.out.println("Terms "+ lsiTerms.size() +","+" Documents "+resultantLsiTerms.size());
+		}
+		else{
+			System.out.println("Terms not present in search space");
+		}
+		return resultantLsiTerms;
 	}
 	public void printDocumentsVector(){
 		for (LsiDocument lsiDocument : lsiDocuments) {

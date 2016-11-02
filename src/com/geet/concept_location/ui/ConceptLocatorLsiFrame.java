@@ -10,17 +10,13 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import com.geet.concept_location.constants.UIConstants;
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.DocumentExtractor;
 import com.geet.concept_location.indexing_lsi.Lsi;
-import com.geet.concept_location.indexing_lsi.LsiDocument;
 import com.geet.concept_location.indexing_lsi.LsiQuery;
 import com.geet.concept_location.indexing_lsi.LsiTerm;
-import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
 import com.geet.concept_location.io.JavaFileReader;
 import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
 import com.geet.concept_location.utils.JavaFileFilter;
@@ -29,10 +25,8 @@ public class ConceptLocatorLsiFrame extends JFrame {
 	String javaClassPath = "src/com/geet/concept_location/corpus_creation/DocumentExtractor.java";
 	ProjectExplorerViewPanel projectExplorerViewPanel;
 	JavaClassViewPanelUI javaClassViewPanelUI;
-	SearchResultsPanelLsiUI searchResultsPanelLsiUI;
 	SearchTermResultsPanelLsiUI searchTermResultsPanelLsiUI;
 	List<LsiTerm> lsiTerms = new ArrayList<LsiTerm>();
-	List<LsiDocument> lsiDocuments = new ArrayList<LsiDocument>();
 	SearchBoxPanelUI searchBoxPanel;
 	FileNameExtensionFilter javaFileNameExtensionFilter = new FileNameExtensionFilter("Java Files Only", ".java");
 	private Lsi myLsi;
@@ -59,9 +53,9 @@ public class ConceptLocatorLsiFrame extends JFrame {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						Lsi myLsi= new Lsi();
-						lsiDocuments = myLsi.search(new LsiQuery(searchBoxPanel.getSearchTextField().getText(), new com.geet.concept_location.indexing_lsi.Vector(Lsi.NUM_FACTORS)));
+						lsiTerms = myLsi.searchTerm(new LsiQuery(searchBoxPanel.getSearchTextField().getText(), new com.geet.concept_location.indexing_lsi.Vector(Lsi.NUM_FACTORS)));
 //						lsiTerms = myLsi.lsiTerms;
-						setSearchResultsPanelLsiUI();
+						setSearchTermsResultsPanelLsiUI();
 					}
 				});
 	}
@@ -90,8 +84,8 @@ public class ConceptLocatorLsiFrame extends JFrame {
 		System.out.println("Size "+allDocuments.size());
 		// turn into vector documents
 		// get the vector space model
-		VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(allDocuments);
-		myLsi = vectorSpaceModel.getLsi();
+//		VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(allDocuments);
+//		myLsi = vectorSpaceModel.getLsi();
 }
 	private void setProjectExplorerViewPanel() {
 		setAllPanelInvisible();
@@ -103,25 +97,6 @@ public class ConceptLocatorLsiFrame extends JFrame {
 		add(projectExplorerViewPanel);
 		projectExplorerViewPanel.revalidate();
 		initIndexing(projectExplorerViewPanel.getProjectTreePanel().javaFilePaths);
-	}
-	private void setSearchResultsPanelLsiUI() {
-		setAllPanelInvisible();
-		searchResultsPanelLsiUI = new SearchResultsPanelLsiUI(lsiDocuments,
-				new Bound(0, 0, 1300 - 100, 800 - 50));
-		searchResultsPanelLsiUI.setBounds(UIConstants.PADDING_LEFT,
-				UIConstants.Menu_Height + UIConstants.PADDING_TOP, 1300, 800);
-		add(searchResultsPanelLsiUI);
-		searchResultsPanelLsiUI.revalidate();
-		searchResultsPanelLsiUI.searchResultList
-				.addListSelectionListener(new ListSelectionListener() {
-					@Override
-					public void valueChanged(ListSelectionEvent e) {
-						javaClassPath = searchResultsPanelLsiUI.lsiDocuments
-								.get(searchResultsPanelLsiUI.searchResultList
-										.getSelectedIndex()).getDocInJavaFile();
-						setJavaClassViewPanelUI();
-					}
-				});
 	}
 	private void setSearchTermsResultsPanelLsiUI() {
 		setAllPanelInvisible();
@@ -149,8 +124,8 @@ private void setJavaClassViewPanelUI() {
 		if (projectExplorerViewPanel != null) {
 			projectExplorerViewPanel.setVisible(false);
 		}
-		if (searchResultsPanelLsiUI != null) {
-			searchResultsPanelLsiUI.setVisible(false);
+		if (searchTermResultsPanelLsiUI != null) {
+			searchTermResultsPanelLsiUI.setVisible(false);
 		}
 		if (javaClassViewPanelUI != null) {
 			javaClassViewPanelUI.setVisible(false);

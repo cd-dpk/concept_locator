@@ -2,6 +2,7 @@ package com.geet.concept_location.indexing_lsi;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+import com.geet.concept_location.corpus_creation.Stemmer;
 public class LsiQuery {
 	public String query;
 	public Vector vector;
@@ -26,7 +27,13 @@ public class LsiQuery {
 		List<String> terms = new ArrayList<String>();
 		StringTokenizer stringTokenizer = new StringTokenizer(query," ", false);
 		while (stringTokenizer.hasMoreTokens()) {
-			terms.add(stringTokenizer.nextToken());
+			String token = stringTokenizer.nextToken();
+			Stemmer stemmer = new Stemmer(token);
+			stemmer.stem();
+			if (!stemmer.toString().equals(token)) {
+				terms.add(stemmer.toString());
+			}
+			terms.add(token);
 		}
 		return terms;
 	}
