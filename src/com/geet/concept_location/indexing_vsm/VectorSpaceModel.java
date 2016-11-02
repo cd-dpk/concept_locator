@@ -12,10 +12,11 @@ public class VectorSpaceModel {
 	public double [] df;
 	private int totalTerm=0;
 	private int totalDocs=0;
-	private double MAX = 2;
-	private double a = 1.0;
-	private double b = 2.0;
-	private double MIN = 0;
+	double [] newDocumentMatrix;
+	List<Term> extensionTerms;
+	// Rocchio Algorithm 
+	private final static double alpha = 1.0, beta = 0.75, gyma = 0.25;
+	
 	// add relevance feedback
 	public VectorSpaceModel(List<SimpleDocument> documentList) {
 		documents = documentList;
@@ -28,6 +29,7 @@ public class VectorSpaceModel {
 		System.out.println("Terms "+totalTerm+" Documents "+totalDocs);
 		System.out.println(terms.toString());
 		setTERM_DOCUMENT_MATRIX(terms, documents);
+		newDocumentMatrix = new double[terms.size()];
 	}
 	public void setTERM_DOCUMENT_MATRIX(List<String> terms,List<SimpleDocument>documents){
 		/* dont calculate idf from terms rather compute it from matrix*/
@@ -73,8 +75,8 @@ public class VectorSpaceModel {
 	 * @return
 	 */
 	public List<Document> search(SimpleDocument newSimpleDocument){
-		double [] newDocumentMatrix = new double[terms.size()];
-		List<Term> extensionTerms = new ArrayList<Term>();
+		newDocumentMatrix = new double[terms.size()];
+		extensionTerms = new ArrayList<Term>();
 		for (Term term : newSimpleDocument.getTerms()) {
 			int flag =0;
 			for (int i = 0; i < newDocumentMatrix.length; i++) {
@@ -90,6 +92,16 @@ public class VectorSpaceModel {
 				extensionTerms.add(term);
 			}
 		}
+		return getRankedDocuments();
+	}
+	
+	public List<Document> searchWithRelevanceFeedback(List<Integer> relDocuments, List<Integer> irrelDocuments){
+		updateNewDocumentMatrixWithRelevantDocuments(relDocuments);
+		updateNewDocumentMatrixWithIrrelevantDocuments(irrelDocuments);
+		return getRankedDocuments();
+	}
+	
+	public List<Document> getRankedDocuments(){
 		int totalDocument = documents.size() + 1 ;
 		List<Document>lsiDocuments = new ArrayList<Document>();	
 		for (int i = 0; i < documents.size(); i++) {
@@ -122,38 +134,42 @@ public class VectorSpaceModel {
 		}
 		return lsiDocuments;
 	}
-	/* for normalization*/
-	private double getNormalizedValue(double value){
-		double normalizedValue = (value - MIN)/(MAX-MIN);
-		normalizedValue = normalizedValue * (b-a);
-		normalizedValue = normalizedValue + a;
-		return normalizedValue;
-	}
-	/*
-	 * for vsm
-	 */
-	public void setTERM_DOCUMENT_MATRIX(){
-		/**
-		 * get all terms 
-		 * for query vector, query[terms.length][2], 
-		 * column 1 <- tf in query
-		 * column 2 <- df in all documents
-		 * 
-		 * compute score of all documents with query vector
-		 * ( query[i][0] * ( 1+ log 10((1+doucuments.size())/query[i][1])) ) * (TERM_DOCUMENT_MATRIX[j][i]( 1+ log 10((1+doucuments.size())/query[i][1])))
-		 */
-		/* dont calculate idf from terms rather compute it from matrix*/
-		for (int i = 0; i < totalTerm; i++) {
-			// df
-			df[i] = 0;
-			for (int j = 0; j < documents.size(); j++) {
-				double tf = this.documents.get(j).getTF(terms.get(i).toString());
-				if (tf !=0.0) {
-						df[i]++;
+	
+	// update with relevant document
+	private void updateNewDocumentMatrixWithRelevantDocuments(List<Integer>relDocuments){
+		if (relDocuments.size() > 1) {
+			double offset = beta / relDocuments.size();
+			for (int i = 0; i < newDocumentMatrix.length ; i++) {
+				double weight = 0;
+				for (int j = 0; j < relDocuments.size(); j++) {
+					weight += TERM_DOCUMENT_MATRIX[i][relDocuments.get(j)];
 				}
-				TERM_DOCUMENT_MATRIX[i][j]= tf;
+				newDocumentMatrix[i] += VectorSpaceModel.validateTermWeight(weight * offset);
 			}
 		}
+	}
+	// update with irrelevant document
+	private void updateNewDocumentMatrixWithIrrelevantDocuments(List<Integer>irrelDocuments){
+		if (irrelDocuments.size() > 1) {
+			double offset = gyma / irrelDocuments.size();
+			for (int i = 0; i < newDocumentMatrix.length ; i++) {
+				double weight = 0;
+				for (int j = 0; j < irrelDocuments.size(); j++) {
+					weight += TERM_DOCUMENT_MATRIX[i][irrelDocuments.get(j)];
+				}
+				newDocumentMatrix[i] -= VectorSpaceModel.validateTermWeight(weight * offset);
+			}
+		}
+	}
+	
+	/**
+	 * validate term weigh
+	 */
+	private static double validateTermWeight(double termWeight){
+		if (termWeight < 0) {
+			return 0;
+		}
+		return termWeight;
 	}
 	public double [][] getTERM_DOCUMENT_MATRIX(){
 		/* dont calculate idf from terms rather compute it from matrix*/
