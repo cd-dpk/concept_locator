@@ -24,7 +24,7 @@ import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
 import com.geet.concept_location.utils.JavaFileFilter;
 public class ConceptLocatorLsiFrame extends JFrame {
 	String projectPath = ".";
-	List<SimpleDocument> allDocuments = new ArrayList<SimpleDocument>();
+	List<Document> allDocuments = new ArrayList<Document>();
 	String javaClassPath = "src/com/geet/concept_location/corpus_creation/DocumentExtractor.java";
 	ProjectExplorerViewPanel projectExplorerViewPanel;
 	JavaClassViewPanelUI javaClassViewPanelUI;
@@ -56,8 +56,6 @@ public class ConceptLocatorLsiFrame extends JFrame {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						SimpleDocument queryDocument = new SimpleDocument(searchBoxPanel.getSearchTextField().getText());
-						List<SimpleDocument> simpleDocuments = new ArrayList<SimpleDocument>();
-						simpleDocuments.add(queryDocument);
 						documents = vectorSpaceModel.search(queryDocument);
 						Collections.sort(documents);
 						Collections.reverse(documents);
@@ -67,7 +65,7 @@ public class ConceptLocatorLsiFrame extends JFrame {
 	}
 	private void initIndexing(List<String> javaClassPathList){
 		// read all the documents
-		allDocuments = new ArrayList<SimpleDocument>();
+		allDocuments = new ArrayList<Document>();
 		int classNo = 0;
 //		String path="src/com/geet/concept_location/corpus_creation/DocumentExtractor.java";
 		for (String path : javaClassPathList) {
