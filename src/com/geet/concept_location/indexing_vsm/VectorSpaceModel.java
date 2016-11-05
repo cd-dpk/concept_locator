@@ -5,22 +5,17 @@ import java.util.List;
 import java.util.Set;
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.SimpleDocument;
-
 public class VectorSpaceModel {
-	
 	public List<Document> documents = new ArrayList<Document>();
 	public List<String> terms = new ArrayList<String>();
 	public double [][]TERM_DOCUMENT_MATRIX;
 	public double [] df;
 	private int totalTerm=0;
 	private int totalDocs=0;
-
 	Query query;
 	List<Integer> relDocuments= new ArrayList<Integer>(), irrelDocuments = new ArrayList<Integer>();
-
 	//Rocchio Algorithm 
 	private final static double alpha = 1.0, beta = 0.75, gyma = 0.25;
-	
 	public VectorSpaceModel(List<Document> documentList) {
 		documents = documentList;
 		totalTerm = getTermS().size();
@@ -54,7 +49,6 @@ public class VectorSpaceModel {
 			}
 		}
 	}
-	
 	/**
 	 * search with a new Document
 	 * @param value
@@ -89,7 +83,6 @@ public class VectorSpaceModel {
 		updateNewDocumentMatrixWithIrrelevantDocuments(addAllDocuments(irrelDocuments));
 		return searchDocuments();
 	}
-	
 	public List<Document> searchDocuments(){
 		int totalDocument = documents.size() + 1;
 		List<Document>rankedDocuments = new ArrayList<Document>();	
@@ -123,7 +116,6 @@ public class VectorSpaceModel {
 		}
 		return rankedDocuments;
 	}
-	
 	// update with relevant document
 	private void updateNewDocumentMatrixWithRelevantDocuments(List<Integer>relDocuments){
 		if (relDocuments.size() > 1) {
@@ -150,7 +142,6 @@ public class VectorSpaceModel {
 			}
 		}
 	}
-	
 	/**
 	 * validate term weight
 	 */
@@ -223,7 +214,6 @@ public class VectorSpaceModel {
 	public List<Document> getDocuments(){
 		return documents;
 	}
-	
 	public List<Integer>  addAllDocuments(List<Document> docs){
 		List<Integer> docsIndex = new ArrayList<Integer>();
 		for (Document doc : docs) {
@@ -236,7 +226,6 @@ public class VectorSpaceModel {
 		}
 		return docsIndex;
 	}
-	
 	/**
 	 * 
 	 * @return

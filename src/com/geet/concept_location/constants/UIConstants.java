@@ -9,4 +9,7 @@ public class UIConstants {
 	public static final int PADDING_RIGHT=10;
 	public static final int PADDING=10;
 	public static final int PADDING_TOP=10;
+	public static final int LIST_CELL_HEIGHT = 150;
+	public static final int LIST_CELL_FEEDBACK_HEIGHT = 30;
+	public static final int LIST_CELL_TEXTAREA = 120;
 }
