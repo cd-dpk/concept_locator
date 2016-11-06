@@ -1,4 +1,5 @@
 package com.geet.concept_location.ui;
+
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -6,9 +7,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -20,10 +19,12 @@ import javax.swing.JMenuItem;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
 import com.geet.concept_location.constants.UIConstants;
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.DocumentExtractor;
 import com.geet.concept_location.corpus_creation.SimpleDocument;
+import com.geet.concept_location.indexing_vsm.Feedback;
 import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
 import com.geet.concept_location.io.JavaFileReader;
 import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
@@ -36,23 +37,26 @@ public class ConceptLocatorLsiFrame extends JFrame {
 	ProjectExplorerViewPanel projectExplorerViewPanel;
 	JavaClassViewPanelUI javaClassViewPanelUI;
 	SearchResultsPanelLsiUI searchResultsPanelLsiUI;
-	Set<Integer> relDocs = new HashSet<Integer>();
-	Set<Integer> irrelDocs = new HashSet<Integer>();
-	List<Document> documents = new ArrayList<Document>();
-	SearchBoxPanelUI searchBoxPanel;
-	FileNameExtensionFilter javaFileNameExtensionFilter = new FileNameExtensionFilter("Java Files Only", ".java");
+
+	List<Feedback> feedbacks = new ArrayList<Feedback>();
+	List<Document> returnDocuments = new ArrayList<Document>();
+	SearchBoxPanelRF searchBoxPanel;
+	FileNameExtensionFilter javaFileNameExtensionFilter = new FileNameExtensionFilter(
+			"Java Files Only", ".java");
 	VectorSpaceModel vectorSpaceModel;
+
 	public ConceptLocatorLsiFrame() {
 		super("Concept Locator");
 		setLayout(null);
 		createMenuBar();
 		setAndViewSearchBoxPanel();
 		setProjectExplorerViewPanel();
-		//setJavaClassViewPanelUI();
+		// setJavaClassViewPanelUI();
 		showFrame();
 	}
+
 	private void setAndViewSearchBoxPanel() {
-		searchBoxPanel = new SearchBoxPanelUI(UIConstants.Width,
+		searchBoxPanel = new SearchBoxPanelRF(UIConstants.Width,
 				UIConstants.Menu_Height);
 		searchBoxPanel.setBounds(UIConstants.PADDING_LEFT,
 				UIConstants.PADDING_TOP, UIConstants.Width
@@ -62,19 +66,43 @@ public class ConceptLocatorLsiFrame extends JFrame {
 				new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						SimpleDocument queryDocument = new SimpleDocument(searchBoxPanel.getSearchTextField().getText());
-						documents = vectorSpaceModel.search(queryDocument);
-						Collections.sort(documents);
-						Collections.reverse(documents);
+						SimpleDocument queryDocument = new SimpleDocument(
+								searchBoxPanel.getSearchTextField().getText());
+						returnDocuments = vectorSpaceModel.search(queryDocument);
+						Collections.sort(returnDocuments);
+						Collections.reverse(returnDocuments);
+						setSearchResultsPanelLsiUI();
+					}
+				});
+		searchBoxPanel.getRelevanceFeedback().addActionListener(
+				new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {						
+						List<Document> relDocuments = new ArrayList<Document>();
+						List<Document> irrelDocuments = new ArrayList<Document>();
+						for (int i = 0; i < returnDocuments.size(); i++) {
+							if (feedbacks.get(i).equals(Feedback.REL)) {
+								relDocuments.add(returnDocuments.get(i));
+								System.out.println("REL "+i);
+							}else if (feedbacks.get(i).equals(Feedback.IRRL)) {
+								irrelDocuments.add(returnDocuments.get(i));
+								System.out.println("IRRL "+i);
+							}
+						}
+						returnDocuments = vectorSpaceModel.research(relDocuments, irrelDocuments);
+						Collections.sort(returnDocuments);
+						Collections.reverse(returnDocuments);
 						setSearchResultsPanelLsiUI();
 					}
 				});
 	}
-	private void initIndexing(List<String> javaClassPathList){
+
+	private void initIndexing(List<String> javaClassPathList) {
 		// read all the documents
 		allDocuments = new ArrayList<Document>();
 		int classNo = 0;
-//		String path="src/com/geet/concept_location/corpus_creation/DocumentExtractor.java";
+		// String
+		// path="src/com/geet/concept_location/corpus_creation/DocumentExtractor.java";
 		for (String path : javaClassPathList) {
 			if (new JavaClassPreprocessor().processJavaFile(new File(path))) {
 				if (path.equals("src/com/geet/concept_location/corpus_creation/JavaLanguage.java")) {
@@ -94,11 +122,12 @@ public class ConceptLocatorLsiFrame extends JFrame {
 				break;
 			}
 		}
-		System.out.println("Size "+allDocuments.size());
+		System.out.println("Size " + allDocuments.size());
 		// turn into vector documents
 		// get the vector space model
 		vectorSpaceModel = new VectorSpaceModel(allDocuments);
 	}
+
 	private void setProjectExplorerViewPanel() {
 		setAllPanelInvisible();
 		projectExplorerViewPanel = new ProjectExplorerViewPanel(new Bound(0, 0,
@@ -110,69 +139,103 @@ public class ConceptLocatorLsiFrame extends JFrame {
 		projectExplorerViewPanel.revalidate();
 		initIndexing(projectExplorerViewPanel.getProjectTreePanel().javaFilePaths);
 	}
+
 	private void setSearchResultsPanelLsiUI() {
 		setAllPanelInvisible();
-		searchResultsPanelLsiUI = new SearchResultsPanelLsiUI(documents,
+		searchResultsPanelLsiUI = new SearchResultsPanelLsiUI(returnDocuments,
 				new Bound(0, 0, 1300 - 100, 800 - 50));
 		searchResultsPanelLsiUI.setBounds(UIConstants.PADDING_LEFT,
 				UIConstants.Menu_Height + UIConstants.PADDING_TOP, 1300, 800);
 		add(searchResultsPanelLsiUI);
 		searchResultsPanelLsiUI.revalidate();
-		
-		searchResultsPanelLsiUI.searchResultList.addListSelectionListener(new ListSelectionListener() {
+		feedbacks = new ArrayList<Feedback>();
+		for (Document document : returnDocuments) {
+			feedbacks.add(Feedback.NORMAL);
+		}
+		searchResultsPanelLsiUI.searchResultList
+				.addListSelectionListener(new ListSelectionListener() {
 					@Override
 					public void valueChanged(ListSelectionEvent e) {
-						List<Integer> relDocuments = new ArrayList<>(relDocs);
-						List<Integer> irrelDocuments = new ArrayList<>(irrelDocs);
-						searchResultsPanelLsiUI.relButton.setSelected(false);
-						searchResultsPanelLsiUI.irrelButton.setSelected(false);
-						searchResultsPanelLsiUI.normalButton.setSelected(true);
-						for (int i = 0, j=0; i < relDocuments.size()|| j < irrelDocuments.size(); i++,j++) {
-							if (i< relDocuments.size() && i == searchResultsPanelLsiUI.searchResultList.getSelectedIndex()) {
-								searchResultsPanelLsiUI.irrelButton.setSelected(false);
-								searchResultsPanelLsiUI.normalButton.setSelected(false);
-								searchResultsPanelLsiUI.relButton.setSelected(true);
-								break;
-							}
-							if (j< irrelDocuments.size() && j == searchResultsPanelLsiUI.searchResultList.getSelectedIndex()) {
-								searchResultsPanelLsiUI.irrelButton.setSelected(true);
-								break;
-							}
+						if (feedbacks.get(
+								searchResultsPanelLsiUI.searchResultList
+										.getSelectedIndex()).equals(
+								Feedback.NORMAL)) {
+							searchResultsPanelLsiUI.relevanceFeedbackPanel.normalButton
+									.setSelected(true);
+						} else if (feedbacks.get(
+								searchResultsPanelLsiUI.searchResultList
+										.getSelectedIndex()).equals(
+								Feedback.REL)) {
+							searchResultsPanelLsiUI.relevanceFeedbackPanel.relButton
+									.setSelected(true);
+						} else if (feedbacks.get(
+								searchResultsPanelLsiUI.searchResultList
+										.getSelectedIndex()).equals(
+								Feedback.IRRL)) {
+							searchResultsPanelLsiUI.relevanceFeedbackPanel.irrelButton
+									.setSelected(true);
 						}
 					}
 				});
-		
-		searchResultsPanelLsiUI.relButton.addActionListener(new ActionListener() {
+
+		searchResultsPanelLsiUI.relevanceFeedbackPanel.relButton
+				.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if (searchResultsPanelLsiUI.searchResultList
+								.getSelectedIndex() != -1) {
+							feedbacks.set(
+									searchResultsPanelLsiUI.searchResultList
+											.getSelectedIndex(), Feedback.REL);
+						}
+					}
+				});
+
+		searchResultsPanelLsiUI.relevanceFeedbackPanel.irrelButton
+				.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if (searchResultsPanelLsiUI.searchResultList
+								.getSelectedIndex() != -1) {
+							feedbacks.set(
+									searchResultsPanelLsiUI.searchResultList
+											.getSelectedIndex(), Feedback.IRRL);
+
+						}
+					}
+				});
+
+		searchResultsPanelLsiUI.relevanceFeedbackPanel.normalButton
+		.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (searchResultsPanelLsiUI.searchResultList.getSelectedIndex()!=-1) {
-					relDocs.add(searchResultsPanelLsiUI.searchResultList.getSelectedIndex());
+				if (searchResultsPanelLsiUI.searchResultList
+						.getSelectedIndex() != -1) {
+					feedbacks.set(
+							searchResultsPanelLsiUI.searchResultList
+									.getSelectedIndex(), Feedback.NORMAL);
+
 				}
 			}
 		});
-		
-		searchResultsPanelLsiUI.irrelButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (searchResultsPanelLsiUI.searchResultList.getSelectedIndex()!=-1) {
-					irrelDocs.add(searchResultsPanelLsiUI.searchResultList.getSelectedIndex());
-				}				
-			}
-		});
-		
-		searchResultsPanelLsiUI.openButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (searchResultsPanelLsiUI.searchResultList.getSelectedIndex()!=-1) {
-					javaClassPath = searchResultsPanelLsiUI.lsiDocuments
-							.get(searchResultsPanelLsiUI.searchResultList
-									.getSelectedIndex()).getDocInJavaFile();
-					setJavaClassViewPanelUI();					
-				}
-			}
-		});
+
+		searchResultsPanelLsiUI.openButton
+				.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if (searchResultsPanelLsiUI.searchResultList
+								.getSelectedIndex() != -1) {
+							javaClassPath = searchResultsPanelLsiUI.lsiDocuments
+									.get(searchResultsPanelLsiUI.searchResultList
+											.getSelectedIndex())
+									.getDocInJavaFile();
+							setJavaClassViewPanelUI();
+						}
+					}
+				});
 	}
-private void setJavaClassViewPanelUI() {
+
+	private void setJavaClassViewPanelUI() {
 		setAllPanelInvisible();
 		String src = "Source";
 		JavaFileReader javaFileReader = new JavaFileReader();
@@ -185,6 +248,7 @@ private void setJavaClassViewPanelUI() {
 				UIConstants.Menu_Height + UIConstants.PADDING_TOP, 1300, 800);
 		add(javaClassViewPanelUI);
 	}
+
 	private void setAllPanelInvisible() {
 		if (projectExplorerViewPanel != null) {
 			projectExplorerViewPanel.setVisible(false);
@@ -196,6 +260,7 @@ private void setJavaClassViewPanelUI() {
 			javaClassViewPanelUI.setVisible(false);
 		}
 	}
+
 	private void showFrame() {
 		setForeground(Color.black);
 		setBackground(Color.lightGray);
@@ -203,10 +268,12 @@ private void setJavaClassViewPanelUI() {
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
+
 	/** Main: make a Frame, add a FileTree */
 	public static void main(String[] av) {
 		new ConceptLocatorLsiFrame();
 	}
+
 	private void createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu fileMenu = new JMenu("File");
@@ -231,7 +298,7 @@ private void setJavaClassViewPanelUI() {
 							.getAbsolutePath();
 					File file = new File(selectedPath);
 					if (file.isDirectory()) {
-						File [] files = file.listFiles(new JavaFileFilter());
+						File[] files = file.listFiles(new JavaFileFilter());
 						if (files.length > 0) {
 							projectPath = selectedPath;
 							System.out.println(projectPath);
@@ -243,15 +310,15 @@ private void setJavaClassViewPanelUI() {
 		});
 		return;
 	}
-	
-	
-	// disable the view when the  background task is loading
-	private void enableView(){
+
+	// disable the view when the background task is loading
+	private void enableView() {
 		// TODO do later time
 	}
-	
-	class FeedbackDialog extends JDialog{
+
+	class FeedbackDialog extends JDialog {
 		public JButton relButton, irrelButton, openButton;
+
 		public FeedbackDialog(JFrame frame, boolean modal) {
 			super(frame, modal);
 			setLayout(new FlowLayout());
@@ -261,7 +328,7 @@ private void setJavaClassViewPanelUI() {
 			add(irrelButton);
 			openButton = new JButton("OPEN");
 			add(openButton);
-			setSize(200,50);
+			setSize(200, 50);
 			setLocation(200, 200);
 			relButton.addActionListener(new ActionListener() {
 				@Override
@@ -272,10 +339,12 @@ private void setJavaClassViewPanelUI() {
 			});
 
 		}
-		public void showDialog(){
+
+		public void showDialog() {
 			show();
 		}
-		public void dismissDialog(){
+
+		public void dismissDialog() {
 			dispose();
 		}
 	}

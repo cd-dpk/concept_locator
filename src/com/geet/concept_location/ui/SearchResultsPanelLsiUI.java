@@ -33,31 +33,18 @@ public class SearchResultsPanelLsiUI extends JPanel{
 	public JList searchResultList = new JList(listModel);
 	public List<Document> lsiDocuments = new ArrayList<Document>();
 	SearchResultPanel searchResultPanel;
-	JRadioButton relButton, irrelButton, normalButton,openButton; 
+	RelevanceFeedbackPanel relevanceFeedbackPanel;
+	JButton openButton;
 	public SearchResultsPanelLsiUI(List<Document>vectorDocuments, Bound bound) {
 		super();
 		setLayout(null);
 		setOpaque(true);
-		relButton = new JRadioButton("REL");
-		relButton.setBounds(0, 0, 100, 20);
-		add(relButton);
-		irrelButton = new JRadioButton("IRREL");
-		irrelButton.setBounds(110, 0, 100, 20);
-		add(irrelButton);
-		normalButton = new JRadioButton("NORMAL");
-		normalButton.setBounds(220, 0, 100, 20);
-		add(normalButton);
-
-		openButton = new JRadioButton("OPEN");
-		openButton.setBounds(220, 0, 100, 20);
+		openButton = new JButton("OPEN");
+		openButton.setBounds(0, 0, 100, 20);
 		add(openButton);
-		
-		ButtonGroup buttonGroup = new ButtonGroup();
-		buttonGroup.add(relButton);
-		buttonGroup.add(irrelButton);
-		buttonGroup.add(openButton);
-		buttonGroup.add(normalButton);
-		
+		relevanceFeedbackPanel = new RelevanceFeedbackPanel(bound);
+		relevanceFeedbackPanel.setBounds(200, 0, 450, 50);
+		add(relevanceFeedbackPanel);
 		this.lsiDocuments = vectorDocuments;searchResultPanel  = new SearchResultPanel(bound);
 		searchResultList.setFixedCellHeight(UIConstants.LIST_CELL_HEIGHT);
 		searchResultList.setCellRenderer(new TextAreaListItem(20, 100));
