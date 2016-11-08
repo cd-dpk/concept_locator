@@ -10,7 +10,7 @@ public class Lsi {
 	public List<LsiDocument> lsiDocuments = new ArrayList<LsiDocument>();
 	public static final int NUM_FACTORS = 2;
 	public double [] scales = new double[NUM_FACTORS];
-	// lsi bug localization initiated
+	// Lsi bug localization initiated
 	public void setLsiTerms() {
 		lsiTerms = new ArrayList<LsiTerm>();
 		try {
