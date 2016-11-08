@@ -20,6 +20,7 @@ public class DocumentExtractor {
 	private  List<ClassDocument> myClassDocuments = new ArrayList<ClassDocument>();
 	private  List<Document> allDocuments = new ArrayList<Document>();
 	static String fileName;
+	// bug localization starts
 	public DocumentExtractor(File javaFile) {
 		allDocuments = new ArrayList<Document>();
 		try {
