@@ -1,23 +1,17 @@
 package com.geet.concept_location.corpus_creation;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
-import com.github.javaparser.Position;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
-import com.github.javaparser.ast.body.EnumConstantDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-
 /**
  * In bug localization, each java class return a document
  * @author iit
@@ -33,10 +27,8 @@ public class DocumentExtractor {
 			fileName = javaFile.getAbsolutePath();
 			compilationUnit = JavaParser.parse(javaFile);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		document = new Document();
@@ -46,10 +38,10 @@ public class DocumentExtractor {
 		new MethodVisitor().visit(compilationUnit, null);		
 		// all constructors
 		new ConstructorVisitor().visit(compilationUnit, null);		
-		// all classes
-		new ClassOrInterfaceVisitor().visit(compilationUnit, null);
 		// all enum
 		new EnumVisitor().visit(compilationUnit, null);
+		// all classes
+		new ClassOrInterfaceVisitor().visit(compilationUnit, null);
 		// all field
 		new FieldVisitor().visit(compilationUnit, null);
 		return document;
@@ -72,7 +64,7 @@ public class DocumentExtractor {
 				}
 			}
 			if (methodDeclaration.getBody() != null) {
-				document.implementionBody = methodDeclaration.getBody().toStringWithoutComments();
+				document.implementionBody += methodDeclaration.getBody().toStringWithoutComments()+"\n";
 			}
 		}
 	}
@@ -94,7 +86,7 @@ public class DocumentExtractor {
 				}
 			}
 			if (constructorDeclaration.getBlock() != null) {
-				document.implementionBody = constructorDeclaration.getBlock().toStringWithoutComments();
+				document.implementionBody += constructorDeclaration.getBlock().toStringWithoutComments()+"\n";
 			}
 		}
 	}
@@ -127,8 +119,6 @@ public class DocumentExtractor {
 		public void visit(FieldDeclaration fieldDeclaration, Object arg1) {
 			// if the field declaration belongs to that class, then it is added to this class
 			// belonging to a class is determined by the position of class and field declaration 
-			Position startPosition = new Position(fieldDeclaration.getBeginLine(), fieldDeclaration.getBeginColumn());
-			Position endPosition = new Position(fieldDeclaration.getEndLine(), fieldDeclaration.getEndColumn());
 			Comment classComment = fieldDeclaration.getComment();
 			if (classComment != null && classComment instanceof JavadocComment) {
 				document.javaDocComments
@@ -139,13 +129,12 @@ public class DocumentExtractor {
 			}
 			document.implementionBody += fieldDeclaration
 					.toStringWithoutComments() + "\n";
-			
 		}
 	}
 	public static void main(String[] args) {
-			String path ="src/com/geet/concept_location/corpus_creation/Document.java";
+			String path ="src/com/geet/concept_location/corpus_creation/Stemmer.java";
 			DocumentExtractor documentExtractor = new DocumentExtractor(
 					new File(path));
-			System.out.println(path+" has "+documentExtractor.getExtractedDocument()+" document(s)");
+			System.out.println(documentExtractor.getExtractedDocument().getArticle());
 	}
 }

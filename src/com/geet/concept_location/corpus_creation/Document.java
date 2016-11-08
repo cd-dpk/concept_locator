@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
-
 import com.geet.concept_location.indexing_vsm.Term;
 import com.geet.concept_location.utils.CommentStringTokenizer;
 import com.geet.concept_location.utils.ImplementationStringTokenizer;
@@ -13,9 +12,9 @@ import com.github.javaparser.Position;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
 public class Document  extends SimpleDocument {
-	protected String docInJavaFile;
-	protected List<String> docTitles;
-	protected List<JavadocComment> javaDocComments = new ArrayList<JavadocComment>();
+	public String docInJavaFile;
+	public List<String> docTitles = new ArrayList<String>();
+	public List<JavadocComment> javaDocComments = new ArrayList<JavadocComment>();
 	protected List<Comment> implementationComments = new ArrayList<Comment>();
 	protected String implementionBody = "";
 	public Document() {}
@@ -29,14 +28,12 @@ public class Document  extends SimpleDocument {
 		this.implementationComments = implementationComments;
 		this.implementionBody = implementionBody;
 	}
-
 	public String getDocInJavaFile() {
 		return docInJavaFile;
 	}
 	public void setDocInJavaFile(String docInJavaFile) {
 		this.docInJavaFile = docInJavaFile;
 	}
-
 	public List<String> getDocTitles() {
 		return docTitles;
 	}
@@ -64,14 +61,13 @@ public class Document  extends SimpleDocument {
 	public void setArticle(String article) {
 		this.article = article;
 	}
-
 	@Override
 	public String getArticle() {
 		article = "";
-		article += " "+ getDocTitles();
-		article += " "+ getJavaDocComments();
-		article += " "+ getImplementationComments();
-		article += " "+ getImplementionBody();
+		article += " "+ getArticleFromTitles();
+		article += " "+ getArticleFromComment();
+		article += " "+ getArticleFromJavaDocComments();
+		article += " "+ getArticleFromImplementation();
 		return article;
 	}
 	@Override
@@ -103,15 +99,13 @@ public class Document  extends SimpleDocument {
 		}
 		return terms;
 	}
-	
-	
-	private List<String> getTermsFromTitles(){
-		List<String> terms = new ArrayList<String>();
+	private String getArticleFromTitles(){
+		String subArticle = "";
 		// titles extraction
 		for (String title : getDocTitles()) {
-			terms.add(StringUtils.getIdentifierSeparationsWithCamelCase(title));
+			subArticle+=" "+(StringUtils.getIdentifierSeparationsWithCamelCase(title));
 		}
-		return terms;
+		return subArticle;
 	}
 	private String getArticleFromJavaDocComments(){
 		/*
@@ -124,12 +118,6 @@ public class Document  extends SimpleDocument {
 			String documentString = "";
 			while (customStringTokenizer.hasMoreTokens()) {
 				documentString = customStringTokenizer.nextToken();
-				if (!StopWords.isStopword(documentString)) {	
-					// make stemming
-					Stemmer stemmer = new Stemmer(documentString);
-					stemmer.stem();
-					documentString = stemmer.toString();
-				}
 				subArticle += " "+documentString;
 			}
 		}
@@ -144,13 +132,6 @@ public class Document  extends SimpleDocument {
 			String documentString = "";
 			while (customStringTokenizer.hasMoreTokens()) {
 				documentString = customStringTokenizer.nextToken();
-				// remove stop words
-				if (!StopWords.isStopword(documentString)) {	
-					// make stemming
-					Stemmer stemmer = new Stemmer(documentString);
-					stemmer.stem();
-					documentString = stemmer.toString();
-				}
 				subArticle +=" "+documentString;
 			}
 		}
@@ -158,11 +139,26 @@ public class Document  extends SimpleDocument {
 	}
 	private String getArticleFromImplementation(){
 		String subArticle ="";
-		// List<String> terms = new ArrayList<String>();
 		// remove all programming syntax, operators, keywords
-		ImplementationStringTokenizer implementationStringTokenizer = new ImplementationStringTokenizer(implementionBody," ", false);
-		while (implementationStringTokenizer.hasMoreTokens()) {
-			subArticle += " "+implementationStringTokenizer.nextToken();
+		StringTokenizer stringTokenizer = new StringTokenizer(implementionBody,
+				JavaLanguage.getProgrammingLanguageSyntax()
+						+ JavaLanguage.getOperators() + JavaLanguage.getWhiteSpace()
+						, false);
+		while (stringTokenizer.hasMoreTokens()) {
+			String nestedToken = stringTokenizer.nextToken();
+			// if token is equal to any keywords, or operators then replace with
+			// " "
+			if (StringUtils.hasStringInList(nestedToken, JavaLanguage.KEYWORDS)
+					|| StringUtils.hasStringInList(nestedToken,
+							JavaLanguage.OPERATORS_CONTAINED_ONLY_CHAR)
+					|| StringUtils.hasStringInList(nestedToken,
+							JavaLanguage.LITERALS)) {
+			} else {
+				// get identifier separation
+				subArticle += StringUtils
+						.getIdentifierSeparationsWithCamelCase(nestedToken)
+						+ " ";
+			}
 		}
 		return subArticle;
 	}
