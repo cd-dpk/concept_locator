@@ -1,6 +1,8 @@
 package com.geet.concept_location.utils;
 import java.util.StringTokenizer;
+
 import com.geet.concept_location.corpus_creation.JavaLanguage;
+import com.geet.concept_location.corpus_creation.StopWords;
 public class CommentStringTokenizer extends StringTokenizer{
 	public CommentStringTokenizer(String str) {
 		super(str);
@@ -20,11 +22,11 @@ public class CommentStringTokenizer extends StringTokenizer{
 		String largeToken = "";
 		String token = super.nextToken();
 		// if token has a substring of programming syntax then replace with " "
-		StringTokenizer stringTokenizer = new StringTokenizer(token,JavaLanguage.getProgrammingLanguageSyntax()+JavaLanguage.INLINE_COMMENT+JavaLanguage.BLOCK_OR_JAVADOC_CONTINUE,false);
+		StringTokenizer stringTokenizer = new StringTokenizer(token,JavaLanguage.getProgrammingLanguageSyntax()+JavaLanguage.INLINE_COMMENT+JavaLanguage.BLOCK_OR_JAVADOC_CONTINUE+JavaLanguage.getOperators(),false);
 		while (stringTokenizer.hasMoreTokens()) {
 			String nestedToken = stringTokenizer.nextToken();
 			// in line comment or 
-			if (nestedToken.equals(JavaLanguage.INLINE_COMMENT) || nestedToken.equals(JavaLanguage.BLOCK_OR_JAVADOC_CONTINUE)|| StringUtils.hasStringInList(nestedToken, JavaLanguage.OPERATORS)) {
+			if (StopWords.isStopword(nestedToken)||nestedToken.equals(JavaLanguage.INLINE_COMMENT) || nestedToken.equals(JavaLanguage.BLOCK_OR_JAVADOC_CONTINUE)|| StringUtils.hasStringInList(nestedToken, JavaLanguage.OPERATORS)) {
 				continue;
 			}
 			if (findAtSign(nestedToken)) {

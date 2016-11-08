@@ -11,15 +11,22 @@ import com.geet.concept_location.utils.StringUtils;
 import com.github.javaparser.Position;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
-public class Document  implements Comparable<Document>{
-	protected String docInJavaFile;
-	protected String docName;
-	protected com.geet.concept_location.corpus_creation.Position startPosition, endPosition;
-	protected List<JavadocComment> javaDocComments = new ArrayList<JavadocComment>();
+public class Document  extends SimpleDocument {
+	public String docInJavaFile;
+	public List<String> docTitles = new ArrayList<String>();
+	public List<JavadocComment> javaDocComments = new ArrayList<JavadocComment>();
 	protected List<Comment> implementationComments = new ArrayList<Comment>();
 	protected String implementionBody = "";
-	protected String article="";
-	public Document() {
+	public Document() {}
+	public Document(String docInJavaFile, List<String> docTitles,
+			List<JavadocComment> javaDocComments,
+			List<Comment> implementationComments, String implementionBody) {
+		super();
+		this.docInJavaFile = docInJavaFile;
+		this.docTitles = docTitles;
+		this.javaDocComments = javaDocComments;
+		this.implementationComments = implementationComments;
+		this.implementionBody = implementionBody;
 	}
 	public String getDocInJavaFile() {
 		return docInJavaFile;
@@ -27,23 +34,11 @@ public class Document  implements Comparable<Document>{
 	public void setDocInJavaFile(String docInJavaFile) {
 		this.docInJavaFile = docInJavaFile;
 	}
-	public String getDocName() {
-		return docName;
+	public List<String> getDocTitles() {
+		return docTitles;
 	}
-	public void setDocName(String docName) {
-		this.docName = docName;
-	}
-	public com.geet.concept_location.corpus_creation.Position getStartPosition() {
-		return startPosition;
-	}
-	public void setStartPosition(com.geet.concept_location.corpus_creation.Position startPosition) {
-		this.startPosition = startPosition;
-	}
-	public com.geet.concept_location.corpus_creation.Position getEndPosition() {
-		return endPosition;
-	}
-	public void setEndPosition(com.geet.concept_location.corpus_creation.Position endPosition) {
-		this.endPosition = endPosition;
+	public void setDocTitles(List<String> docTitles) {
+		this.docTitles = docTitles;
 	}
 	public List<JavadocComment> getJavaDocComments() {
 		return javaDocComments;
@@ -66,37 +61,16 @@ public class Document  implements Comparable<Document>{
 	public void setArticle(String article) {
 		this.article = article;
 	}
-	public Document(String docInJavaFile, String docName,
-			com.geet.concept_location.corpus_creation.Position startPosition, com.geet.concept_location.corpus_creation.Position endPosition) {
-		super();
-		this.docInJavaFile = docInJavaFile;
-		this.docName = docName;
-		this.startPosition = startPosition;
-		this.endPosition = endPosition;
-	}
-	public boolean isBetweenPosition(Position position){
-		if (position.getLine() == startPosition.getLine() && position.getColumn() > startPosition.getColumn() ) {
-			return true;
-		} 
-		else if(position.getLine() > startPosition.getLine() && position.getLine() < endPosition.getLine()){
-			return true;
-		}
-		else if(position.getLine() == endPosition.getLine() && position.getColumn() < endPosition.getColumn()){
-			return true;
-		}
-		return false;
-	}
-	public Range getRange(){
-		return new Range(startPosition.toParserPosition(), endPosition.toParserPosition());
-	}
+	@Override
 	public String getArticle() {
 		article = "";
-	//	article += javaDocComments.toString()+"\n"+ implementationComments.toString()+"\n"+ implementionBody.toString()+"\n";
-		for (String term : getTermsFromDocument()) {
-			article += term+" ";
-		}
+		article += " "+ getArticleFromTitles();
+		article += " "+ getArticleFromComment();
+		article += " "+ getArticleFromJavaDocComments();
+		article += " "+ getArticleFromImplementation();
 		return article;
 	}
+	@Override
 	public List<Term> getTerms() {
 		List<Term> terms = new ArrayList<Term>();
 		StringTokenizer stringTokenizer = new StringTokenizer(getArticle(), JavaLanguage.getWhiteSpace(), false);
@@ -125,48 +99,32 @@ public class Document  implements Comparable<Document>{
 		}
 		return terms;
 	}
-	public boolean hasTerm(Term term){
-		for (Term trm : getTerms()) {
-			if (trm.isSame(term)) {
-				return true;
-			}
+	private String getArticleFromTitles(){
+		String subArticle = "";
+		// titles extraction
+		for (String title : getDocTitles()) {
+			subArticle+=" "+(StringUtils.getIdentifierSeparationsWithCamelCase(title));
 		}
-		return false;
+		return subArticle;
 	}
-	public String toIndentity(){
-		return docName+" "+docInJavaFile;
-	}
-	private List<String> getTermsFromDocument(){
-		Set<String> terms = new HashSet<String>();
-		// List<String> terms = new ArrayList<String>();
-		// add title to article
-		StringTokenizer stringTokenizer = new StringTokenizer(StringUtils.getIdentifierSeparationsWithCamelCase(getDocName()), JavaLanguage.getWhiteSpace(), false);
-		while (stringTokenizer.hasMoreTokens()) {
-			terms.add(stringTokenizer.nextToken());
-		}		
-		terms.addAll(new HashSet<String>(getTermsFromJavaDocComments()));
-		terms.addAll(new HashSet<String>(getTermsFromComment()));
-		terms.addAll(new HashSet<String>(getTermsFromImplementation()));
-		return new ArrayList<String>(terms);
-	}
-	private List<String> getTermsFromJavaDocComments(){
+	private String getArticleFromJavaDocComments(){
 		/*
 		 * remove *, programming syntax, @tag, <tag>, </tag>
 		 */
 		// List<String> terms = new ArrayList<String>();
-		Set<String> termSet = new HashSet<String>();
+		String subArticle ="";
 		for (JavadocComment javadocComment : javaDocComments) {
 			CommentStringTokenizer customStringTokenizer = new CommentStringTokenizer(javadocComment.getContent()," ", false);
 			String documentString = "";
 			while (customStringTokenizer.hasMoreTokens()) {
 				documentString = customStringTokenizer.nextToken();
-				termSet.add(documentString);
+				subArticle += " "+documentString;
 			}
 		}
-		return new ArrayList<>(termSet);
+		return subArticle;
 	}
-	private List<String> getTermsFromComment(){
-		Set<String> termSet = new HashSet<String>();
+	private String getArticleFromComment(){
+		String subArticle = "";
 		// List<String> terms = new ArrayList<String>();
 		// remove *, programming syntax, @tag, <tag>, </tag>
 		for (Comment comment : implementationComments) {
@@ -174,94 +132,34 @@ public class Document  implements Comparable<Document>{
 			String documentString = "";
 			while (customStringTokenizer.hasMoreTokens()) {
 				documentString = customStringTokenizer.nextToken();
-				termSet.add(documentString);
+				subArticle +=" "+documentString;
 			}
 		}
-		return new ArrayList<String>(termSet);
+		return subArticle;
 	}
-	private List<String> getTermsFromImplementation(){
-		Set<String> termSet = new HashSet<String>();
-		// List<String> terms = new ArrayList<String>();
+	private String getArticleFromImplementation(){
+		String subArticle ="";
 		// remove all programming syntax, operators, keywords
-		ImplementationStringTokenizer implementationStringTokenizer = new ImplementationStringTokenizer(implementionBody," ", false);
-		while (implementationStringTokenizer.hasMoreTokens()) {
-			termSet.add(implementationStringTokenizer.nextToken());
-		}
-		return new ArrayList<String>(termSet);
-	}
-	public double getScalarValue(){
-		double scalarValue = 0.0;
-		for (Term term : getTerms()) {
-				scalarValue += term.getTF_IDF()* term.getTF_IDF();
-		}
-		scalarValue = Math.sqrt(scalarValue);
-		return scalarValue;
-	}
-	/**
-	 * 
-	 * @param document
-	 * @return dotProduct dotProduct between two documents
-	 */
-	public double getDotProduct(Document document){
-		double dotProduct = 1.0;
-		double scalarValue = 0.0;
-		for (Term term : getTerms()) {
-			for (Term trm : document.getTerms()) {
-				if (term.isSame(trm)) {
-					dotProduct *= term.getTF_IDF() * term.getTF_IDF();
-					scalarValue += term.getTF_IDF() * term.getTF_IDF();
-					break;
-				}
+		StringTokenizer stringTokenizer = new StringTokenizer(implementionBody,
+				JavaLanguage.getProgrammingLanguageSyntax()
+						+ JavaLanguage.getOperators() + JavaLanguage.getWhiteSpace()
+						, false);
+		while (stringTokenizer.hasMoreTokens()) {
+			String nestedToken = stringTokenizer.nextToken();
+			// if token is equal to any keywords, or operators then replace with
+			// " "
+			if (StringUtils.hasStringInList(nestedToken, JavaLanguage.KEYWORDS)
+					|| StringUtils.hasStringInList(nestedToken,
+							JavaLanguage.OPERATORS_CONTAINED_ONLY_CHAR)
+					|| StringUtils.hasStringInList(nestedToken,
+							JavaLanguage.LITERALS)) {
+			} else {
+				// get identifier separation
+				subArticle += StringUtils
+						.getIdentifierSeparationsWithCamelCase(nestedToken)
+						+ " ";
 			}
 		}
-		// cosine similarity
-		return dotProduct;
-	}
-	@Override
-	public String toString() {
-		return "Ram and Sham are good friends.\nThey are good man also";
-	}
-	public double dotProduct=0.0;
-	@Override
-	public int compareTo(Document document) {
-		if (dotProduct > document.dotProduct) {
-			return 1;
-		}
-		return -1;
-	}
-	public double getTF_IDF(String termString){
-		double tf_idf = 0.0;
-		for (Term term : getTerms()) {
-			if (term.isSame(new Term(termString))) {
-				return term.getTF_IDF();
-			}
-		}
-		return tf_idf;
-	}
-	public double getTF(String termString){
-		double tf = 0.0;
-		for (Term term : getTerms()) {
-			if (term.isSame(new Term(termString))) {
-				return term.termFrequency;
-			}
-		}
-		return tf;
-	}
-	public List<String> getTermsInString(){
-		List<String> termsInString = new ArrayList<String>();
-		for (Term term : getTerms()) {
-			termsInString.add(term.termString);
-		}
-		return termsInString;
-	}
-	/**
-	 * @return true when the two document is same 
-	 */
-	public boolean isSameDocument(Document document){
-		boolean status = false;
-		if (docName.equals(document.docName) && docInJavaFile.equals(document.docInJavaFile) && startPosition.isEqual(document.getStartPosition()) && endPosition.isEqual(document.getEndPosition())) {
-			return true;
-		}
-		return status;
+		return subArticle;
 	}
 }

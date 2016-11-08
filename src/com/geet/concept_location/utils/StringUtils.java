@@ -70,12 +70,16 @@ public class StringUtils {
 	 */
 	public static String getIdentifierSeparationsWithCamelCase(String target){
 		String resultant ="";
-		StringTokenizer stringTokenizer = new StringTokenizer(target,"_",false);
+		StringTokenizer stringTokenizer = new StringTokenizer(splitCamelCase(target)," ",false);
+		int i=0;
 		while (stringTokenizer.hasMoreTokens()) {
 			String token = stringTokenizer.nextToken();
-			resultant = resultant +" "+ splitCamelCase(token); 
+			if (!token.equals("_")) {
+				resultant += token+" ";
+				i++;
+			}
 		}
-		if (resultant.equals(target)) {
+		if (i<=1) {
 			return target;
 		}
 		return resultant+" "+ target;
@@ -142,4 +146,7 @@ public class StringUtils {
  	      " "
  	   );
  	}
+    public static void main(String[] args) {
+		System.out.println(getIdentifierSeparationsWithCamelCase("Hello_Sir_Why"));
+	}
 }

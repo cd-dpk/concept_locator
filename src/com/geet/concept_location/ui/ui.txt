@@ -1,1 +1,0 @@
-ui.txt deals with ui of concept locator

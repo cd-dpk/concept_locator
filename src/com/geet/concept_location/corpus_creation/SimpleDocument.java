@@ -32,7 +32,7 @@ public class SimpleDocument implements Comparable<SimpleDocument>{
 		while (stringTokenizer.hasMoreTokens()) {
 			String token = stringTokenizer.nextToken();
 			// stem the token if token is a word
-			if (!StopWords.isStopword(token)) {
+			if (StopWords.isStopword(token)) {
 				continue;
 			}
 			Term candidateTerm = new Term(token.toLowerCase(), 1);
