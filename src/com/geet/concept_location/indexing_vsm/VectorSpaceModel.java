@@ -12,6 +12,7 @@ public class VectorSpaceModel {
 	public double [] df;
 	private int totalTerm=0;
 	private int totalDocs=0;
+	private double MINIMUM_SCORE = 0.2;
 	private double MAX = 2;
 	private double a = 1.0;
 	private double b = 2.0;
@@ -114,10 +115,10 @@ public class VectorSpaceModel {
 					System.out.println(scalarOne);
 				}
 				documents.get(i).score = (dotProduct)/(Math.sqrt(scalarOne)*Math.sqrt(scalarTwo));
-				System.out.println(documents.get(i).score);;
-			//	if (documents.get(i).score > 0) {
+				System.out.println(documents.get(i).score);
+				if (documents.get(i).score > MINIMUM_SCORE) {
 					lsiDocuments.add((Document) documents.get(i));
-			//	}
+				}
 		}
 		return lsiDocuments;
 	}

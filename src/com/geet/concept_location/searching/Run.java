@@ -12,8 +12,10 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.geet.concept_location.corpus_creation.Document;
+import com.geet.concept_location.corpus_creation.DocumentExtractor;
 import com.geet.concept_location.corpus_creation.SimpleDocument;
 import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
+import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
 import com.geet.concept_location.utils.JavaFileFilter;
 
 public class Run {
@@ -73,14 +75,26 @@ public class Run {
 
 	public static void main(String[] args) {
 		Run run = new Run(new File("org"));
-		for (String string : run.javaFilePaths) {
+	}
+	public void setRatio(){
+		for (String string : javaFilePaths) {
 			System.out.println(string);
 		}
-		System.out.println(run.javaFilePaths.size());
-	}
-	
-	public void setRatio(){
-		VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(new ArrayList<SimpleDocument>());
+		List<SimpleDocument> allDocuments = new ArrayList<SimpleDocument>();
+		int classNo = 0;
+		for (String path : javaFilePaths) {
+			if (new JavaClassPreprocessor().processJavaFile(new File(path))) {
+				if (path.equals("src/com/geet/concept_location/corpus_creation/JavaLanguage.java")) {
+					continue;
+				}
+				allDocuments.add(new DocumentExtractor(new File(path)).getExtractedDocument());
+			}
+			if (classNo > 10) {
+			//	break;
+			}
+		}
+		System.out.println("Size "+allDocuments.size());
+		VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(allDocuments);
 		for (Bug bug: bugs) {
 			List<Document> returnDocuments = vectorSpaceModel.search(new SimpleDocument(bug.getBugDescription()));
 			int index = 10; // not in desired place
