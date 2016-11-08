@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
+
 import com.geet.concept_location.indexing_vsm.Term;
 import com.geet.concept_location.utils.CommentStringTokenizer;
 import com.geet.concept_location.utils.ImplementationStringTokenizer;
@@ -13,36 +14,34 @@ import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
 public class Document  extends SimpleDocument {
 	protected String docInJavaFile;
-	protected String docName;
-	protected com.geet.concept_location.corpus_creation.Position startPosition, endPosition;
+	protected List<String> docTitles;
 	protected List<JavadocComment> javaDocComments = new ArrayList<JavadocComment>();
 	protected List<Comment> implementationComments = new ArrayList<Comment>();
 	protected String implementionBody = "";
-	public Document() {
+	public Document() {}
+	public Document(String docInJavaFile, List<String> docTitles,
+			List<JavadocComment> javaDocComments,
+			List<Comment> implementationComments, String implementionBody) {
+		super();
+		this.docInJavaFile = docInJavaFile;
+		this.docTitles = docTitles;
+		this.javaDocComments = javaDocComments;
+		this.implementationComments = implementationComments;
+		this.implementionBody = implementionBody;
 	}
+
 	public String getDocInJavaFile() {
 		return docInJavaFile;
 	}
 	public void setDocInJavaFile(String docInJavaFile) {
 		this.docInJavaFile = docInJavaFile;
 	}
-	public String getDocName() {
-		return docName;
+
+	public List<String> getDocTitles() {
+		return docTitles;
 	}
-	public void setDocName(String docName) {
-		this.docName = docName;
-	}
-	public com.geet.concept_location.corpus_creation.Position getStartPosition() {
-		return startPosition;
-	}
-	public void setStartPosition(com.geet.concept_location.corpus_creation.Position startPosition) {
-		this.startPosition = startPosition;
-	}
-	public com.geet.concept_location.corpus_creation.Position getEndPosition() {
-		return endPosition;
-	}
-	public void setEndPosition(com.geet.concept_location.corpus_creation.Position endPosition) {
-		this.endPosition = endPosition;
+	public void setDocTitles(List<String> docTitles) {
+		this.docTitles = docTitles;
 	}
 	public List<JavadocComment> getJavaDocComments() {
 		return javaDocComments;
@@ -65,36 +64,14 @@ public class Document  extends SimpleDocument {
 	public void setArticle(String article) {
 		this.article = article;
 	}
-	public Document(String docInJavaFile, String docName,
-			com.geet.concept_location.corpus_creation.Position startPosition, com.geet.concept_location.corpus_creation.Position endPosition) {
-		super();
-		this.docInJavaFile = docInJavaFile;
-		this.docName = docName;
-		this.startPosition = startPosition;
-		this.endPosition = endPosition;
-	}
-	public boolean isBetweenPosition(Position position){
-		if (position.getLine() == startPosition.getLine() && position.getColumn() > startPosition.getColumn() ) {
-			return true;
-		} 
-		else if(position.getLine() > startPosition.getLine() && position.getLine() < endPosition.getLine()){
-			return true;
-		}
-		else if(position.getLine() == endPosition.getLine() && position.getColumn() < endPosition.getColumn()){
-			return true;
-		}
-		return false;
-	}
-	public Range getRange(){
-		return new Range(startPosition.toParserPosition(), endPosition.toParserPosition());
-	}
+
 	@Override
 	public String getArticle() {
 		article = "";
-	//	article += javaDocComments.toString()+"\n"+ implementationComments.toString()+"\n"+ implementionBody.toString()+"\n";
-		for (String term : getTermsFromDocument()) {
-			article += term+" ";
-		}
+		article += " "+ getDocTitles();
+		article += " "+ getJavaDocComments();
+		article += " "+ getImplementationComments();
+		article += " "+ getImplementionBody();
 		return article;
 	}
 	@Override
@@ -126,25 +103,22 @@ public class Document  extends SimpleDocument {
 		}
 		return terms;
 	}
-	private List<String> getTermsFromDocument(){
-		Set<String> terms = new HashSet<String>();
-		// List<String> terms = new ArrayList<String>();
-		// add title to article
-		StringTokenizer stringTokenizer = new StringTokenizer(StringUtils.getIdentifierSeparationsWithCamelCase(getDocName()), JavaLanguage.getWhiteSpace(), false);
-		while (stringTokenizer.hasMoreTokens()) {
-			terms.add(stringTokenizer.nextToken());
+	
+	
+	private List<String> getTermsFromTitles(){
+		List<String> terms = new ArrayList<String>();
+		// titles extraction
+		for (String title : getDocTitles()) {
+			terms.add(StringUtils.getIdentifierSeparationsWithCamelCase(title));
 		}
-		terms.addAll(new HashSet<String>(getTermsFromJavaDocComments()));
-		terms.addAll(new HashSet<String>(getTermsFromComment()));
-		terms.addAll(new HashSet<String>(getTermsFromImplementation()));
-		return new ArrayList<String>(terms);
+		return terms;
 	}
-	private List<String> getTermsFromJavaDocComments(){
+	private String getArticleFromJavaDocComments(){
 		/*
 		 * remove *, programming syntax, @tag, <tag>, </tag>
 		 */
 		// List<String> terms = new ArrayList<String>();
-		Set<String> termSet = new HashSet<String>();
+		String subArticle ="";
 		for (JavadocComment javadocComment : javaDocComments) {
 			CommentStringTokenizer customStringTokenizer = new CommentStringTokenizer(javadocComment.getContent()," ", false);
 			String documentString = "";
@@ -156,13 +130,13 @@ public class Document  extends SimpleDocument {
 					stemmer.stem();
 					documentString = stemmer.toString();
 				}
-				termSet.add(documentString);
+				subArticle += " "+documentString;
 			}
 		}
-		return new ArrayList<>(termSet);
+		return subArticle;
 	}
-	private List<String> getTermsFromComment(){
-		Set<String> termSet = new HashSet<String>();
+	private String getArticleFromComment(){
+		String subArticle = "";
 		// List<String> terms = new ArrayList<String>();
 		// remove *, programming syntax, @tag, <tag>, </tag>
 		for (Comment comment : implementationComments) {
@@ -177,29 +151,19 @@ public class Document  extends SimpleDocument {
 					stemmer.stem();
 					documentString = stemmer.toString();
 				}
-				termSet.add(documentString);
+				subArticle +=" "+documentString;
 			}
 		}
-		return new ArrayList<String>(termSet);
+		return subArticle;
 	}
-	private List<String> getTermsFromImplementation(){
-		Set<String> termSet = new HashSet<String>();
+	private String getArticleFromImplementation(){
+		String subArticle ="";
 		// List<String> terms = new ArrayList<String>();
 		// remove all programming syntax, operators, keywords
 		ImplementationStringTokenizer implementationStringTokenizer = new ImplementationStringTokenizer(implementionBody," ", false);
 		while (implementationStringTokenizer.hasMoreTokens()) {
-			termSet.add(implementationStringTokenizer.nextToken());
+			subArticle += " "+implementationStringTokenizer.nextToken();
 		}
-		return new ArrayList<String>(termSet);
-	}
-	/**
-	 * @return true when the two document is same 
-	 */
-	public boolean isSameDocument(Document document){
-		boolean status = false;
-		if (docName.equals(document.docName) && docInJavaFile.equals(document.docInJavaFile) && startPosition.isEqual(document.getStartPosition()) && endPosition.isEqual(document.getEndPosition())) {
-			return true;
-		}
-		return status;
+		return subArticle;
 	}
 }

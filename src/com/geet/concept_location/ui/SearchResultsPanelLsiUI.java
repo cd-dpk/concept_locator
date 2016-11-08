@@ -30,7 +30,7 @@ public class SearchResultsPanelLsiUI extends JPanel{
 		for (Document document : lsiDocuments) {
 			String str="";
 			str += document.score+"\n";
-			str += document.getDocName()+"\n";
+			str += document.getDocInJavaFile()+"\n";
 			str += document.getDocInJavaFile()+"\n";
 			str += document.getArticle()+"\n";
 			listModel.addElement(str);

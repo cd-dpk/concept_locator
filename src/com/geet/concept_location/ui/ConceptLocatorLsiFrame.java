@@ -69,21 +69,15 @@ public class ConceptLocatorLsiFrame extends JFrame {
 		// read all the documents
 		allDocuments = new ArrayList<SimpleDocument>();
 		int classNo = 0;
-//		String path="src/com/geet/concept_location/corpus_creation/DocumentExtractor.java";
 		for (String path : javaClassPathList) {
 			if (new JavaClassPreprocessor().processJavaFile(new File(path))) {
 				if (path.equals("src/com/geet/concept_location/corpus_creation/JavaLanguage.java")) {
 					continue;
 				}
-				DocumentExtractor documentExtractor = new DocumentExtractor(
-						new File(path));
-				int size = 0;
-				for (Document document : documentExtractor.getAllDocuments()) {
-					allDocuments.add(document);
-					size++;
-				}
-				classNo++;
-				System.out.println(path + " has " + size + " document(s)");
+				allDocuments.add(new DocumentExtractor(new File(path)).getExtractedDocument());
+			}
+			if (classNo > 10) {
+			//	break;
 			}
 		}
 		System.out.println("Size "+allDocuments.size());
