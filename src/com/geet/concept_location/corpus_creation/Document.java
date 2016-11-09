@@ -1,14 +1,10 @@
 package com.geet.concept_location.corpus_creation;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.StringTokenizer;
 import com.geet.concept_location.indexing_vsm.Term;
 import com.geet.concept_location.utils.CommentStringTokenizer;
-import com.geet.concept_location.utils.ImplementationStringTokenizer;
 import com.geet.concept_location.utils.StringUtils;
-import com.github.javaparser.Position;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
 public class Document  extends SimpleDocument {

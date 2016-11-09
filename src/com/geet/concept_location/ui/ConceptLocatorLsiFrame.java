@@ -74,13 +74,15 @@ public class ConceptLocatorLsiFrame extends JFrame {
 				if (path.equals("src/com/geet/concept_location/corpus_creation/JavaLanguage.java")) {
 					continue;
 				}
+				System.out.println(path);
 				allDocuments.add(new DocumentExtractor(new File(path)).getExtractedDocument());
 			}
 			if (classNo > 10) {
-			//	break;
+				// break;
 			}
 		}
 		System.out.println("Size "+allDocuments.size());
+		System.exit(0);
 		// turn into vector documents
 		// get the vector space model
 		vectorSpaceModel = new VectorSpaceModel(allDocuments);

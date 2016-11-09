@@ -41,12 +41,14 @@ public class VectorSpaceModel {
 						df[i]++;
 				}
 				TERM_DOCUMENT_MATRIX[i][j]= tf;
+				System.out.print(TERM_DOCUMENT_MATRIX[i][j]+" ");
 			}
 			// idf
 			if (df[i] == 0) {
 				System.err.println("Something is going wrong");
 				System.exit(i);
 			}
+			System.out.println();
 		}
 	}
 	public List<Document> search(){
@@ -93,6 +95,8 @@ public class VectorSpaceModel {
 		int totalDocument = documents.size() + 1 ;
 		List<Document>lsiDocuments = new ArrayList<Document>();	
 		for (int i = 0; i < documents.size(); i++) {
+			Document document = (Document) documents.get(i);
+			System.out.println(i+":"+document.getDocInJavaFile()+" is computing...");
 				double dotProduct = 0.0;
 				double scalarOne = 0.0;
 				double scalarTwo = 0.0;

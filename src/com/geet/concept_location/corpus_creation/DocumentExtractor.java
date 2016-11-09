@@ -21,15 +21,16 @@ public class DocumentExtractor {
 	CompilationUnit compilationUnit;
 	Document document ;
 	static String fileName;
+	
 	// bug localization starts
 	public DocumentExtractor(File javaFile) {
 		try {
 			fileName = javaFile.getAbsolutePath();
 			compilationUnit = JavaParser.parse(javaFile);
-		} catch (ParseException e) {
-			e.printStackTrace();
+			} catch (ParseException e) {
+//			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 		document = new Document();
 	}
@@ -49,6 +50,7 @@ public class DocumentExtractor {
 	private  class MethodVisitor extends VoidVisitorAdapter{
 		@Override
 		public void visit(MethodDeclaration methodDeclaration, Object arg1) {
+			System.out.println("Methods");
 			document.docTitles.add(methodDeclaration.getName());
 			Comment methodComment = methodDeclaration.getComment();
 			if (methodComment != null && methodComment instanceof JavadocComment) {
@@ -132,9 +134,10 @@ public class DocumentExtractor {
 		}
 	}
 	public static void main(String[] args) {
-			String path ="src/com/geet/concept_location/corpus_creation/Stemmer.java";
+			String path ="src/org/eclipse/swt/internal/Callback.java";
 			DocumentExtractor documentExtractor = new DocumentExtractor(
 					new File(path));
+
 			System.out.println(documentExtractor.getExtractedDocument().getArticle());
 	}
 }
