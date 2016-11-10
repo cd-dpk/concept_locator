@@ -1,8 +1,11 @@
 package com.geet.concept_location.searching;
 import java.awt.BorderLayout;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
@@ -99,7 +102,11 @@ public class Run {
 		vectorSpaceModel.generateLsi();
 	}
 	public void setRatio() throws ParserConfigurationException, SAXException, IOException{
-		File inputFile = new File(rootPath+"\\SWT\\bugRepository.xml");
+		Calendar localCalendar = Calendar.getInstance();
+		java.util.Date date = localCalendar.getTime();
+		File outputFile = new File(rootPath+"LSI"+date.getDay()+date.getHours()+date.getMinutes()+".txt");
+		FileWriter fileWriter = new FileWriter(outputFile);
+		File inputFile = new File("D:/BSSE0501/RESOURCE/SWT/bugRepository.xml");
         DocumentBuilderFactory dbFactory 
            = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -157,6 +164,8 @@ public class Run {
 					}
 				}
 			}
+			System.out.println(bug.bugID+" "+index);
+			fileWriter.write(bug.bugID+","+index+"\n");
 			if (index == 0 ) {
 				topOne++;
 				System.out.println(topOne);
@@ -169,5 +178,8 @@ public class Run {
 				System.out.println(topTen);
 			}
 	    }
+		fileWriter.write(nList.getLength()+","+topOne+","+topFive+","+topTen);
+		fileWriter.close();
+
 	}
 }
