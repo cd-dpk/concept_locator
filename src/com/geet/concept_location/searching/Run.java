@@ -98,6 +98,10 @@ public class Run {
 		vectorSpaceModel.generateLsi();
 	}
 	public void setRatio() throws ParserConfigurationException, SAXException, IOException{
+		Calendar localCalendar = Calendar.getInstance();
+		Date date = localCalendar.getTime();
+		File outputFile = new File(rootPath+"LSI"+date.getDay()+date.getHours()+date.getMinutes()+".txt");
+		FileWriter fileWriter = new FileWriter(outputFile);
 		File inputFile = new File("D:/BSSE0501/RESOURCE/SWT/bugRepository.xml");
         DocumentBuilderFactory dbFactory 
            = DocumentBuilderFactory.newInstance();
@@ -156,6 +160,8 @@ public class Run {
 					}
 				}
 			}
+			System.out.println(bug.bugID+" "+index);
+			fileWriter.write(bug.bugID+","+index+"\n");
 			if (index == 0 ) {
 				topOne++;
 				System.out.println(topOne);
@@ -168,5 +174,8 @@ public class Run {
 				System.out.println(topTen);
 			}
 	    }
+		fileWriter.write(nList.getLength()+","+topOne+","+topFive+","+topTen);
+		fileWriter.close();
+
 	}
 }
