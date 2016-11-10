@@ -25,6 +25,7 @@ import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
 import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
 import com.geet.concept_location.utils.JavaFileFilter;
 public class Run {
+	static String rootPath ="D:\\BSSE0501\\res\\";
 	public int topOne=0;
 	public int topFive=0;
 	public int topTen=0;
@@ -75,7 +76,7 @@ public class Run {
 		return curDir;
 	}
 	public static void main(String[] args) throws Exception, SAXException, IOException {
-		Run run = new Run(new File("D:\\org_final"));
+		Run run = new Run(new File(rootPath+"org"));
 		run.setRatio();
 	}
 	
@@ -98,7 +99,7 @@ public class Run {
 		vectorSpaceModel.generateLsi();
 	}
 	public void setRatio() throws ParserConfigurationException, SAXException, IOException{
-		File inputFile = new File("D:/BSSE0501/RESOURCE/SWT/bugRepository.xml");
+		File inputFile = new File(rootPath+"\\SWT\\bugRepository.xml");
         DocumentBuilderFactory dbFactory 
            = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
