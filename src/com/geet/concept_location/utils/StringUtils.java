@@ -146,6 +146,19 @@ public class StringUtils {
  	      " "
  	   );
  	}
+	public static String getFilePathFromBugRepositoryFixedFile(String target){
+    	String returnPath="";
+    	int lastIndexOfDot = target.lastIndexOf('.');
+    	for (int i = 0; i < target.length(); i++) {
+			char ch = target.charAt(i);
+			if (ch == '.' && i < lastIndexOfDot) {
+				ch = File.separatorChar;
+			}
+			returnPath += ch; 
+		}
+    	System.out.println("Return Path "+ returnPath);
+    	return returnPath;
+    }
     public static void main(String[] args) {
 		System.out.println(getIdentifierSeparationsWithCamelCase("Hello_Sir_Why"));
 	}
