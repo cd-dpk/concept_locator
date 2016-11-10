@@ -75,7 +75,9 @@ public class ConceptLocatorLsiFrame extends JFrame {
 					continue;
 				}
 				System.out.println(path);
-				allDocuments.add(new DocumentExtractor(new File(path)).getExtractedDocument());
+				Document document =new DocumentExtractor(new File(path)).getExtractedDocument();
+				System.out.println(document.getArticle());
+				allDocuments.add(document);
 			}
 			if (classNo > 10) {
 				// break;

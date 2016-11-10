@@ -18,7 +18,7 @@ public class JavaClassPreprocessor {
 			while (scanner.hasNext()) {
 				String token = scanner.nextLine();
 				if (!StringUtils.isEmpty(token)) {
-					fileString += token+"\n";
+					fileString += (token)+"\n";
 				}
 			}
 			scanner.close();
@@ -48,5 +48,23 @@ public class JavaClassPreprocessor {
 			e.printStackTrace();
 		}
 		return false;
+	}
+	private static String exceptionHandle(String target){
+		String ret="";
+		// if there any space among a element and a comment
+		for (int i = 0; i < target.length(); i++) {
+			char ch = target.charAt(i);
+			if (i+1<target.length()) {
+				char next = target.charAt(i+1);
+				if (ch==' ' && next =='/') {
+					continue;
+				}
+			}
+			ret += ch;
+		}
+		return ret;
+	}
+	public static void main(String[] args) {
+		System.out.println(exceptionHandle(("int/*Hello*/ i,/*Hello*/ j=10,k;")));
 	}
 }

@@ -11,7 +11,7 @@ public class StringUtils {
 	public static String getFilePathName(String treePath){
 		String filePath ="";
 		List<String> uniqueNames = new ArrayList<String>();
-		StringTokenizer stringTokenizer = new StringTokenizer(treePath,"[],\\ /",false);
+		StringTokenizer stringTokenizer = new StringTokenizer(treePath,"[],\\/",false);
 		while (stringTokenizer.hasMoreTokens()) {
 			String token = stringTokenizer.nextToken();
 			if (!hasStringInList(token, uniqueNames)) {

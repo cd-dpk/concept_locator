@@ -36,7 +36,7 @@ public class Run {
 	DefaultMutableTreeNode addNodes(DefaultMutableTreeNode curTop, File dir) {
 		String curPath = dir.getPath();
 		DefaultMutableTreeNode curDir = new DefaultMutableTreeNode(curPath);
-		if (curTop != null) { // should only be null at root
+		if (curTop != null) {// should only be null at root
 			curTop.add(curDir);
 		}
 		Vector ol = new Vector();
@@ -72,21 +72,16 @@ public class Run {
 		return curDir;
 	}
 	public static void main(String[] args) throws Exception, SAXException, IOException {
-		Run run = new Run(new File("D:/BSSE0501/RESOURCE/org"));
+		Run run = new Run(new File("D:\\org_final"));
 		run.setRatio();
 	}
 	public void setRatio() throws ParserConfigurationException, SAXException, IOException{
 		List<SimpleDocument> allDocuments = new ArrayList<SimpleDocument>();
 		int classNo = 0;
 		for (String path : javaFilePaths) {
-			if (classNo < 182) {
-				classNo++;
-				continue;
-			}
 			if (new JavaClassPreprocessor().processJavaFile(new File(path))) {
-				if (path.equals("src/com/geet/concept_location/corpus_creation/JavaLanguage.java")) {
-					continue;
-				}
+				System.out.println(classNo);
+				System.out.println(path);
 				Document document = new DocumentExtractor(new File(path)).getExtractedDocument();
 				System.out.println(document.getArticle());
 				allDocuments.add(document);
@@ -94,7 +89,6 @@ public class Run {
 			classNo++;
 		}
 		System.out.println("Size "+allDocuments.size());
-		System.exit(0);
 		VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(allDocuments);
 		System.out.println("Initializing.............");
 		File inputFile = new File("D:/BSSE0501/RESOURCE/SWT/bugRepository.xml");
@@ -116,29 +110,35 @@ public class Run {
 	        for (int j = 0; j < summary.getLength(); ++j)
 	        {
 	            Element option = (Element) summary.item(j);
-	            String optionText = option.getFirstChild().getNodeValue();
-	            System.out.println("Summary :"+optionText);
-	            bug.summary += optionText;
+	            if (option.hasChildNodes()) {
+		            String optionText = option.getFirstChild().getNodeValue();
+			        //    System.out.println("Summary :"+optionText);
+			            bug.summary += optionText;
+				}
 	        }
 	        NodeList description = bugElement.getElementsByTagName("description");
 	        for (int j = 0; j < description.getLength(); ++j)
 	        {
 	            Element option = (Element) description.item(j);
-	            String optionText = option.getFirstChild().getNodeValue();
-	            System.out.println("Description :"+optionText);
-	            bug.description += optionText;
+	            if (option.hasChildNodes()) {
+	            	String optionText = option.getFirstChild().getNodeValue();
+	    	        //    System.out.println("Description :"+optionText);
+	    	            bug.description += optionText;	
+				}
 	        }
 	        NodeList fileList = bugElement.getElementsByTagName("file");
 	        for (int j = 0; j < fileList.getLength(); ++j)
 	        {
 	            Element option = (Element) fileList.item(j);
-	            String optionText = option.getFirstChild().getNodeValue();
-	            System.out.println("Option :"+optionText);
-	            bug.fixedFiles.add(optionText);
+	            if (option.hasChildNodes()) {
+		            String optionText = option.getFirstChild().getNodeValue();
+			        //    System.out.println("File :"+optionText);
+			            bug.fixedFiles.add(optionText);					
+				}
 	        }
 	        System.out.println(bug.toString());
 	        List<Document> returnDocuments = vectorSpaceModel.search(new SimpleDocument(bug.getSummary()));
-			int index = 10; // not in desired place
+			int index = 10;// not in desired place
 			for (int j = 0; j < bug.getFixedFiles().size(); j++) {
 				for (int k = 0; j < returnDocuments.size(); k++) {
 					if (bug.getFixedFiles().get(j).equals(returnDocuments.get(k).getDocInJavaFile())) {
@@ -151,11 +151,14 @@ public class Run {
 			}
 			if (index == 0 ) {
 				topOne++;
+				System.out.println(topOne);
 			}else if(index>= 1 && index <= 4){
 				topFive++;
+				System.out.println(topFive);
 			}
 			else if(index>=5 && index <=9){
 				topTen++;
+				System.out.println(topTen);
 			}
 	    }
 	}
