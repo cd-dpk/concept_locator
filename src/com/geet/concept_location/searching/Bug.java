@@ -1,22 +1,39 @@
 package com.geet.concept_location.searching;
-
 import java.util.ArrayList;
 import java.util.List;
-
-
 public class Bug {
-	String bugDescription="";
+	String bugID="";
+	String summary="";
+	String description="";
 	List<String> fixedFiles=new ArrayList<String>();
-	public Bug(String bugDescription, List<String> fixedFiles) {
+	public Bug() {
+		// TODO Auto-generated constructor stub
+	}
+	public String getBugID() {
+		return bugID;
+	}
+	public void setBugID(String bugID) {
+		this.bugID = bugID;
+	}
+	public String getSummary() {
+		return summary;
+	}
+	public Bug(String bugID, String summary, String description,
+			List<String> fixedFiles) {
 		super();
-		setBugDescription(bugDescription);
-		setFixedFiles(fixedFiles);
+		this.bugID = bugID;
+		this.summary = summary;
+		this.description = description;
+		this.fixedFiles = fixedFiles;
 	}
-	public String getBugDescription() {
-		return bugDescription;
+	public void setSummary(String summary) {
+		this.summary = summary;
 	}
-	public void setBugDescription(String bugDescription) {
-		this.bugDescription = bugDescription;
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	public List<String> getFixedFiles() {
 		return fixedFiles;
@@ -24,6 +41,12 @@ public class Bug {
 	public void setFixedFiles(List<String> fixedFiles) {
 		this.fixedFiles = fixedFiles;
 	}
-	
-	
+	@Override
+	public String toString() {
+		String files = "[";
+		for (int i = 0; i < fixedFiles.size(); i++) {
+			files += fixedFiles.get(i)+",";
+		}
+		return bugID+","+summary+","+description+","+files+"]";
+	}
 }

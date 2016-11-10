@@ -26,7 +26,7 @@ public class LsiQuery {
 		List<String> terms = new ArrayList<String>();
 		StringTokenizer stringTokenizer = new StringTokenizer(query," ", false);
 		while (stringTokenizer.hasMoreTokens()) {
-			terms.add(stringTokenizer.nextToken());
+			terms.add(stringTokenizer.nextToken().toLowerCase());
 		}
 		return terms;
 	}

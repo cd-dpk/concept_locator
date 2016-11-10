@@ -11,6 +11,7 @@ import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.indexing_lsi.Lsi;
 import com.geet.concept_location.indexing_lsi.LsiDocument;
 import com.geet.concept_location.indexing_lsi.LsiTerm;
+import com.geet.concept_location.indexing_lsi.ScaleMatrix;
 import com.geet.concept_location.indexing_lsi.Vector;
 public class VectorSpaceModel {
 	public List<Document> documents = new ArrayList<Document>();
@@ -132,8 +133,7 @@ public class VectorSpaceModel {
 		}
 		return text;
 	}
-	public Lsi getLsi(){
-		Lsi lsi = new Lsi();
+	public void  generateLsi(){
 		double featureInit = 0.01;
 		double initialLearningRate = 0.005;
 		int annealingRate = 1000;
@@ -154,9 +154,11 @@ public class VectorSpaceModel {
 		SvdMatrix matrix = SvdMatrix.svd(getTERM_DOCUMENT_MATRIX(), Lsi.NUM_FACTORS,
 				featureInit, initialLearningRate, annealingRate,
 				regularization, null, minImprovement, minEpochs, maxEpochs);
-		lsi.scales = matrix.singularValues();
+		ScaleMatrix scaleMatrix = new ScaleMatrix(matrix.singularValues());
 		double[][] termVectors = matrix.leftSingularVectors();
 		double[][] docVectors = matrix.rightSingularVectors();
+	
+		
 		System.out.println("Terms...");
 		/* term vectors into lsi terms*/
 		try {
@@ -165,8 +167,8 @@ public class VectorSpaceModel {
 			List<LsiTerm> lsiTerms = new ArrayList<LsiTerm>();
 			for (int i = 0; i < termVectors.length; i++) {
 				Vector vector = new Vector(Lsi.NUM_FACTORS);
-				vector.dimensionValue[0] = termVectors[i][0];
-				vector.dimensionValue[1] = termVectors[i][1];
+				vector.dimensionValue[0] = termVectors[i][0] * scaleMatrix.getScales()[0];
+				vector.dimensionValue[1] = termVectors[i][1] * scaleMatrix.getScales()[1];
 				LsiTerm lsiTerm = new LsiTerm(terms.get(i),vector);
 				System.out.println(lsiTerm.toCSVString());
 				lsiTerms.add(lsiTerm);
@@ -184,8 +186,8 @@ public class VectorSpaceModel {
 			List<LsiDocument> lsiDocuments = new ArrayList<LsiDocument>();
 			for (int i = 0; i < docVectors.length; i++) {
 				Vector vector = new Vector(Lsi.NUM_FACTORS);
-				vector.dimensionValue[0] = docVectors[i][0];
-				vector.dimensionValue[1] = docVectors[i][1];
+				vector.dimensionValue[0] = docVectors[i][0]* scaleMatrix.getScales()[0];
+				vector.dimensionValue[1] = docVectors[i][1]* scaleMatrix.getScales()[1];
 				LsiDocument lsiDocument = new LsiDocument(documents.get(i),vector);
 				System.out.println(lsiDocument.toCSVString());
 				lsiDocuments.add(lsiDocument);
@@ -195,7 +197,6 @@ public class VectorSpaceModel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return lsi;
 	}
 	private double getNormalizedValue(double value){
 		double normalizedValue = (value - MIN)/(MAX-MIN);

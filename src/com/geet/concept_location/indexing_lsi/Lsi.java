@@ -9,8 +9,27 @@ public class Lsi {
 	public List<LsiTerm> lsiTerms = new ArrayList<LsiTerm>();
 	public List<LsiDocument> lsiDocuments = new ArrayList<LsiDocument>();
 	public static final int NUM_FACTORS = 2;
+	public final static double MINIMUM_SCORE = 0.2;
 	public double [] scales = new double[NUM_FACTORS];
 	// Lsi bug localization initiated
+	
+	public void setLsiScales() {
+		try {
+			FileInputStream file = new FileInputStream("Scales.ser");
+			ObjectInputStream objectInputStream = new ObjectInputStream(file);
+			try {
+				ScaleMatrix scaleMatrix = (ScaleMatrix) objectInputStream.readObject();
+				scales = scaleMatrix.getScales();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			objectInputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 	public void setLsiTerms() {
 		lsiTerms = new ArrayList<LsiTerm>();
 		try {
@@ -44,18 +63,15 @@ public class Lsi {
 		}
 	}
 	public List<LsiDocument> search(LsiQuery lsiQuery){
+		setLsiScales();
 		setLsiTerms();
 		setLsiDocuments();
-		for (LsiTerm lsiTerm : lsiTerms) {
-			System.out.println(lsiTerm.term);
-		}
 		List<LsiDocument> resultantLsiDocuments = new ArrayList<LsiDocument>();
 		lsiQuery.vector = getVectorFromLSI(lsiQuery.getTerms());
-		System.out.println(lsiQuery.vector.toCSVString());
 		if (!lsiQuery.vector.isNull()) {
 			for (int j = 0; j < lsiDocuments.size(); ++j) {
 				lsiDocuments.get(j).score = lsiQuery.vector.cosine(lsiDocuments.get(j).vector);
-				if (this.lsiDocuments.get(j).score > .75) {
+				if (this.lsiDocuments.get(j).score > MINIMUM_SCORE) {
 					resultantLsiDocuments.add(lsiDocuments.get(j));
 				}
 			}
