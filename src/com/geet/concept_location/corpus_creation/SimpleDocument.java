@@ -28,14 +28,14 @@ public class SimpleDocument implements Comparable<SimpleDocument>{
 	}
 	public List<Term> getTerms() {
 		List<Term> terms = new ArrayList<Term>();
-		StringTokenizer stringTokenizer = new StringTokenizer(getArticle(), JavaLanguage.getWhiteSpace(), false);
+		StringTokenizer stringTokenizer = new StringTokenizer(getArticle(), JavaLanguage.getWhiteSpace()+JavaLanguage.PROGRAMING_LANGUAGE_SYNTAX+JavaLanguage.OPERATORS, false);
 		while (stringTokenizer.hasMoreTokens()) {
 			String token = stringTokenizer.nextToken();
-			// stem the token if token is a word
+			token = token.toLowerCase();
 			if (StopWords.isStopword(token)) {
 				continue;
 			}
-			Term candidateTerm = new Term(token.toLowerCase(), 1);
+			Term candidateTerm = new Term(token, 1);
 			int pass = -1;
 			for (int i = 0; i < terms.size(); i++) {
 				if (terms.get(i).isSame(candidateTerm)) {

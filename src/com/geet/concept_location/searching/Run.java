@@ -72,7 +72,7 @@ public class Run {
 		return curDir;
 	}
 	public static void main(String[] args) throws Exception, SAXException, IOException {
-		Run run = new Run(new File("D:\\org_final"));
+		Run run = new Run(new File("/media/Video/org_final"));
 		run.setRatio();
 	}
 	public void setRatio() throws ParserConfigurationException, SAXException, IOException{
@@ -91,6 +91,7 @@ public class Run {
 		System.out.println("Size "+allDocuments.size());
 		VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(allDocuments);
 		System.out.println("Initializing.............");
+		System.exit(0);
 		File inputFile = new File("D:/BSSE0501/RESOURCE/SWT/bugRepository.xml");
         DocumentBuilderFactory dbFactory 
            = DocumentBuilderFactory.newInstance();

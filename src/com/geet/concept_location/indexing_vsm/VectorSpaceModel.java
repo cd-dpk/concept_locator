@@ -1,4 +1,7 @@
 package com.geet.concept_location.indexing_vsm;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -26,8 +29,21 @@ public class VectorSpaceModel {
 		TERM_DOCUMENT_MATRIX = new double[totalTerm][totalDocs];
 		df = new double [totalTerm];
 		System.out.println("Terms "+totalTerm+" Documents "+totalDocs);
-		System.out.println(terms.toString());
+		// writeTermsIntoFile();
 		setTERM_DOCUMENT_MATRIX(terms, documents);
+	}
+	public void writeTermsIntoFile(){
+		try {
+			FileWriter fileWriter = new FileWriter(new File("Term.txt"));
+			for (String term : terms) {
+				fileWriter.write(term + "\n");
+			}
+			fileWriter.close();
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	public void setTERM_DOCUMENT_MATRIX(List<String> terms,List<SimpleDocument>documents){
 		/* dont calculate idf from terms rather compute it from matrix*/
@@ -41,7 +57,7 @@ public class VectorSpaceModel {
 						df[i]++;
 				}
 				TERM_DOCUMENT_MATRIX[i][j]= tf;
-				System.out.print(TERM_DOCUMENT_MATRIX[i][j]+" ");
+				System.out.print(i+":"+TERM_DOCUMENT_MATRIX[i][j]+" ");
 			}
 			// idf
 			if (df[i] == 0) {
@@ -80,7 +96,7 @@ public class VectorSpaceModel {
 		for (Term term : newSimpleDocument.getTerms()) {
 			int flag =0;
 			for (int i = 0; i < newDocumentMatrix.length; i++) {
-				if (term.termString.equals(terms.get(i))) {
+				if (term.isSameInIR(new Term(terms.get(i)))) {
 					newDocumentMatrix[i] = term.termFrequency;
 					flag = 1;
 					break;

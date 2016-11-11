@@ -149,4 +149,15 @@ public class StringUtils {
     public static void main(String[] args) {
 		System.out.println(getIdentifierSeparationsWithCamelCase("Hello_Sir_Why"));
 	}
+    public static boolean isConstant(String target){
+    	if (target.startsWith("0x")) {
+			return true;
+		}
+    	for (int i = 0; i < 10; i++) {
+        	if (target.startsWith(i+"") ) {
+    			return true;
+    		}			
+		}
+    	return false;
+    }
 }

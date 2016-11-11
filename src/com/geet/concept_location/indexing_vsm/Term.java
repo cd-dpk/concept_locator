@@ -1,6 +1,7 @@
 package com.geet.concept_location.indexing_vsm;
 import java.util.List;
 import com.geet.concept_location.corpus_creation.Document;
+import com.geet.concept_location.corpus_creation.Stemmer;
 public class Term {
 	public String termString;
 	public int termFrequency=0;
@@ -56,5 +57,21 @@ public class Term {
 	@Override
 	public String toString() {
 		return "[ "+termString+","+termFrequency+","+inverseDocumentFrequency+"] ";
+	}
+	public boolean isSameInIR(Term term){
+		if (termString.equals(term.termString)) {
+			return true;
+		}
+		Stemmer stemmer = new Stemmer(term.termString);
+		stemmer.stem();
+		if (termString.equals(stemmer.toString())) {
+			return true;
+		}
+		stemmer = new Stemmer(termString);
+		stemmer.stem();
+		if (term.termString.equals(stemmer.toString())) {
+			return true;
+		}
+		return false;
 	}
 }

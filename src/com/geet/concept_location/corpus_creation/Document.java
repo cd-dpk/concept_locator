@@ -72,10 +72,10 @@ public class Document  extends SimpleDocument {
 		StringTokenizer stringTokenizer = new StringTokenizer(getArticle(), JavaLanguage.getWhiteSpace(), false);
 		while (stringTokenizer.hasMoreTokens()) {
 			String token = stringTokenizer.nextToken();
-			// when getting the term, termString should be in lowercase  
+			// when getting the term, termString should be in lower case  
 			token = token.toLowerCase();
 			// if stop word then continue
-			if (StopWords.isStopword(token)) {
+			if (StopWords.isStopword(token) || StringUtils.isConstant(token)) {
 				continue;
 			}
 			Term candidateTerm = new Term(token, 1);
@@ -103,7 +103,7 @@ public class Document  extends SimpleDocument {
 	}
 	private String getArticleFromJavaDocComments(){
 		/*
-		 * remove *, programming syntax, @tag, <tag>, </tag>
+		 * remove *, programming syntax, @tag, <tag>, </tag>, #
 		 */
 		// List<String> terms = new ArrayList<String>();
 		String subArticle ="";
