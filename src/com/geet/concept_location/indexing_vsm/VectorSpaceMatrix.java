@@ -2,7 +2,6 @@ package com.geet.concept_location.indexing_vsm;
 
 import java.io.Serializable;
 import java.util.List;
-
 import com.geet.concept_location.corpus_creation.SimpleDocument;
 
 public class VectorSpaceMatrix implements Serializable{
@@ -10,7 +9,6 @@ public class VectorSpaceMatrix implements Serializable{
 	public List<String> terms;
 	public double [][]TERM_DOCUMENT_MATRIX;
 	public double [] df;
-
 	public VectorSpaceMatrix(List<SimpleDocument> documents,
 			List<String> terms, double[][] tERM_DOCUMENT_MATRIX, double[] df) {
 		super();
@@ -19,10 +17,6 @@ public class VectorSpaceMatrix implements Serializable{
 		TERM_DOCUMENT_MATRIX = tERM_DOCUMENT_MATRIX;
 		this.df = df;
 	}
-
-
-
-
 	@Override
 	public String toString() {
 		String toString ="";
