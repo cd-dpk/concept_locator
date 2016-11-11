@@ -8,13 +8,14 @@ import java.util.List;
 import java.util.Set;
 import com.aliasi.matrix.SvdMatrix;
 import com.geet.concept_location.corpus_creation.Document;
+import com.geet.concept_location.corpus_creation.SimpleDocument;
 import com.geet.concept_location.indexing_lsi.Lsi;
 import com.geet.concept_location.indexing_lsi.LsiDocument;
 import com.geet.concept_location.indexing_lsi.LsiTerm;
 import com.geet.concept_location.indexing_lsi.ScaleMatrix;
 import com.geet.concept_location.indexing_lsi.Vector;
 public class VectorSpaceModel {
-	public List<Document> documents = new ArrayList<Document>();
+	public List<SimpleDocument> documents = new ArrayList<SimpleDocument>();
 	public List<String> terms = new ArrayList<String>();
 	private int totalTerm=0;
 	private int totalDocs=0;
@@ -22,7 +23,9 @@ public class VectorSpaceModel {
 	private double a = 1.0;
 	private double b = 2.0;
 	private double MIN = 0;
-	public VectorSpaceModel(List<Document> documentList) {
+	public VectorSpaceModel() {}
+	@Deprecated
+	public VectorSpaceModel(List<SimpleDocument> documentList) {
 		documents = documentList;
 		totalDocs = getDocuments().size();
 		terms = getTermS();
@@ -30,6 +33,7 @@ public class VectorSpaceModel {
 		System.out.println("Terms "+totalTerm+" Documents "+totalDocs);
 		System.out.println(terms.toString());
 	}
+	@Deprecated
 	public double [][] getTERM_DOCUMENT_MATRIX(){
 		/* dont calculate idf from terms rather compute it from matrix*/
 		double [] idf = new double[totalTerm];
@@ -97,11 +101,7 @@ public class VectorSpaceModel {
 		return vectorSpaceMatrix.TERM_DOCUMENT_MATRIX;
 	}
 
-	/**
-	 * @deprecated
-	 * @param documents
-	 * @return
-	 */
+	@Deprecated
 	public String[] getTermsFromDocuments(List<Document> documents){
 		Set<String> termSet = new HashSet<String>();
 		for (Document document : documents) {
@@ -110,9 +110,10 @@ public class VectorSpaceModel {
 		}
 		return termSet.toArray(new String[termSet.size()]);
 	}
+	@Deprecated
 	public List<String> getTermS(){
 		Set<String> termSet = new HashSet<String>();
-		for (Document document : documents) {
+		for (SimpleDocument document : documents) {
 				Set<String> candidateSet = new HashSet<String>(document.getTermsInString());
 				termSet.addAll(candidateSet);
 		}
@@ -120,7 +121,7 @@ public class VectorSpaceModel {
 	}
 	public String[] getTERMS(){
 		Set<String> termSet = new HashSet<String>();
-		for (Document document : documents) {
+		for (SimpleDocument document : documents) {
 				Set<String> candidateSet = new HashSet<String>(document.getTermsInString());
 				termSet.addAll(candidateSet);
 		}
@@ -128,22 +129,21 @@ public class VectorSpaceModel {
 	}
 	public String [] getDOCS(){
 		Set<String> documentSet = new HashSet<String>();
-		for (Document document : documents) {
+		for (SimpleDocument document : documents) {
 				documentSet.add(document.getArticle());
 		}
 		return documentSet.toArray(new String[documentSet.size()]);
 	}
-	public Document [] getDocumentArray(){
-		Set<Document> documentSet = new HashSet<Document>(documents);
+	public SimpleDocument [] getDocumentArray(){
+		Set<SimpleDocument> documentSet = new HashSet<SimpleDocument>(documents);
 		return documentSet.toArray(new Document[documentSet.size()]);
 	}
-	public List<Document> getDocuments(){
+	@Deprecated
+	public List<SimpleDocument> getDocuments(){
 		return documents;
 	}
-	/**
-	 * 
-	 * @return
-	 */
+	
+	@Deprecated
 	public String TERM_DOCUMENT_MATRIX_TO_STRING(){
 		String text="";
 		String[] terms= getTERMS();
@@ -186,7 +186,7 @@ public class VectorSpaceModel {
 		double[][] termVectors = matrix.leftSingularVectors();
 		double[][] docVectors = matrix.rightSingularVectors();
 	
-		
+		terms = vectorSpaceMatrix.terms;
 		System.out.println("Terms...");
 		/* term vectors into lsi terms*/
 		try {
@@ -206,6 +206,7 @@ public class VectorSpaceModel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		documents = vectorSpaceMatrix.documents;
 		System.out.println("DOCS...");
 		/* document vectors into lsi docs*/
 		try {
@@ -228,7 +229,7 @@ public class VectorSpaceModel {
 	}
 
 	
-	
+	@Deprecated
 	public void  generateLsi(){
 		double featureInit = 0.01;
 		double initialLearningRate = 0.005;

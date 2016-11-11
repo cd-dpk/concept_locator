@@ -87,6 +87,8 @@ public class Run {
 		Run run = new Run(new File(rootPath+"org"));
 		run.setRatio();
 	}
+	
+	@Deprecated
 	public void storeVectorSpaceMatrix(VectorSpaceMatrix vectorSpaceMatrix){
 		System.out.println("Vector Space Model is storing...");
 		try {
@@ -97,6 +99,12 @@ public class Run {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	
+	public void generateLsiSpaceFromVectorSpaceMatrix() throws IOException{
+		VectorSpaceModel vectorSpaceModel = new VectorSpaceModel();
+		vectorSpaceModel.generateLsi(loadVectorSpaceMatrix());
 	}
 	
 	public VectorSpaceMatrix loadVectorSpaceMatrix() throws IOException{
@@ -112,8 +120,9 @@ public class Run {
 		objectInputStream.close();
 		return vectorSpaceMatrix;
 	}
+	@Deprecated
 	public void generateLsiSpace(){
-		List<Document> allDocuments = new ArrayList<Document>();
+		List<SimpleDocument> allDocuments = new ArrayList<SimpleDocument>();
 		int classNo = 0;
 		for (String path : javaFilePaths) {
 			if (new JavaClassPreprocessor().processJavaFile(new File(path))) {
@@ -130,6 +139,7 @@ public class Run {
 		System.out.println("Initializing.............");
 		vectorSpaceModel.generateLsi();
 	}
+	
 	
 	public void setRatio() throws ParserConfigurationException, SAXException, IOException{
 		Calendar localCalendar = Calendar.getInstance();

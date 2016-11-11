@@ -73,9 +73,8 @@ public class SimpleDocument implements Comparable<SimpleDocument>, Serializable{
 		return false;
 	}
 	@Override
-	public int compareTo(SimpleDocument o) {
-		// TODO Auto-generated method stub
-		return Double.compare(score, o.score);
+	public int compareTo(SimpleDocument simpleDocument) {
+		return Double.compare(score, simpleDocument.score);
 	}
 	public List<String> getTermsInString(){
 		List<String> termsInString = new ArrayList<String>();
