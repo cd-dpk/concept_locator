@@ -1,8 +1,6 @@
 package com.geet.concept_location.searching;
-import java.awt.BorderLayout;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -11,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
-import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.xml.parsers.DocumentBuilder;
@@ -78,10 +75,11 @@ public class Run {
 		return curDir;
 	}
 	public static void main(String[] args) throws Exception, SAXException, IOException {
-		Run run = new Run(new File("/media/Video/org_final"));
+		Run run = new Run(new File("/media/Video/SRC/eclipse.pde.ui-master"));
 		run.setRatio();
 	}
-	public void setRatio() throws ParserConfigurationException, SAXException, IOException{
+	
+	public void createVectorSpaceMatrix(){
 		List<SimpleDocument> allDocuments = new ArrayList<SimpleDocument>();
 		int classNo = 0;
 		for (String path : javaFilePaths) {
@@ -93,17 +91,18 @@ public class Run {
 				allDocuments.add(document);
 			}
 			if (classNo >= 0) {
-				break;
+			//	break;
 			}
 			classNo++;
 		}
 		System.out.println("Size "+allDocuments.size());
 		VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(allDocuments);
 		System.out.println("Initializing.............");
-		System.out.println(vectorSpaceModel.getVectorSpaceMatrix().toString());
 		storeVectorSpaceMatrix(vectorSpaceModel.getVectorSpaceMatrix());
-		System.out.println(loadVectorSpaceMatrix().toString());
-		System.exit(0);
+	}
+	
+	public void setRatio() throws ParserConfigurationException, SAXException, IOException{
+		VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(loadVectorSpaceMatrix());
 		File inputFile = new File("D:/BSSE0501/RESOURCE/SWT/bugRepository.xml");
         DocumentBuilderFactory dbFactory 
            = DocumentBuilderFactory.newInstance();

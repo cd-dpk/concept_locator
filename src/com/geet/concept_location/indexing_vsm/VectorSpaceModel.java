@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.SimpleDocument;
+
 public class VectorSpaceModel implements Serializable{
 	public List<SimpleDocument> documents = new ArrayList<SimpleDocument>();
 	public List<String> terms = new ArrayList<String>();
@@ -24,19 +25,28 @@ public class VectorSpaceModel implements Serializable{
 	
 	public VectorSpaceModel(List<SimpleDocument> documentList) {
 		documents = documentList;
-		totalTerm = getTermS().size();
-		totalDocs = getDocuments().size();
 		terms = getTermS();
+		totalTerm = terms.size();
+		totalDocs = documents.size();
 		df = new double[totalTerm];
 		TERM_DOCUMENT_MATRIX = new double[totalTerm][totalDocs];
 		df = new double [totalTerm];
 		System.out.println("Terms "+totalTerm+" Documents "+totalDocs);
-		// writeTermsIntoFile();
+		//writeTermsIntoFile();
 		setTERM_DOCUMENT_MATRIX(terms, documents);
 	}
+	
+	public VectorSpaceModel(VectorSpaceMatrix vectorSpaceMatrix){
+		documents = vectorSpaceMatrix.documents;
+		terms = vectorSpaceMatrix.terms;
+		TERM_DOCUMENT_MATRIX = vectorSpaceMatrix.TERM_DOCUMENT_MATRIX;
+		df = vectorSpaceMatrix.df;
+	}
+
 	public VectorSpaceMatrix getVectorSpaceMatrix(){
 		return new VectorSpaceMatrix(documents,terms,TERM_DOCUMENT_MATRIX, df);
 	}
+	
 	public void writeTermsIntoFile(){
 		try {
 			FileWriter fileWriter = new FileWriter(new File("Term.txt"));
@@ -49,6 +59,7 @@ public class VectorSpaceModel implements Serializable{
 			e.printStackTrace();
 		}
 	}
+	
 	public void setTERM_DOCUMENT_MATRIX(List<String> terms,List<SimpleDocument>documents){
 		/* dont calculate idf from terms rather compute it from matrix*/
 		System.out.println("Term Document Matrix getting...");
