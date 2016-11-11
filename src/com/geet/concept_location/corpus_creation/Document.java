@@ -8,7 +8,6 @@ import com.geet.concept_location.utils.StringUtils;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
 public class Document  extends SimpleDocument {
-	public String docInJavaFile;
 	public List<String> docTitles = new ArrayList<String>();
 	public List<JavadocComment> javaDocComments = new ArrayList<JavadocComment>();
 	protected List<Comment> implementationComments = new ArrayList<Comment>();

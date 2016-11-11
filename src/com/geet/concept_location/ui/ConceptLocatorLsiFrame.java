@@ -55,7 +55,7 @@ public class ConceptLocatorLsiFrame extends JFrame {
 				new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						SimpleDocument queryDocument = new SimpleDocument(searchBoxPanel.getSearchTextField().getText());
+						SimpleDocument queryDocument = new SimpleDocument("Query",searchBoxPanel.getSearchTextField().getText());
 						List<SimpleDocument> simpleDocuments = new ArrayList<SimpleDocument>();
 						simpleDocuments.add(queryDocument);
 						documents = vectorSpaceModel.search(queryDocument);

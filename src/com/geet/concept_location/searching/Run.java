@@ -1,7 +1,12 @@
 package com.geet.concept_location.searching;
 import java.awt.BorderLayout;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +23,7 @@ import org.xml.sax.SAXException;
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.DocumentExtractor;
 import com.geet.concept_location.corpus_creation.SimpleDocument;
+import com.geet.concept_location.indexing_vsm.VectorSpaceMatrix;
 import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
 import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
 import com.geet.concept_location.utils.JavaFileFilter;
@@ -86,11 +92,17 @@ public class Run {
 				System.out.println(document.getArticle());
 				allDocuments.add(document);
 			}
+			if (classNo >= 0) {
+				break;
+			}
 			classNo++;
 		}
 		System.out.println("Size "+allDocuments.size());
 		VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(allDocuments);
 		System.out.println("Initializing.............");
+		System.out.println(vectorSpaceModel.getVectorSpaceMatrix().toString());
+		storeVectorSpaceMatrix(vectorSpaceModel.getVectorSpaceMatrix());
+		System.out.println(loadVectorSpaceMatrix().toString());
 		System.exit(0);
 		File inputFile = new File("D:/BSSE0501/RESOURCE/SWT/bugRepository.xml");
         DocumentBuilderFactory dbFactory 
@@ -138,7 +150,7 @@ public class Run {
 				}
 	        }
 	        System.out.println(bug.toString());
-	        List<Document> returnDocuments = vectorSpaceModel.search(new SimpleDocument(bug.getSummary()));
+	        List<Document> returnDocuments = vectorSpaceModel.search(new SimpleDocument("Bug",bug.getSummary()));
 			int index = 10;// not in desired place
 			for (int j = 0; j < bug.getFixedFiles().size(); j++) {
 				for (int k = 0; j < returnDocuments.size(); k++) {
@@ -162,5 +174,30 @@ public class Run {
 				System.out.println(topTen);
 			}
 	    }
+	}
+	public void storeVectorSpaceMatrix(VectorSpaceMatrix vectorSpaceMatrix){
+		System.out.println("Vector Space Model is storing...");
+		try {
+			FileOutputStream file = new FileOutputStream("vectorspace.ser");
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream(file);
+			objectOutputStream.writeObject(vectorSpaceMatrix);
+			objectOutputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public VectorSpaceMatrix loadVectorSpaceMatrix() throws IOException{
+		System.out.println("Vector Space Model is loading...");
+		VectorSpaceMatrix vectorSpaceMatrix = null;
+		FileInputStream file = new FileInputStream("vectorspace.ser");
+		ObjectInputStream objectInputStream = new ObjectInputStream(file);
+		try {
+			vectorSpaceMatrix = (VectorSpaceMatrix) objectInputStream.readObject();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		objectInputStream.close();
+		return vectorSpaceMatrix;
 	}
 }

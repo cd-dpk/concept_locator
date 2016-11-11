@@ -1,15 +1,29 @@
 package com.geet.concept_location.corpus_creation;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 import com.geet.concept_location.indexing_vsm.Term;
-public class SimpleDocument implements Comparable<SimpleDocument>{
+public class SimpleDocument implements Comparable<SimpleDocument>, Serializable{
 	protected String article= "";
+	public String docInJavaFile;
 	public double score = 0.0;
 	public SimpleDocument(){
 	}
-	public SimpleDocument(String article){
-		setArticle(article);
+	
+	
+	public SimpleDocument( String docInJavaFile, String article) {
+		super();
+		this.article = article;
+		this.docInJavaFile = docInJavaFile;
+	}
+
+
+	public double getScore() {
+		return score;
+	}
+	public void setScore(double score) {
+		this.score = score;
 	}
 	public void setArticle(String article) {
 		this.article = article;

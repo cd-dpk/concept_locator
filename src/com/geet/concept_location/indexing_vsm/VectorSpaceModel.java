@@ -2,13 +2,14 @@ package com.geet.concept_location.indexing_vsm;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.SimpleDocument;
-public class VectorSpaceModel {
+public class VectorSpaceModel implements Serializable{
 	public List<SimpleDocument> documents = new ArrayList<SimpleDocument>();
 	public List<String> terms = new ArrayList<String>();
 	public double [][]TERM_DOCUMENT_MATRIX;
@@ -20,6 +21,7 @@ public class VectorSpaceModel {
 	private double a = 1.0;
 	private double b = 2.0;
 	private double MIN = 0;
+	
 	public VectorSpaceModel(List<SimpleDocument> documentList) {
 		documents = documentList;
 		totalTerm = getTermS().size();
@@ -32,6 +34,9 @@ public class VectorSpaceModel {
 		// writeTermsIntoFile();
 		setTERM_DOCUMENT_MATRIX(terms, documents);
 	}
+	public VectorSpaceMatrix getVectorSpaceMatrix(){
+		return new VectorSpaceMatrix(documents,terms,TERM_DOCUMENT_MATRIX, df);
+	}
 	public void writeTermsIntoFile(){
 		try {
 			FileWriter fileWriter = new FileWriter(new File("Term.txt"));
@@ -41,7 +46,6 @@ public class VectorSpaceModel {
 			fileWriter.close();
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
