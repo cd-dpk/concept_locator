@@ -1,5 +1,4 @@
 package com.geet.concept_location.utils;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -12,7 +11,7 @@ public class StringUtils {
 	public static String getFilePathName(String treePath){
 		String filePath ="";
 		List<String> uniqueNames = new ArrayList<String>();
-		StringTokenizer stringTokenizer = new StringTokenizer(treePath,"[],\\ /",false);
+		StringTokenizer stringTokenizer = new StringTokenizer(treePath,"[],\\/",false);
 		while (stringTokenizer.hasMoreTokens()) {
 			String token = stringTokenizer.nextToken();
 			if (!hasStringInList(token, uniqueNames)) {
@@ -147,20 +146,18 @@ public class StringUtils {
  	      " "
  	   );
  	}
-	public static String getFilePathFromBugRepositoryFixedFile(String target){
-    	String returnPath="";
-    	int lastIndexOfDot = target.lastIndexOf('.');
-    	for (int i = 0; i < target.length(); i++) {
-			char ch = target.charAt(i);
-			if (ch == '.' && i < lastIndexOfDot) {
-				ch = File.separatorChar;
-			}
-			returnPath += ch; 
-		}
-    	System.out.println("Return Path "+ returnPath);
-    	return returnPath;
-    }
     public static void main(String[] args) {
 		System.out.println(getIdentifierSeparationsWithCamelCase("Hello_Sir_Why"));
 	}
+    public static boolean isConstant(String target){
+    	if (target.startsWith("0x")) {
+			return true;
+		}
+    	for (int i = 0; i < 10; i++) {
+        	if (target.startsWith(i+"") ) {
+    			return true;
+    		}			
+		}
+    	return false;
+    }
 }

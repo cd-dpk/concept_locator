@@ -1,6 +1,7 @@
 package com.geet.concept_location.corpus_creation;
 import java.io.File;
 import java.io.IOException;
+import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
@@ -19,14 +20,15 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
  */
 public class DocumentExtractor {
 	CompilationUnit compilationUnit;
-	Document document ;
+	Document/*Hello*/ document ;
 	static String fileName;
+	int/*Hello*/ i,/*Hello*/ j=10,k;
 	// bug localization starts
 	public DocumentExtractor(File javaFile) {
 		try {
 			fileName = javaFile.getAbsolutePath();
 			compilationUnit = JavaParser.parse(javaFile);
-		} catch (ParseException e) {
+			} catch (ParseException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -132,9 +134,11 @@ public class DocumentExtractor {
 		}
 	}
 	public static void main(String[] args) {
-			String path ="src/com/geet/concept_location/corpus_creation/Stemmer.java";
-			DocumentExtractor documentExtractor = new DocumentExtractor(
-					new File(path));
-			System.out.println(documentExtractor.getExtractedDocument().getArticle());
+			String path ="D:\\org\\eclipse\\swt\\internal\\image\\WinBMPFileFormat.java";
+			if(new JavaClassPreprocessor().processJavaFile(new File(path))){
+				DocumentExtractor documentExtractor = new DocumentExtractor(
+						new File(path));
+				System.out.println(documentExtractor.getExtractedDocument().getArticle());				
+			}
 	}
 }

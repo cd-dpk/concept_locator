@@ -42,9 +42,8 @@ public class JavaLanguage {
 	}
 	//	@tag
 	//	<tag>element</tag>
-	public final static String JAVA_DOC[]={"@see","@link","@throws","@since"," @serial", 
-		"@serialField","@serialData",""};
-	public String getJavaDocs(){
+	public final static String JAVA_DOC[]={"#","$",};
+	public static String getJavaDocs(){
 		return getInStringFromStringArray(JAVA_DOC);
 	}
 	public final static String LITERALS[]={

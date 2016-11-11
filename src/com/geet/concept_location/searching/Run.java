@@ -1,8 +1,12 @@
 package com.geet.concept_location.searching;
 import java.awt.BorderLayout;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -24,6 +28,7 @@ import com.geet.concept_location.corpus_creation.SimpleDocument;
 import com.geet.concept_location.indexing_lsi.Lsi;
 import com.geet.concept_location.indexing_lsi.LsiDocument;
 import com.geet.concept_location.indexing_lsi.LsiQuery;
+import com.geet.concept_location.indexing_vsm.VectorSpaceMatrix;
 import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
 import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
 import com.geet.concept_location.utils.JavaFileFilter;
@@ -82,7 +87,31 @@ public class Run {
 		Run run = new Run(new File(rootPath+"org"));
 		run.setRatio();
 	}
+	public void storeVectorSpaceMatrix(VectorSpaceMatrix vectorSpaceMatrix){
+		System.out.println("Vector Space Model is storing...");
+		try {
+			FileOutputStream file = new FileOutputStream("vectorspace.ser");
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream(file);
+			objectOutputStream.writeObject(vectorSpaceMatrix);
+			objectOutputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
+	public VectorSpaceMatrix loadVectorSpaceMatrix() throws IOException{
+		System.out.println("Vector Space Model is loading...");
+		VectorSpaceMatrix vectorSpaceMatrix = null;
+		FileInputStream file = new FileInputStream("vectorspace.ser");
+		ObjectInputStream objectInputStream = new ObjectInputStream(file);
+		try {
+			vectorSpaceMatrix = (VectorSpaceMatrix) objectInputStream.readObject();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		objectInputStream.close();
+		return vectorSpaceMatrix;
+	}
 	public void generateLsiSpace(){
 		List<Document> allDocuments = new ArrayList<Document>();
 		int classNo = 0;
@@ -101,6 +130,7 @@ public class Run {
 		System.out.println("Initializing.............");
 		vectorSpaceModel.generateLsi();
 	}
+	
 	public void setRatio() throws ParserConfigurationException, SAXException, IOException{
 		Calendar localCalendar = Calendar.getInstance();
 		java.util.Date date = localCalendar.getTime();

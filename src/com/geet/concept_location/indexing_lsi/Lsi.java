@@ -29,7 +29,6 @@ public class Lsi {
 		}
 	}
 	
-	
 	public void setLsiTerms() {
 		lsiTerms = new ArrayList<LsiTerm>();
 		try {

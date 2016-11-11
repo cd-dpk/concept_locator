@@ -1,18 +1,13 @@
 package com.geet.concept_location.corpus_creation;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.StringTokenizer;
 import com.geet.concept_location.indexing_vsm.Term;
 import com.geet.concept_location.utils.CommentStringTokenizer;
-import com.geet.concept_location.utils.ImplementationStringTokenizer;
 import com.geet.concept_location.utils.StringUtils;
-import com.github.javaparser.Position;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
 public class Document  extends SimpleDocument {
-	public String docInJavaFile;
 	public List<String> docTitles = new ArrayList<String>();
 	public List<JavadocComment> javaDocComments = new ArrayList<JavadocComment>();
 	protected List<Comment> implementationComments = new ArrayList<Comment>();
@@ -76,15 +71,13 @@ public class Document  extends SimpleDocument {
 		StringTokenizer stringTokenizer = new StringTokenizer(getArticle(), JavaLanguage.getWhiteSpace(), false);
 		while (stringTokenizer.hasMoreTokens()) {
 			String token = stringTokenizer.nextToken();
-			// stem the token if token is a word
-			/*if (StringUtils.isWord(token)) {
-				token = new Stemmer(token.toLowerCase()).toString();
-			}*/
+			// when getting the term, termString should be in lower case  
+			token = token.toLowerCase();
 			// if stop word then continue
-			if (StopWords.isStopword(token)) {
+			if (StopWords.isStopword(token) || StringUtils.isConstant(token)) {
 				continue;
 			}
-			Term candidateTerm = new Term(token.toLowerCase(), 1);
+			Term candidateTerm = new Term(token, 1);
 			int pass = -1;
 			for (int i = 0; i < terms.size(); i++) {
 				if (terms.get(i).isSame(candidateTerm)) {
@@ -109,7 +102,7 @@ public class Document  extends SimpleDocument {
 	}
 	private String getArticleFromJavaDocComments(){
 		/*
-		 * remove *, programming syntax, @tag, <tag>, </tag>
+		 * remove *, programming syntax, @tag, <tag>, </tag>, #
 		 */
 		// List<String> terms = new ArrayList<String>();
 		String subArticle ="";

@@ -29,7 +29,6 @@ public class VectorSpaceModel {
 		totalTerm = getTermS().size();
 		System.out.println("Terms "+totalTerm+" Documents "+totalDocs);
 		System.out.println(terms.toString());
-		//
 	}
 	public double [][] getTERM_DOCUMENT_MATRIX(){
 		/* dont calculate idf from terms rather compute it from matrix*/
@@ -71,6 +70,20 @@ public class VectorSpaceModel {
 		}
 		return TERM_DOCUMENT_MATRIX;
 	}
+	
+	public double [][] getTERM_DOCUMENT_MATRIX(VectorSpaceMatrix vectorSpaceMatrix){
+		System.out.println("Normalizing...");
+		for (int i = 0; i < vectorSpaceMatrix.TERM_DOCUMENT_MATRIX.length; i++) {
+			for (int j = 0; j < vectorSpaceMatrix.TERM_DOCUMENT_MATRIX[i].length; j++) {
+				double value = vectorSpaceMatrix.TERM_DOCUMENT_MATRIX[i][j] * (1 + (Math.log10((double)vectorSpaceMatrix.documents.size()/vectorSpaceMatrix.df[i])/Math.log10(2.0)));
+				vectorSpaceMatrix.TERM_DOCUMENT_MATRIX[i][j] = getNormalizedValue(value);
+				System.out.print(vectorSpaceMatrix.TERM_DOCUMENT_MATRIX[i][j]+" ");
+			}
+			System.out.println();
+		}
+		return vectorSpaceMatrix.TERM_DOCUMENT_MATRIX;
+	}
+
 	/**
 	 * @deprecated
 	 * @param documents
@@ -133,6 +146,76 @@ public class VectorSpaceModel {
 		}
 		return text;
 	}
+	
+	public void  generateLsi(VectorSpaceMatrix vectorSpaceMatrix){
+		double featureInit = 0.01;
+		double initialLearningRate = 0.005;
+		int annealingRate = 1000;
+		double regularization = 0.00;
+		double minImprovement = 0.0000;
+		int minEpochs = 10;
+		// simple comment
+		int maxEpochs = 50000;
+		System.out.println("  Computing SVD");
+		System.out.println("    maxFactors=" + Lsi.NUM_FACTORS);
+		System.out.println("    featureInit=" + featureInit);
+		System.out.println("    initialLearningRate=" + initialLearningRate);
+		System.out.println("    annealingRate=" + annealingRate);
+		System.out.println("    regularization" + regularization);
+		System.out.println("    minImprovement=" + minImprovement);
+		System.out.println("    minEpochs=" + minEpochs);
+		System.out.println("    maxEpochs=" + maxEpochs);
+		
+		SvdMatrix matrix = SvdMatrix.svd(getTERM_DOCUMENT_MATRIX(vectorSpaceMatrix), Lsi.NUM_FACTORS,
+				featureInit, initialLearningRate, annealingRate,
+				regularization, null, minImprovement, minEpochs, maxEpochs);
+		ScaleMatrix scaleMatrix = new ScaleMatrix(matrix.singularValues());
+		double[][] termVectors = matrix.leftSingularVectors();
+		double[][] docVectors = matrix.rightSingularVectors();
+	
+		
+		System.out.println("Terms...");
+		/* term vectors into lsi terms*/
+		try {
+			FileOutputStream file = new FileOutputStream("Terms.ser");
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream(file);
+			List<LsiTerm> lsiTerms = new ArrayList<LsiTerm>();
+			for (int i = 0; i < termVectors.length; i++) {
+				Vector vector = new Vector(Lsi.NUM_FACTORS);
+				vector.dimensionValue[0] = termVectors[i][0] * scaleMatrix.getScales()[0];
+				vector.dimensionValue[1] = termVectors[i][1] * scaleMatrix.getScales()[1];
+				LsiTerm lsiTerm = new LsiTerm(terms.get(i),vector);
+				System.out.println(lsiTerm.toCSVString());
+				lsiTerms.add(lsiTerm);
+			}
+			objectOutputStream.writeObject(lsiTerms);
+			objectOutputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("DOCS...");
+		/* document vectors into lsi docs*/
+		try {
+			FileOutputStream file = new FileOutputStream("Documents.ser");
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream(file);
+			List<LsiDocument> lsiDocuments = new ArrayList<LsiDocument>();
+			for (int i = 0; i < docVectors.length; i++) {
+				Vector vector = new Vector(Lsi.NUM_FACTORS);
+				vector.dimensionValue[0] = docVectors[i][0]* scaleMatrix.getScales()[0];
+				vector.dimensionValue[1] = docVectors[i][1]* scaleMatrix.getScales()[1];
+				LsiDocument lsiDocument = new LsiDocument(documents.get(i),vector);
+				System.out.println(lsiDocument.toCSVString());
+				lsiDocuments.add(lsiDocument);
+			}
+			objectOutputStream.writeObject(lsiDocuments);
+			objectOutputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	
+	
 	public void  generateLsi(){
 		double featureInit = 0.01;
 		double initialLearningRate = 0.005;
