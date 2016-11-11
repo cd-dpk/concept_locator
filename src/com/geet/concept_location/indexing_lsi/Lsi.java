@@ -5,6 +5,8 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import com.geet.concept_location.indexing_vsm.Term;
 public class Lsi {
 	public List<LsiTerm> lsiTerms = new ArrayList<LsiTerm>();
 	public List<LsiDocument> lsiDocuments = new ArrayList<LsiDocument>();
@@ -103,12 +105,12 @@ public class Lsi {
 			System.out.println(lsiTerm.vector.toString());
 		}
 	}
-	public Vector getVectorFromLSI(List<String> terms){
+	public Vector getVectorFromLSI(List<Term> terms){
 		Vector vector = new Vector(NUM_FACTORS);
-		for (String queryTerm : terms) {
+		for (Term term : terms) {
 			for (LsiTerm lsiTerm : lsiTerms) {
 				System.out.print(lsiTerm+" ");
-				if (lsiTerm.term.equals(queryTerm)) {
+				if (lsiTerm.isSameInIR(term)) {
 					System.out.println(lsiTerm.vector.toCSVString());
 					vector.addWithVector(lsiTerm.vector);
 					break;

@@ -2,6 +2,10 @@ package com.geet.concept_location.indexing_lsi;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+
+import com.geet.concept_location.corpus_creation.JavaLanguage;
+import com.geet.concept_location.corpus_creation.StopWords;
+import com.geet.concept_location.indexing_vsm.Term;
 public class LsiQuery {
 	public String query;
 	public Vector vector;
@@ -22,12 +26,29 @@ public class LsiQuery {
 	public void setVector(Vector vector) {
 		this.vector = vector;
 	}
-	public List<String> getTerms(){
-		List<String> terms = new ArrayList<String>();
-		StringTokenizer stringTokenizer = new StringTokenizer(query," ", false);
+	public List<Term> getTerms() {
+		List<Term> terms = new ArrayList<Term>();
+		StringTokenizer stringTokenizer = new StringTokenizer(query, JavaLanguage.getWhiteSpace()+JavaLanguage.PROGRAMING_LANGUAGE_SYNTAX+JavaLanguage.OPERATORS, false);
 		while (stringTokenizer.hasMoreTokens()) {
-			terms.add(stringTokenizer.nextToken().toLowerCase());
+			String token = stringTokenizer.nextToken();
+			token = token.toLowerCase();
+			if (StopWords.isStopword(token)) {
+				continue;
+			}
+			Term candidateTerm = new Term(token, 1);
+			int pass = -1;
+			for (int i = 0; i < terms.size(); i++) {
+				if (terms.get(i).isSame(candidateTerm)) {
+					pass = i;
+					terms.get(i).termFrequency++;
+					continue;
+				}
+			}
+			if (pass == -1) {
+				terms.add(candidateTerm);
+			}
 		}
 		return terms;
 	}
+	
 }

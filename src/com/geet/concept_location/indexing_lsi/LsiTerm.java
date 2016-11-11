@@ -1,5 +1,7 @@
 package com.geet.concept_location.indexing_lsi;
 import java.io.Serializable;
+
+import com.geet.concept_location.indexing_vsm.Term;
 public class LsiTerm  implements Comparable<LsiTerm>, Serializable{
 	public String term;
 	public Vector vector = new Vector(2);
@@ -47,5 +49,9 @@ public class LsiTerm  implements Comparable<LsiTerm>, Serializable{
 			return 1;
 		}
 		return -1;
+	}
+	
+	public boolean isSameInIR(Term trm){
+		return new Term(term).isSameInIR(trm);
 	}
 }
