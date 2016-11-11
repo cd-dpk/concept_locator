@@ -9,11 +9,7 @@ public class VectorSpaceMatrix implements Serializable{
 	public List<String> terms;
 	public double [][]TERM_DOCUMENT_MATRIX;
 	public double [] df;
-	private double MAX = 2;
-	private double a = 1.0;
-	private double b = 2.0;
-	private double MIN = 0;
-	
+
 	public VectorSpaceMatrix(List<SimpleDocument> documents,
 			List<String> terms, double[][] tERM_DOCUMENT_MATRIX, double[] df) {
 		super();

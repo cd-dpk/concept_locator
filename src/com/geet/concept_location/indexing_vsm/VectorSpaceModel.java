@@ -72,6 +72,19 @@ public class VectorSpaceModel {
 	}
 	
 	public double [][] getTERM_DOCUMENT_MATRIX(VectorSpaceMatrix vectorSpaceMatrix){
+		System.out.println("Multiplying...");
+		for (int i = 0; i < vectorSpaceMatrix.TERM_DOCUMENT_MATRIX.length; i++) {
+			for (int j = 0; j < vectorSpaceMatrix.TERM_DOCUMENT_MATRIX[i].length; j++) {
+				vectorSpaceMatrix.TERM_DOCUMENT_MATRIX[i][j] = vectorSpaceMatrix.TERM_DOCUMENT_MATRIX[i][j] * (1 + (Math.log10((double)vectorSpaceMatrix.documents.size()/vectorSpaceMatrix.df[i])/Math.log10(2.0)));
+				if (vectorSpaceMatrix.TERM_DOCUMENT_MATRIX[i][j] > MAX) {
+					MAX = vectorSpaceMatrix.TERM_DOCUMENT_MATRIX[i][j];
+				}else if(vectorSpaceMatrix.TERM_DOCUMENT_MATRIX[i][j] < MIN){
+					MIN = vectorSpaceMatrix.TERM_DOCUMENT_MATRIX[i][j];
+				}
+				System.out.print(vectorSpaceMatrix.TERM_DOCUMENT_MATRIX[i][j]+" ");
+			}
+			System.out.println();
+		}
 		System.out.println("Normalizing...");
 		for (int i = 0; i < vectorSpaceMatrix.TERM_DOCUMENT_MATRIX.length; i++) {
 			for (int j = 0; j < vectorSpaceMatrix.TERM_DOCUMENT_MATRIX[i].length; j++) {
