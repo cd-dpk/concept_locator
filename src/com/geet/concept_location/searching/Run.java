@@ -75,8 +75,8 @@ public class Run {
 		return curDir;
 	}
 	public static void main(String[] args) throws Exception, SAXException, IOException {
-		Run run = new Run(new File("/media/Video/SRC/eclipse.pde.ui-master"));
-		run.setRatio();
+		Run run = new Run(new File("/media/Video/org2"));
+		run.createVectorSpaceMatrix();
 	}
 	
 	public void createVectorSpaceMatrix(){

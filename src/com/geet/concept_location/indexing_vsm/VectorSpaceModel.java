@@ -32,6 +32,7 @@ public class VectorSpaceModel implements Serializable{
 		TERM_DOCUMENT_MATRIX = new double[totalTerm][totalDocs];
 		df = new double [totalTerm];
 		System.out.println("Terms "+totalTerm+" Documents "+totalDocs);
+		//System.exit(0);
 		//writeTermsIntoFile();
 		setTERM_DOCUMENT_MATRIX(terms, documents);
 	}
@@ -66,13 +67,14 @@ public class VectorSpaceModel implements Serializable{
 		for (int i = 0; i < totalTerm; i++) {
 			// df
 			df[i] = 0;
-			for (int j = 0; j < documents.size(); j++) {
+			System.out.print(i+":");
+			for (int j = 0; j < totalDocs; j++) {
 				double tf = documents.get(j).getTF(terms.get(i).toString());
 				if (tf !=0.0) {
 						df[i]++;
 				}
 				TERM_DOCUMENT_MATRIX[i][j]= tf;
-				System.out.print(i+":"+TERM_DOCUMENT_MATRIX[i][j]+" ");
+				System.out.print(TERM_DOCUMENT_MATRIX[i][j]+" ");
 			}
 			// idf
 			if (df[i] == 0) {
