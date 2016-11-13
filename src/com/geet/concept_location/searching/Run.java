@@ -75,8 +75,11 @@ public class Run {
 		return curDir;
 	}
 	public static void main(String[] args) throws Exception, SAXException, IOException {
-		Run run = new Run(new File("/media/Video/org2"));
-		run.createVectorSpaceMatrix();
+		Run run = new Run(new File("/media/Video/SRC/ResultAnalysisTool"));
+		//run.createVectorSpaceMatrix();
+		VectorSpaceMatrix vectorSpaceMatrix = run.loadVectorSpaceMatrix();
+//		System.out.println(run.loadVectorSpaceMatrix().toString());
+		System.out.println(vectorSpaceMatrix.terms.size()+"X"+vectorSpaceMatrix.documents.size());
 	}
 	
 	public void createVectorSpaceMatrix(){

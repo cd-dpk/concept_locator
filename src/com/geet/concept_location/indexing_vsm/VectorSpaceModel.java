@@ -34,10 +34,15 @@ public class VectorSpaceModel implements Serializable{
 		System.out.println("Terms "+totalTerm+" Documents "+totalDocs);
 		//System.exit(0);
 		//writeTermsIntoFile();
+		//System.exit(0);
 		setTERM_DOCUMENT_MATRIX(terms, documents);
 	}
 	
 	public VectorSpaceModel(VectorSpaceMatrix vectorSpaceMatrix){
+		List<String> documents = new ArrayList<String>();
+		for (int i = 0; i < this.documents.size(); i++) {
+			documents.add(this.documents.get(i).docInJavaFile);
+		}
 		documents = vectorSpaceMatrix.documents;
 		terms = vectorSpaceMatrix.terms;
 		TERM_DOCUMENT_MATRIX = vectorSpaceMatrix.TERM_DOCUMENT_MATRIX;
@@ -45,6 +50,10 @@ public class VectorSpaceModel implements Serializable{
 	}
 
 	public VectorSpaceMatrix getVectorSpaceMatrix(){
+		List<String> documents = new ArrayList<String>();
+		for (int i = 0; i < this.documents.size(); i++) {
+			documents.add(this.documents.get(i).docInJavaFile);
+		}
 		return new VectorSpaceMatrix(documents,terms,TERM_DOCUMENT_MATRIX, df);
 	}
 	
