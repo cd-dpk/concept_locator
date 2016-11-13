@@ -93,9 +93,16 @@ public class Run {
 		//run.generateLsiSpaceFromVectorSpaceMatrix();
 		//run.setLsiTerms();
 		//run.setLsiDocuments();
-		run.setRatio();
+		//run.setRatio();
+		run.searchForTerms("font");
 	}
 	
+	public void searchForTerms(String term){
+		List<LsiTerm> lsiTerms = new Lsi().searchTerm(new LsiQuery(term, new com.geet.concept_location.indexing_lsi.Vector(Lsi.NUM_FACTORS)));
+		for (int i = 0; i < lsiTerms.size() && i< 20; i++) {
+			System.out.println(lsiTerms.get(i).toCSVString());
+		}
+	}
 	@Deprecated
 	public void storeVectorSpaceMatrix(VectorSpaceMatrix vectorSpaceMatrix){
 		System.out.println("Vector Space Model is storing...");

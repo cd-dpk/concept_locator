@@ -41,7 +41,7 @@ public class LsiTerm  implements Comparable<LsiTerm>, Serializable{
 		return false;
 	}
 	public String toCSVString() {
-		return term+","+vector.toCSVString();
+		return term+","+score+","+vector.toCSVString();
 	}
 	@Override
 	public int compareTo(LsiTerm lsiTerm) {

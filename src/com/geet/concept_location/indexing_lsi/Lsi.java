@@ -83,15 +83,20 @@ public class Lsi {
 		}
 		return resultantLsiDocuments;
 	}
-	public void searchTerm(LsiQuery lsiQuery){
+	public List<LsiTerm> searchTerm(LsiQuery lsiQuery){
 		setLsiDocuments();
 		setLsiTerms();
+		List<LsiTerm> resultantTerms = new ArrayList<LsiTerm>();
+		lsiQuery.vector = getVectorFromLSI(lsiQuery.getTerms());
+		System.out.println(lsiQuery.vector.isNull());
 		for (int j = 0; j < lsiTerms.size(); ++j) {
-			lsiTerms.get(j).score = getVectorFromLSI(lsiQuery.getTerms()).cosine(lsiTerms.get(j).vector);
-			System.out.println(lsiTerms.get(j).score);
+			lsiTerms.get(j).score = lsiQuery.vector.cosine(lsiTerms.get(j).vector);
+			resultantTerms.add(lsiTerms.get(j));
+			//	System.out.println(lsiTerms.get(j).score);
 		}
-		Collections.sort(lsiTerms);
-		Collections.reverse(lsiTerms);
+		Collections.sort(resultantTerms);
+		Collections.reverse(resultantTerms);
+		return resultantTerms;
 	}
 	public void printDocumentsVector(){
 		for (LsiDocument lsiDocument : lsiDocuments) {
