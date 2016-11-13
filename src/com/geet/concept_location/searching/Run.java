@@ -84,15 +84,15 @@ public class Run {
 			curDir.add(new DefaultMutableTreeNode(files.elementAt(fnum)));
 		return curDir;
 	}
+	public Run() {
+		// TODO Auto-generated constructor stub
+	}
 	public static void main(String[] args) throws Exception, SAXException, IOException {
-		Run run = new Run(new File("/media/Video/SRC/ResultAnalysisTool"));
-		/*//run.generateLsiSpaceFromVectorSpaceMatrix();
+		//Run run = new Run(new File("/media/Video/SRC/ResultAnalysisTool"));
+		Run run = new Run();
+		//run.generateLsiSpaceFromVectorSpaceMatrix();
 		run.setLsiTerms();
-		run.setLsiDocuments();*/
-		VectorSpaceMatrix vectorSpaceMatrix = run.loadVectorSpaceMatrix();
-		for (int i = 0; i < vectorSpaceMatrix.documents.size(); i++) {
-			System.out.println(vectorSpaceMatrix.documents.get(i));
-		}
+		run.setLsiDocuments();
 	}
 	
 	@Deprecated
@@ -108,7 +108,6 @@ public class Run {
 		}
 	}
 	
-	
 	public void generateLsiSpaceFromVectorSpaceMatrix() throws IOException{
 		VectorSpaceModel vectorSpaceModel = new VectorSpaceModel();
 		VectorSpaceMatrix vectorSpaceMatrix = loadVectorSpaceMatrix();
@@ -119,7 +118,7 @@ public class Run {
 	public VectorSpaceMatrix loadVectorSpaceMatrix() throws IOException{
 		System.out.println("Vector Space Model is loading...");
 		VectorSpaceMatrix vectorSpaceMatrix = null;
-		FileInputStream file = new FileInputStream("rat_vectorspace.ser");
+		FileInputStream file = new FileInputStream("vectorspace.ser");
 		ObjectInputStream objectInputStream = new ObjectInputStream(file);
 		try {
 			vectorSpaceMatrix = (VectorSpaceMatrix) objectInputStream.readObject();
@@ -237,7 +236,6 @@ public class Run {
 			ObjectInputStream objectInputStream = new ObjectInputStream(file);
 			try {
 				lsiTerms = (ArrayList<LsiTerm>) objectInputStream.readObject();
-				System.out.println(lsiTerms.toString());
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -258,7 +256,6 @@ public class Run {
 			ObjectInputStream objectInputStream = new ObjectInputStream(file);
 			try {
 				lsiDocuments = (ArrayList<LsiDocument>) objectInputStream.readObject();
-				System.out.println(lsiDocuments.toString());
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
