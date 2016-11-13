@@ -1,7 +1,43 @@
 <features>
-<feature>
-    <des></des>
+<feature id = "1" >
+    <des>OMR Sheet Scanning</des>
     <file></file>
     <file></file>
 </feature>
+<feature id = "2" >
+    <des>Image Area defining</des>
+    <file></file>
+    <file></file>
+</feature>
+<feature id ="3">
+    <des>Data extraction from image file</des>
+    <file></file>
+    <file></file>
+</feature>
+<feature id = "4">
+    <des>produce result</des>
+    <file></file>
+    <file></file>
+</feature>
+<feature id = "5">
+    <des>report design</des>
+    <file></file>
+    <file></file>
+</feature>
+<feature id ="6">
+    <des>report production</des>
+    <file></file>
+    <file></file>
+</feature>
+<feature id = "7">
+    <des>print report</des>
+    <file></file>
+    <file></file>
+</feature>
+<feature id = "8">
+    <des>email report</des>
+    <file></file>
+    <file></file>
+</feature>
+
 </features>
