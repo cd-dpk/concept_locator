@@ -1,43 +1,57 @@
 <features>
 <feature id = "1" >
-    <des>OMR Sheet Scanning</des>
-    <file></file>
-    <file></file>
+    <des>Choosing an image file from explorer</des>
+    <file>com.resultAnalysisTool.util.fileChoose.FileChooser.java</file>
+    <file>com.resultAnalysisTool.lib.jexplore.FileExplorer.java</file>
 </feature>
 <feature id = "2" >
     <des>Image Area defining</des>
-    <file></file>
-    <file></file>
+    <file>com.resultAnalysisTool.tools.imageProcess.areaDefine.ImageAreaDefinerGui.java</file>
+    <file>com.resultAnalysisTool.tools.imageProcess.areaDefine.IndicatorArea.java</file>
+    <file>com.resultAnalysisTool.tools.imageProcess.areaDefine.OptionArea.java</file>
 </feature>
 <feature id ="3">
     <des>Data extraction from image file</des>
-    <file></file>
-    <file></file>
+    <file>com.resultAnalysisTool.tools.imageProcess.dataExtract.ImageDataExtractorGui.java</file>
 </feature>
 <feature id = "4">
     <des>produce result</des>
-    <file></file>
-    <file></file>
+    <file>com.resultAnalysisTool.tools.resultProcess.ProcessResultSelectFiles.java</file>
+    <file>com.resultAnalysisTool.tools.resultProcess.ProcessResultSelectFilesGui.java</file>
 </feature>
 <feature id = "5">
-    <des>report design</des>
-    <file></file>
-    <file></file>
+    <des>report production</des>
+    <file>com.resultAnalysisTool.tools.reportCreate.reportGenerate.ReportGenerator.java</file>
 </feature>
 <feature id ="6">
-    <des>report production</des>
-    <file></file>
-    <file></file>
+    <des>report design</des>
+    <file>com.resultAnalysisTool.tools.reportCreate.reportDesign.ImageArea.java</file>
+    <file>com.resultAnalysisTool.tools.reportCreate.reportDesign.ReportDesignerGui.java</file>
 </feature>
 <feature id = "7">
     <des>print report</des>
-    <file></file>
-    <file></file>
+    <file>com.resultAnalysisTool.tools.reportPrint.ReportPrinter.java</file>
+    <file>com.resultAnalysisTool.util.filePrint.FilePrinter.java</file>
+    <file>com.resultAnalysisTool.tools.reportPrint.ReportPrinter.java</file>
 </feature>
 <feature id = "8">
     <des>email report</des>
-    <file></file>
-    <file></file>
+    <file>com.resultAnalysisTool.tools.emailPost.EmailSender.java</file>
+    <file>com.resultAnalysisTool.tools.emailPost.EmailSenderGui.java</file>
 </feature>
-
+<feature id ="9">
+    <des>file io operation</des>
+    <file>com.resultAnalysisTool.util.fileReadWrite.FileIO.java</file>
+</feature>
+<feature id ="10">
+    <des>image matrix operation</des>
+    <file>com.resultAnalysisTool.lib.egami.matrix.MatrixUtil.java</file>
+    <file>com.resultAnalysisTool.lib.egami.matrix.Matrix.java</file>
+</feature>
+<feature id ="11">
+    <des>font choosing</des>
+    <file>com.resultAnalysisTool.util.fontChoose.FontChooser.java</file>
+    <file>com.resultAnalysisTool.util.fontChoose.FontChooserGui.java</file>
+    <file>com.resultAnalysisTool.util.fontChoose.TextFont.java</file>
+</feature>
 </features>
