@@ -76,7 +76,7 @@ public class Lsi {
 			}
 			Collections.sort(resultantLsiDocuments);
 			Collections.reverse(resultantLsiDocuments);
-			System.out.println("Terms "+ lsiTerms.size() +","+" Documents "+resultantLsiDocuments.size());
+//			System.out.println("Terms "+ lsiTerms.size() +","+" Documents "+resultantLsiDocuments.size());
 		}
 		else{
 			System.out.println("Terms not present in search space");
@@ -107,9 +107,9 @@ public class Lsi {
 		Vector vector = new Vector(NUM_FACTORS);
 		for (Term term : terms) {
 			for (LsiTerm lsiTerm : lsiTerms) {
-				System.out.print(lsiTerm+" ");
+//				System.out.print(lsiTerm+" ");
 				if (lsiTerm.isSameInIR(term)) {
-					System.out.println(lsiTerm.vector.toCSVString());
+//					System.out.println(lsiTerm.vector.toCSVString());
 					vector.addWithVector(lsiTerm.vector);
 					break;
 				}

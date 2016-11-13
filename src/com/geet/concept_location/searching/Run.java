@@ -1,5 +1,4 @@
 package com.geet.concept_location.searching;
-import java.awt.BorderLayout;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -7,21 +6,22 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
-import javax.swing.JScrollPane;
+
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.DocumentExtractor;
 import com.geet.concept_location.corpus_creation.SimpleDocument;
@@ -271,12 +271,14 @@ public class Run {
 	        }
 	        System.out.println(feature.toString());
 	        //System.exit(0);
-	        List<LsiDocument> returnDocuments = new Lsi().search(new LsiQuery(feature.description, new com.geet.concept_location.indexing_lsi.Vector(Lsi.NUM_FACTORS)));
-			int index = 10;// not in desired place
+	        LsiQuery lsiQuery = new LsiQuery(feature.description, new com.geet.concept_location.indexing_lsi.Vector(Lsi.NUM_FACTORS));
+	        System.out.println(lsiQuery.getTerms());
+	        List<LsiDocument> returnDocuments = new Lsi().search(lsiQuery);
+			int index = 77;// not in desired place
 			for (int j = 0; j < feature.getFixedFiles().size(); j++) {
 				for (int k = 0; j < returnDocuments.size(); k++) {
 					if (feature.getFixedFiles().get(j).equals(returnDocuments.get(k).docInJavaFile)) {
-						System.out.println("WOWW"+k);
+						System.out.println("WOWW"+k+returnDocuments.get(k).docInJavaFile);
 						if (k <= index) {
 							index = k;
 						}
@@ -290,15 +292,15 @@ public class Run {
 				topOne++;
 				topFive++;
 				topTen++;
-				System.out.println(topOne);
+//				System.out.println(topOne);
 			}else if(index < 6){
 				topFive++;
 				topTen++;
-				System.out.println(topFive);
+//				System.out.println(topFive);
 			}
 			else if(index <10){
 				topTen++;
-				System.out.println(topTen);
+//				System.out.println(topTen);
 			}
 	    }
 		fileWriter.write(nList.getLength()+","+topOne+","+topFive+","+topTen);

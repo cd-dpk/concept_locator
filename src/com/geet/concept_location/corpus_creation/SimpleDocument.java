@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 import com.geet.concept_location.indexing_vsm.Term;
+import com.geet.concept_location.utils.StringUtils;
 public class SimpleDocument implements Comparable<SimpleDocument>, Serializable{
 	protected String article= "";
 	public String docInJavaFile;
@@ -42,11 +43,11 @@ public class SimpleDocument implements Comparable<SimpleDocument>, Serializable{
 	}
 	public List<Term> getTerms() {
 		List<Term> terms = new ArrayList<Term>();
-		StringTokenizer stringTokenizer = new StringTokenizer(getArticle(), JavaLanguage.getWhiteSpace()+JavaLanguage.PROGRAMING_LANGUAGE_SYNTAX+JavaLanguage.OPERATORS, false);
+		StringTokenizer stringTokenizer = new StringTokenizer(getArticle(), JavaLanguage.getWhiteSpace()+JavaLanguage.getProgrammingLanguageSyntax()+JavaLanguage.getOperators(), false);
 		while (stringTokenizer.hasMoreTokens()) {
 			String token = stringTokenizer.nextToken();
 			token = token.toLowerCase();
-			if (StopWords.isStopword(token)) {
+			if (StopWords.isStopword(token)|| StringUtils.isConstant(token)) {
 				continue;
 			}
 			Term candidateTerm = new Term(token, 1);

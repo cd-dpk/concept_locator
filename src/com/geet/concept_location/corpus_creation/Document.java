@@ -59,6 +59,7 @@ public class Document  extends SimpleDocument {
 	@Override
 	public String getArticle() {
 		article = "";
+		article += " "+ getArticleFromName();
 		article += " "+ getArticleFromTitles();
 		article += " "+ getArticleFromComment();
 		article += " "+ getArticleFromJavaDocComments();
@@ -114,6 +115,11 @@ public class Document  extends SimpleDocument {
 				subArticle += " "+documentString;
 			}
 		}
+		return subArticle;
+	}
+	private String getArticleFromName(){
+		String subArticle ="";
+		subArticle = StringUtils.getIdentifierSeparationsWithCamelCase(docInJavaFile);
 		return subArticle;
 	}
 	private String getArticleFromComment(){
