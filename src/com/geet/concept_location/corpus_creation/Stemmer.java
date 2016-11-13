@@ -284,9 +284,17 @@ public class Stemmer
     * @author iit
     */
    public Stemmer(String term){
+	   this();
 	   for (int i = 0; i < term.length(); i++) {
 		char ch = term.charAt(i);
 		add(ch);
 	}
    }
+   
+   public static void main(String[] args) {
+	Stemmer stemmer = new Stemmer("choosing");
+	stemmer.stem();
+	System.out.println(stemmer.toString());
+   }
+   
 }

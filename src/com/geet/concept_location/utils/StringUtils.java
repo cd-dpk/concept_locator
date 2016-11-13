@@ -147,8 +147,8 @@ public class StringUtils {
  	   );
  	}
     public static void main(String[] args) {
-		System.out.println(getIdentifierSeparationsWithCamelCase("Hello_Sir_Why"));
-	}
+    	System.out.println(uderscoreDeletedString("_hel_lo__"));
+    }
     public static boolean isConstant(String target){
     	if (target.startsWith("0x")) {
 			return true;
@@ -159,5 +159,25 @@ public class StringUtils {
     		}			
 		}
     	return false;
+    }
+    public static String uderscoreDeletedString(String target){
+    	String retString ="";
+    	if (target.startsWith("_") && target.endsWith("_")) {
+    		for (int i = 1; i < target.length()-1; i++) {
+				retString+= target.charAt(i);
+			}
+    		return retString;
+    	}
+    	if (target.startsWith("_")) {
+			for (int i = 1; i < target.length(); i++) {
+				retString+= target.charAt(i);
+			}
+		}
+    	if (target.endsWith("_")) {
+    		for (int i = 0; i < target.length()-1; i++) {
+				retString+= target.charAt(i);
+			}
+		}
+    	return retString;
     }
 }

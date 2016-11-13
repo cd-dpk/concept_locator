@@ -37,13 +37,10 @@ public class VectorSpaceModel implements Serializable{
 		//System.exit(0);
 		setTERM_DOCUMENT_MATRIX(terms, documents);
 	}
-	
 	public VectorSpaceModel(VectorSpaceMatrix vectorSpaceMatrix){
-		List<String> documents = new ArrayList<String>();
-		for (int i = 0; i < this.documents.size(); i++) {
-			documents.add(this.documents.get(i).docInJavaFile);
+		for (int i = 0; i < vectorSpaceMatrix.documents.size(); i++) {
+			documents.add(new SimpleDocument(vectorSpaceMatrix.documents.get(i), ""));
 		}
-		documents = vectorSpaceMatrix.documents;
 		terms = vectorSpaceMatrix.terms;
 		TERM_DOCUMENT_MATRIX = vectorSpaceMatrix.TERM_DOCUMENT_MATRIX;
 		df = vectorSpaceMatrix.df;
@@ -117,7 +114,7 @@ public class VectorSpaceModel implements Serializable{
 	 * @param value
 	 * @return
 	 */
-	public List<Document> search(SimpleDocument newSimpleDocument){
+	public List<SimpleDocument> search(SimpleDocument newSimpleDocument){
 		double [] newDocumentMatrix = new double[terms.size()];
 		List<Term> extensionTerms = new ArrayList<Term>();
 		for (Term term : newSimpleDocument.getTerms()) {
@@ -136,10 +133,10 @@ public class VectorSpaceModel implements Serializable{
 			}
 		}
 		int totalDocument = documents.size() + 1 ;
-		List<Document>lsiDocuments = new ArrayList<Document>();	
+		List<SimpleDocument>lsiDocuments = new ArrayList<SimpleDocument>();	
 		for (int i = 0; i < documents.size(); i++) {
-			Document document = (Document) documents.get(i);
-			System.out.println(i+":"+document.getDocInJavaFile()+" is computing...");
+			SimpleDocument simpleDocument =  documents.get(i);
+//			System.out.println(i+":"+simpleDocument.docInJavaFile+" is computing...");
 				double dotProduct = 0.0;
 				double scalarOne = 0.0;
 				double scalarTwo = 0.0;
@@ -156,16 +153,16 @@ public class VectorSpaceModel implements Serializable{
 					scalarTwo += (TERM_DOCUMENT_MATRIX[j][i] * tempDf)* (TERM_DOCUMENT_MATRIX[j][i]* tempDf);
 				}
 				for (int j = 0; j < extensionTerms.size(); j++) {
-					System.out.println(j);
+				//	System.out.println(j);
 					double tempDf =  1 + (Math.log10((double)(totalDocument)/(1))/Math.log10(2.0));
 					scalarOne += (extensionTerms.get(j).termFrequency * tempDf)* (extensionTerms.get(j).termFrequency* tempDf);
-					System.out.println(scalarOne);
+				//	System.out.println(scalarOne);
 				}
 				documents.get(i).score = (dotProduct)/(Math.sqrt(scalarOne)*Math.sqrt(scalarTwo));
-				System.out.println(documents.get(i).score);
-				if (documents.get(i).score > MINIMUM_SCORE) {
-					lsiDocuments.add((Document) documents.get(i));
-				}
+		//		System.out.println(documents.get(i).score);
+		//		if (documents.get(i).score > MINIMUM_SCORE) {
+					lsiDocuments.add(documents.get(i));
+		//		}
 		}
 		return lsiDocuments;
 	}

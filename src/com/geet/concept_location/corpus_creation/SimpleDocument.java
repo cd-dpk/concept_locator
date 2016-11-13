@@ -42,9 +42,10 @@ public class SimpleDocument implements Comparable<SimpleDocument>, Serializable{
 	}
 	public List<Term> getTerms() {
 		List<Term> terms = new ArrayList<Term>();
-		StringTokenizer stringTokenizer = new StringTokenizer(getArticle(), JavaLanguage.getWhiteSpace()+JavaLanguage.PROGRAMING_LANGUAGE_SYNTAX+JavaLanguage.OPERATORS, false);
+		StringTokenizer stringTokenizer = new StringTokenizer(getArticle(), JavaLanguage.getWhiteSpace()+JavaLanguage.getProgrammingLanguageSyntax()+JavaLanguage.getOperators(), false);
 		while (stringTokenizer.hasMoreTokens()) {
 			String token = stringTokenizer.nextToken();
+			System.out.println(token);
 			token = token.toLowerCase();
 			if (StopWords.isStopword(token)) {
 				continue;

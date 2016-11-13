@@ -1,4 +1,4 @@
-package com.geet.concept_location.ui;
+/*package com.geet.concept_location.ui;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -150,7 +150,7 @@ private void setJavaClassViewPanelUI() {
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
-	/** Main: make a Frame, add a FileTree */
+	*//** Main: make a Frame, add a FileTree *//*
 	public static void main(String[] av) {
 		new ConceptLocatorLsiFrame();
 	}
@@ -195,3 +195,4 @@ private void setJavaClassViewPanelUI() {
 		// TODO do later time
 	}
 }
+*/

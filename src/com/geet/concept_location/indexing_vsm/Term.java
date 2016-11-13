@@ -2,6 +2,7 @@ package com.geet.concept_location.indexing_vsm;
 import java.util.List;
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.Stemmer;
+import com.geet.concept_location.utils.StringUtils;
 public class Term {
 	public String termString;
 	public int termFrequency=0;
@@ -70,6 +71,9 @@ public class Term {
 		stemmer = new Stemmer(termString);
 		stemmer.stem();
 		if (term.termString.equals(stemmer.toString())) {
+			return true;
+		}
+		if (termString.equals(StringUtils.uderscoreDeletedString(term.termString))) {
 			return true;
 		}
 		return false;
