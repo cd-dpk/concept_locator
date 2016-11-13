@@ -28,6 +28,7 @@ import com.geet.concept_location.corpus_creation.SimpleDocument;
 import com.geet.concept_location.indexing_lsi.Lsi;
 import com.geet.concept_location.indexing_lsi.LsiDocument;
 import com.geet.concept_location.indexing_lsi.LsiQuery;
+import com.geet.concept_location.indexing_lsi.LsiTerm;
 import com.geet.concept_location.indexing_vsm.VectorSpaceMatrix;
 import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
 import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
@@ -84,8 +85,14 @@ public class Run {
 		return curDir;
 	}
 	public static void main(String[] args) throws Exception, SAXException, IOException {
-		Run run = new Run(new File(rootPath+"org"));
-		run.setRatio();
+		Run run = new Run(new File("/media/Video/SRC/ResultAnalysisTool"));
+		/*//run.generateLsiSpaceFromVectorSpaceMatrix();
+		run.setLsiTerms();
+		run.setLsiDocuments();*/
+		VectorSpaceMatrix vectorSpaceMatrix = run.loadVectorSpaceMatrix();
+		for (int i = 0; i < vectorSpaceMatrix.documents.size(); i++) {
+			System.out.println(vectorSpaceMatrix.documents.get(i));
+		}
 	}
 	
 	@Deprecated
@@ -104,13 +111,15 @@ public class Run {
 	
 	public void generateLsiSpaceFromVectorSpaceMatrix() throws IOException{
 		VectorSpaceModel vectorSpaceModel = new VectorSpaceModel();
-		vectorSpaceModel.generateLsi(loadVectorSpaceMatrix());
+		VectorSpaceMatrix vectorSpaceMatrix = loadVectorSpaceMatrix();
+		System.out.println(vectorSpaceMatrix.terms.size() +"X"+ vectorSpaceMatrix.documents.size());
+		vectorSpaceModel.generateLsi(vectorSpaceMatrix);
 	}
 	
 	public VectorSpaceMatrix loadVectorSpaceMatrix() throws IOException{
 		System.out.println("Vector Space Model is loading...");
 		VectorSpaceMatrix vectorSpaceMatrix = null;
-		FileInputStream file = new FileInputStream("vectorspace.ser");
+		FileInputStream file = new FileInputStream("rat_vectorspace.ser");
 		ObjectInputStream objectInputStream = new ObjectInputStream(file);
 		try {
 			vectorSpaceMatrix = (VectorSpaceMatrix) objectInputStream.readObject();
@@ -220,6 +229,48 @@ public class Run {
 	    }
 		fileWriter.write(nList.getLength()+","+topOne+","+topFive+","+topTen);
 		fileWriter.close();
-
 	}
+	public void setLsiTerms() {
+		List<LsiTerm> lsiTerms = new ArrayList<LsiTerm>();
+		try {
+			FileInputStream file = new FileInputStream("Terms.ser");
+			ObjectInputStream objectInputStream = new ObjectInputStream(file);
+			try {
+				lsiTerms = (ArrayList<LsiTerm>) objectInputStream.readObject();
+				System.out.println(lsiTerms.toString());
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			objectInputStream.close();
+			System.out.println("Terms");
+			for (LsiTerm lsiTerm : lsiTerms) {
+				System.out.println(lsiTerm.toCSVString());
+			}
+			System.out.println(lsiTerms.size());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	public void setLsiDocuments() {
+		List<LsiDocument>lsiDocuments = new ArrayList<LsiDocument>();
+		try {
+			FileInputStream file = new FileInputStream("Documents.ser");
+			ObjectInputStream objectInputStream = new ObjectInputStream(file);
+			try {
+				lsiDocuments = (ArrayList<LsiDocument>) objectInputStream.readObject();
+				System.out.println(lsiDocuments.toString());
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			objectInputStream.close();
+			System.out.println("Documents");
+			for (LsiDocument lsiDocument : lsiDocuments) {
+				System.out.println(lsiDocument.toCSVString());
+			}
+			System.out.println(lsiDocuments.size());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 }

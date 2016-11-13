@@ -39,6 +39,6 @@ public class LsiDocument extends SimpleDocument implements Serializable{
 	
 	public String toCSVString() {
 	//	return docName+","+docInJavaFile+","+startPosition.toString()+","+endPosition.toString()+","+vector.toCSVString();
-		return vector.toCSVString();
+		return docInJavaFile+","+vector.toCSVString();
 	}
 }

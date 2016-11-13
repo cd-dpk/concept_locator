@@ -5,12 +5,12 @@ import java.util.List;
 import com.geet.concept_location.corpus_creation.SimpleDocument;
 
 public class VectorSpaceMatrix implements Serializable{
-	public List<SimpleDocument> documents;
+	public List<String> documents;
 	public List<String> terms;
 	public double [][]TERM_DOCUMENT_MATRIX;
 	public double [] df;
 
-	public VectorSpaceMatrix(List<SimpleDocument> documents,
+	public VectorSpaceMatrix(List<String> documents,
 			List<String> terms, double[][] tERM_DOCUMENT_MATRIX, double[] df) {
 		super();
 		this.documents = documents;

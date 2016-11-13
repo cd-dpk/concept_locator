@@ -87,7 +87,7 @@ public class VectorSpaceModel {
 				}
 				System.out.print(vectorSpaceMatrix.TERM_DOCUMENT_MATRIX[i][j]+" ");
 			}
-			System.out.println();
+			System.out.println(i);
 		}
 		System.out.println("Normalizing...");
 		for (int i = 0; i < vectorSpaceMatrix.TERM_DOCUMENT_MATRIX.length; i++) {
@@ -96,8 +96,9 @@ public class VectorSpaceModel {
 				vectorSpaceMatrix.TERM_DOCUMENT_MATRIX[i][j] = getNormalizedValue(value);
 				System.out.print(vectorSpaceMatrix.TERM_DOCUMENT_MATRIX[i][j]+" ");
 			}
-			System.out.println();
+			System.out.println(i);
 		}
+		System.out.println("SVD generating...");
 		return vectorSpaceMatrix.TERM_DOCUMENT_MATRIX;
 	}
 
@@ -206,7 +207,10 @@ public class VectorSpaceModel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		documents = vectorSpaceMatrix.documents;
+		documents = new ArrayList<SimpleDocument>();
+		for (int i = 0; i < vectorSpaceMatrix.documents.size(); i++) {
+			documents.add(new SimpleDocument(vectorSpaceMatrix.documents.get(i), ""));
+		}
 		System.out.println("DOCS...");
 		/* document vectors into lsi docs*/
 		try {
