@@ -3,7 +3,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+
 import com.geet.concept_location.indexing_vsm.Term;
+import com.geet.concept_location.utils.StringUtils;
 public class SimpleDocument implements Comparable<SimpleDocument>, Serializable{
 	protected String article= "";
 	public String docInJavaFile;
@@ -47,7 +49,7 @@ public class SimpleDocument implements Comparable<SimpleDocument>, Serializable{
 			String token = stringTokenizer.nextToken();
 			System.out.println(token);
 			token = token.toLowerCase();
-			if (StopWords.isStopword(token)) {
+			if (StopWords.isStopword(token) || StringUtils.isConstant(token)) {
 				continue;
 			}
 			Term candidateTerm = new Term(token, 1);

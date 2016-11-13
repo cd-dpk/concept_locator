@@ -158,7 +158,7 @@ public class Run {
 	public void setRatio() throws ParserConfigurationException, SAXException, IOException{
 		Calendar localCalendar = Calendar.getInstance();
 		java.util.Date date = localCalendar.getTime();
-		File outputFile = new File("LSI"+".txt");
+		File outputFile = new File("VSM"+".txt");
 		FileWriter fileWriter = new FileWriter(outputFile);
 		VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(loadVectorSpaceMatrix());
 		File inputFile = new File("features.xml");
@@ -206,7 +206,7 @@ public class Run {
 			for (int j = 0; j < feature.getFixedFiles().size(); j++) {
 				for (int k = 0; j < returnDocuments.size(); k++) {
 					if (feature.getFixedFiles().get(j).equals(returnDocuments.get(k).docInJavaFile)) {
-						System.out.println("WOWW"+k);
+						System.out.println("WOWW"+k+returnDocuments.get(k).docInJavaFile);
 						if (k <= index) {
 							index = k;
 						}
@@ -220,15 +220,15 @@ public class Run {
 				topOne++;
 				topFive++;
 				topTen++;
-				System.out.println(topOne);
+//				System.out.println(topOne);
 			}else if(index < 6){
 				topFive++;
 				topTen++;
-				System.out.println(topFive);
+//				System.out.println(topFive);
 			}
 			else if(index <10){
 				topTen++;
-				System.out.println(topTen);
+//				System.out.println(topTen);
 			}
 	    }
 		fileWriter.write(nList.getLength()+","+topOne+","+topFive+","+topTen);

@@ -59,11 +59,17 @@ public class Document  extends SimpleDocument {
 	@Override
 	public String getArticle() {
 		article = "";
+		article += " "+ getArticleFromName();
 		article += " "+ getArticleFromTitles();
 		article += " "+ getArticleFromComment();
 		article += " "+ getArticleFromJavaDocComments();
 		article += " "+ getArticleFromImplementation();
 		return article;
+	}
+	private String getArticleFromName(){
+		String subArticle ="";
+		subArticle = StringUtils.getIdentifierSeparationsWithCamelCase(docInJavaFile);
+		return subArticle;
 	}
 	@Override
 	public List<Term> getTerms() {
