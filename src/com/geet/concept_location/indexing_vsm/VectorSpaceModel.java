@@ -4,9 +4,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.SimpleDocument;
 
@@ -164,6 +166,8 @@ public class VectorSpaceModel implements Serializable{
 					lsiDocuments.add(documents.get(i));
 		//		}
 		}
+		Collections.sort(lsiDocuments);
+		Collections.reverse(lsiDocuments);
 		return lsiDocuments;
 	}
 	/* for normalization*/

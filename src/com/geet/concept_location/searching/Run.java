@@ -218,12 +218,15 @@ public class Run {
 			fileWriter.write(feature.id+","+index+"\n");
 			if (index == 0 ) {
 				topOne++;
-				System.out.println(topOne);
-			}else if(index>= 1 && index <= 4){
 				topFive++;
+				topTen++;
+				System.out.println(topOne);
+			}else if(index < 6){
+				topFive++;
+				topTen++;
 				System.out.println(topFive);
 			}
-			else if(index>=5 && index <=9){
+			else if(index <10){
 				topTen++;
 				System.out.println(topTen);
 			}
