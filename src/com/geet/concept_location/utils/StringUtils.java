@@ -160,4 +160,24 @@ public class StringUtils {
 		}
     	return false;
     }
+    public static String uderscoreDeletedString(String target){
+    	String retString ="";
+    	if (target.startsWith("_") && target.endsWith("_")) {
+    		for (int i = 1; i < target.length()-1; i++) {
+				retString+= target.charAt(i);
+			}
+    		return retString;
+    	}
+    	if (target.startsWith("_")) {
+			for (int i = 1; i < target.length(); i++) {
+				retString+= target.charAt(i);
+			}
+		}
+    	if (target.endsWith("_")) {
+    		for (int i = 0; i < target.length()-1; i++) {
+				retString+= target.charAt(i);
+			}
+		}
+    	return retString;
+    }
 }

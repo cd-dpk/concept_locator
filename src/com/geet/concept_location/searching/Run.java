@@ -91,8 +91,9 @@ public class Run {
 		//Run run = new Run(new File("/media/Video/SRC/ResultAnalysisTool"));
 		Run run = new Run();
 		//run.generateLsiSpaceFromVectorSpaceMatrix();
-		run.setLsiTerms();
-		run.setLsiDocuments();
+		//run.setLsiTerms();
+		//run.setLsiDocuments();
+		run.setRatio();
 	}
 	
 	@Deprecated
@@ -149,86 +150,6 @@ public class Run {
 	}
 	
 	
-	public void setRatio() throws ParserConfigurationException, SAXException, IOException{
-		Calendar localCalendar = Calendar.getInstance();
-		java.util.Date date = localCalendar.getTime();
-		File outputFile = new File(rootPath+"LSI"+date.getDay()+date.getHours()+date.getMinutes()+".txt");
-		FileWriter fileWriter = new FileWriter(outputFile);
-		File inputFile = new File("D:/BSSE0501/RESOURCE/SWT/bugRepository.xml");
-        DocumentBuilderFactory dbFactory 
-           = DocumentBuilderFactory.newInstance();
-        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        org.w3c.dom.Document doc = dBuilder.parse(inputFile);
-        doc.getDocumentElement().normalize();
-        System.out.println("Root element :" 
-           + doc.getDocumentElement().getNodeName());
-        NodeList nList = doc.getElementsByTagName("bug");
-        System.out.println("----------------------------");
-		for(int i=0;i<nList.getLength();i++)
-	    {
-			Bug bug =new Bug();
-	        Element bugElement = (Element) nList.item(i);
-	        bug.bugID = bugElement.getAttribute("id");
-	        NodeList summary = bugElement.getElementsByTagName("summary");
-	        for (int j = 0; j < summary.getLength(); ++j)
-	        {
-	            Element option = (Element) summary.item(j);
-	            if (option.hasChildNodes()) {
-		            String optionText = option.getFirstChild().getNodeValue();
-			        //    System.out.println("Summary :"+optionText);
-			            bug.summary += optionText;
-				}
-	        }
-	        NodeList description = bugElement.getElementsByTagName("description");
-	        for (int j = 0; j < description.getLength(); ++j)
-	        {
-	            Element option = (Element) description.item(j);
-	            if (option.hasChildNodes()) {
-	            	String optionText = option.getFirstChild().getNodeValue();
-	    	        //    System.out.println("Description :"+optionText);
-	    	            bug.description += optionText;	
-				}
-	        }
-	        NodeList fileList = bugElement.getElementsByTagName("file");
-	        for (int j = 0; j < fileList.getLength(); ++j)
-	        {
-	            Element option = (Element) fileList.item(j);
-	            if (option.hasChildNodes()) {
-		            String optionText = option.getFirstChild().getNodeValue();
-			        //    System.out.println("File :"+optionText);
-			            bug.fixedFiles.add(optionText);					
-				}
-	        }
-	        System.out.println(bug.toString());
-	        List<LsiDocument> returnDocuments = new Lsi().search(new LsiQuery(bug.summary, new com.geet.concept_location.indexing_lsi.Vector(Lsi.NUM_FACTORS)));
-			int index = 10;// not in desired place
-			for (int j = 0; j < bug.getFixedFiles().size(); j++) {
-				for (int k = 0; j < returnDocuments.size(); k++) {
-					if (bug.getFixedFiles().get(j).equals(returnDocuments.get(k).getDocInJavaFile())) {
-						if (k <= index) {
-							index = k;
-						}
-						break;
-					}
-				}
-			}
-			System.out.println(bug.bugID+" "+index);
-			fileWriter.write(bug.bugID+","+index+"\n");
-			if (index == 0 ) {
-				topOne++;
-				System.out.println(topOne);
-			}else if(index>= 1 && index <= 4){
-				topFive++;
-				System.out.println(topFive);
-			}
-			else if(index>=5 && index <=9){
-				topTen++;
-				System.out.println(topTen);
-			}
-	    }
-		fileWriter.write(nList.getLength()+","+topOne+","+topFive+","+topTen);
-		fileWriter.close();
-	}
 	public void setLsiTerms() {
 		List<LsiTerm> lsiTerms = new ArrayList<LsiTerm>();
 		try {
@@ -269,5 +190,118 @@ public class Run {
 			e.printStackTrace();
 		}
 	}
-	
+	public void readFeatures() throws Exception{
+		File inputFile = new File("features.xml");
+        DocumentBuilderFactory dbFactory 
+           = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        org.w3c.dom.Document doc = dBuilder.parse(inputFile);
+        doc.getDocumentElement().normalize();
+        System.out.println("Root element :" 
+           + doc.getDocumentElement().getNodeName());
+        NodeList nList = doc.getElementsByTagName("feature");
+        System.out.println("----------------------------");
+		for(int i=0;i<nList.getLength();i++)
+	    {
+			Feature feature =new Feature();
+	        Element bugElement = (Element) nList.item(i);
+	        feature.id = bugElement.getAttribute("id");
+	        NodeList summary = bugElement.getElementsByTagName("des");
+	        for (int j = 0; j < summary.getLength(); ++j)
+	        {
+	            Element option = (Element) summary.item(j);
+	            if (option.hasChildNodes()) {
+		            String optionText = option.getFirstChild().getNodeValue();
+			        //    System.out.println("Summary :"+optionText);
+			            feature.description += optionText;
+				}
+	        }
+	        NodeList fileList = bugElement.getElementsByTagName("file");
+	        for (int j = 0; j < fileList.getLength(); ++j)
+	        {
+	            Element option = (Element) fileList.item(j);
+	            if (option.hasChildNodes()) {
+		            String optionText = option.getFirstChild().getNodeValue();
+			        //    System.out.println("File :"+optionText);
+			            feature.fixedFiles.add(optionText);					
+				}
+	        }
+	        System.out.println(feature.toString());
+	    }
+	}
+	public void setRatio() throws ParserConfigurationException, SAXException, IOException{
+		Calendar localCalendar = Calendar.getInstance();
+		java.util.Date date = localCalendar.getTime();
+		File outputFile = new File("LSI"+".txt");
+		FileWriter fileWriter = new FileWriter(outputFile);
+		File inputFile = new File("features.xml");
+        DocumentBuilderFactory dbFactory 
+           = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        org.w3c.dom.Document doc = dBuilder.parse(inputFile);
+        doc.getDocumentElement().normalize();
+        System.out.println("Root element :" 
+           + doc.getDocumentElement().getNodeName());
+        NodeList nList = doc.getElementsByTagName("feature");
+        System.out.println("----------------------------");
+		for(int i=0;i<nList.getLength();i++)
+	    {
+			Feature feature =new Feature();
+	        Element bugElement = (Element) nList.item(i);
+	        feature.id = bugElement.getAttribute("id");
+	        NodeList summary = bugElement.getElementsByTagName("des");
+	        for (int j = 0; j < summary.getLength(); ++j)
+	        {
+	            Element option = (Element) summary.item(j);
+	            if (option.hasChildNodes()) {
+		            String optionText = option.getFirstChild().getNodeValue();
+			        //    System.out.println("Summary :"+optionText);
+			            feature.description += optionText;
+				}
+	        }
+	        NodeList fileList = bugElement.getElementsByTagName("file");
+	        for (int j = 0; j < fileList.getLength(); ++j)
+	        {
+	            Element option = (Element) fileList.item(j);
+	            if (option.hasChildNodes()) {
+		            String optionText = option.getFirstChild().getNodeValue();
+			        //    System.out.println("File :"+optionText);
+			            feature.fixedFiles.add(optionText);					
+				}
+	        }
+	        System.out.println(feature.toString());
+	        //System.exit(0);
+	        List<LsiDocument> returnDocuments = new Lsi().search(new LsiQuery(feature.description, new com.geet.concept_location.indexing_lsi.Vector(Lsi.NUM_FACTORS)));
+			int index = 10;// not in desired place
+			for (int j = 0; j < feature.getFixedFiles().size(); j++) {
+				for (int k = 0; j < returnDocuments.size(); k++) {
+					if (feature.getFixedFiles().get(j).equals(returnDocuments.get(k).docInJavaFile)) {
+						System.out.println("WOWW"+k);
+						if (k <= index) {
+							index = k;
+						}
+						break;
+					}
+				}
+			}
+			System.out.println(feature.id+" "+index);
+			fileWriter.write(feature.id+","+index+"\n");
+			if (index == 0 ) {
+				topOne++;
+				topFive++;
+				topTen++;
+				System.out.println(topOne);
+			}else if(index < 6){
+				topFive++;
+				topTen++;
+				System.out.println(topFive);
+			}
+			else if(index <10){
+				topTen++;
+				System.out.println(topTen);
+			}
+	    }
+		fileWriter.write(nList.getLength()+","+topOne+","+topFive+","+topTen);
+		fileWriter.close();
+	}
 }

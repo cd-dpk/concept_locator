@@ -38,8 +38,7 @@ public class Lsi {
 			ObjectInputStream objectInputStream = new ObjectInputStream(file);
 			try {
 				lsiTerms = (ArrayList<LsiTerm>) objectInputStream.readObject();
-				System.out.println(lsiTerms.toString());
-			} catch (ClassNotFoundException e) {
+				} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 			objectInputStream.close();
@@ -54,7 +53,6 @@ public class Lsi {
 			ObjectInputStream objectInputStream = new ObjectInputStream(file);
 			try {
 				lsiDocuments = (ArrayList<LsiDocument>) objectInputStream.readObject();
-				System.out.println(lsiDocuments.toString());
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -64,7 +62,7 @@ public class Lsi {
 		}
 	}
 	public List<LsiDocument> search(LsiQuery lsiQuery){
-		setLsiScales();
+//		setLsiScales();
 		setLsiTerms();
 		setLsiDocuments();
 		List<LsiDocument> resultantLsiDocuments = new ArrayList<LsiDocument>();
@@ -72,9 +70,9 @@ public class Lsi {
 		if (!lsiQuery.vector.isNull()) {
 			for (int j = 0; j < lsiDocuments.size(); ++j) {
 				lsiDocuments.get(j).score = lsiQuery.vector.cosine(lsiDocuments.get(j).vector);
-				if (this.lsiDocuments.get(j).score > MINIMUM_SCORE) {
+			//	if (this.lsiDocuments.get(j).score > MINIMUM_SCORE) {
 					resultantLsiDocuments.add(lsiDocuments.get(j));
-				}
+			//	}
 			}
 			Collections.sort(resultantLsiDocuments);
 			Collections.reverse(resultantLsiDocuments);
