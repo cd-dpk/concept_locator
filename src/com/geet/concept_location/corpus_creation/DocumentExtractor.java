@@ -34,6 +34,7 @@ public class DocumentExtractor {
 			e.printStackTrace();
 		}
 		document = new Document();
+		document.docInJavaFile = fileName;
 	}
 	public Document getExtractedDocument(){
 		// all methods
