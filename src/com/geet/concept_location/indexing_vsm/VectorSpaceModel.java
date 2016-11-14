@@ -24,7 +24,6 @@ public class VectorSpaceModel implements Serializable{
 	private double a = 1.0;
 	private double b = 2.0;
 	private double MIN = 0;
-	
 	public VectorSpaceModel(List<SimpleDocument> documentList) {
 		documents = documentList;
 		terms = getTermS();
@@ -111,6 +110,67 @@ public class VectorSpaceModel implements Serializable{
 		}
 		return lsiDocuments;
 	}
+	public List<SimpleDocument> searchWithQueryVector(Query query){
+		int totalDocument = documents.size() + 1 ;
+		List<SimpleDocument>lsiDocuments = new ArrayList<SimpleDocument>();	
+		for (int i = 0; i < documents.size(); i++) {
+				double dotProduct = 0.0;
+				double scalarOne = 0.0;
+				double scalarTwo = 0.0;
+				for (int j = 0; j < terms.size(); j++) {
+					double tempDf = df[j];
+					if (query.vectorInVectorSpaceModel[j] != 0) {
+						tempDf =  1 + (Math.log10((double)(totalDocument)/(tempDf+1))/Math.log10(2.0));
+					}
+					else{
+						tempDf =  1 + (Math.log10((double)(totalDocument)/(tempDf))/Math.log10(2.0));
+					}
+					dotProduct +=( query.vectorInVectorSpaceModel[j] * tempDf )* (TERM_DOCUMENT_MATRIX[j][i]* tempDf);
+					scalarOne += (query.vectorInVectorSpaceModel[j] * tempDf)* (query.vectorInVectorSpaceModel[j] * tempDf);
+					scalarTwo += (TERM_DOCUMENT_MATRIX[j][i] * tempDf)* (TERM_DOCUMENT_MATRIX[j][i]* tempDf);
+				}
+				for (int j = 0; j < query.vectorInExtendedVectorSpaceModel.length; j++) {
+				//	System.out.println(j);
+					double tempDf =  1 + (Math.log10((double)(totalDocument)/(1))/Math.log10(2.0));
+					scalarOne += (query.vectorInExtendedVectorSpaceModel[j] * tempDf)* (query.vectorInExtendedVectorSpaceModel[j]* tempDf);
+				//	System.out.println(scalarOne);
+				}
+				documents.get(i).score = (dotProduct)/(Math.sqrt(scalarOne)*Math.sqrt(scalarTwo));
+		//		System.out.println(documents.get(i).score);
+		//		if (documents.get(i).score > MINIMUM_SCORE) {
+					lsiDocuments.add(documents.get(i));
+		//		}
+		}
+		Collections.sort(lsiDocuments);
+		Collections.reverse(lsiDocuments);
+		return lsiDocuments;
+	}
+	
+	public Query getQuery(SimpleDocument simpleDocument){
+		Query query = new Query();
+		query.vectorInVectorSpaceModel = new double[terms.size()]; 
+		List<Term> extensionTerms = new ArrayList<Term>();
+		for (Term term : simpleDocument.getTerms()) {
+			int flag =0;
+			for (int i = 0; i < query.vectorInVectorSpaceModel.length; i++) {
+				if (term.isSameInIR(new Term(terms.get(i)))) {
+					query.vectorInVectorSpaceModel[i] = term.termFrequency;
+					flag = 1;
+					break;
+				}
+				query.vectorInVectorSpaceModel[i] = 0;
+			}
+			if (flag == 0) {
+				System.out.println("Not in term_document_matrix"+term);
+				extensionTerms.add(term);
+			}
+		}
+		query.vectorInExtendedVectorSpaceModel = new double[extensionTerms.size()];
+		for (int i = 0; i < extensionTerms.size(); i++) {
+			query.vectorInExtendedVectorSpaceModel[i] = extensionTerms.get(i).termFrequency;
+		}
+		return query;
+	}
 	/**
 	 * search with a new Document
 	 * @param value
@@ -118,6 +178,7 @@ public class VectorSpaceModel implements Serializable{
 	 */
 	public List<SimpleDocument> search(SimpleDocument newSimpleDocument){
 		double [] newDocumentMatrix = new double[terms.size()];
+		//query.vectorInVectorSpaceModel = new double[terms.size()]; 
 		List<Term> extensionTerms = new ArrayList<Term>();
 		for (Term term : newSimpleDocument.getTerms()) {
 			int flag =0;
@@ -137,7 +198,7 @@ public class VectorSpaceModel implements Serializable{
 		int totalDocument = documents.size() + 1 ;
 		List<SimpleDocument>lsiDocuments = new ArrayList<SimpleDocument>();	
 		for (int i = 0; i < documents.size(); i++) {
-			SimpleDocument simpleDocument =  documents.get(i);
+//			SimpleDocument simpleDocument =  documents.get(i);
 //			System.out.println(i+":"+simpleDocument.docInJavaFile+" is computing...");
 				double dotProduct = 0.0;
 				double scalarOne = 0.0;
@@ -169,6 +230,93 @@ public class VectorSpaceModel implements Serializable{
 		Collections.sort(lsiDocuments);
 		Collections.reverse(lsiDocuments);
 		return lsiDocuments;
+	}
+
+
+/*	public List<Document> research(List<Document> relDocuments, List<Document>irrelDocuments){
+		updateNewDocumentMatrixWithRelevantDocuments(addAllDocuments(relDocuments));
+		updateNewDocumentMatrixWithIrrelevantDocuments(addAllDocuments(irrelDocuments));
+		return searchDocuments();
+	}
+	public List<Integer>  addAllDocuments(List<Document> docs){
+		List<Integer> docsIndex = new ArrayList<Integer>();
+		for (Document doc : docs) {
+			for (int i = 0; i < documents.size(); i++) {
+				if (doc.isSameDocument(documents.get(i))) {
+					docsIndex.add(i);
+					break;
+				}
+			}
+		}
+		return docsIndex;
+	}
+*/	/*public List<Document> searchDocuments(){
+		int totalDocument = documents.size() + 1;
+		List<Document>rankedDocuments = new ArrayList<Document>();	
+		for (int i = 0; i < documents.size(); i++) {
+				double dotProduct = 0.0;
+				double scalarOne = 0.0;
+				double scalarTwo = 0.0;
+				for (int j = 0; j < terms.size(); j++) {
+					double tempDf = df[j];
+					if (query.vectorInVectorSpaceModel[j] != 0) {
+						tempDf =  1 + (Math.log10((double)(totalDocument)/(tempDf+1))/Math.log10(2.0));
+					}
+					else{
+						tempDf =  1 + (Math.log10((double)(totalDocument)/(tempDf))/Math.log10(2.0));
+					}
+					dotProduct +=( query.vectorInVectorSpaceModel[j] * tempDf )* (TERM_DOCUMENT_MATRIX[j][i]* tempDf);
+					scalarOne += (query.vectorInVectorSpaceModel[j] * tempDf)* (query.vectorInVectorSpaceModel[j] * tempDf);
+					scalarTwo += (TERM_DOCUMENT_MATRIX[j][i] * tempDf)* (TERM_DOCUMENT_MATRIX[j][i]* tempDf);
+				}
+				for (int j = 0; j < query.vectorInExtendedVectorSpaceModel.length; j++) {
+					System.out.println(j);
+					double tempDf =  1 + (Math.log10((double)(totalDocument)/(1))/Math.log10(2.0));
+					scalarOne += (query.vectorInExtendedVectorSpaceModel[j] * tempDf)* (query.vectorInExtendedVectorSpaceModel[j]* tempDf);
+					System.out.println(scalarOne);
+				}
+				documents.get(i).score = (dotProduct)/(Math.sqrt(scalarOne)*Math.sqrt(scalarTwo));
+				System.out.println(documents.get(i).score);;
+			//	if (documents.get(i).score > 0) {
+					rankedDocuments.add((Document) documents.get(i));
+			//	}
+		}
+		return rankedDocuments;
+	}
+	*/// update with relevant document
+	/*private void updateNewDocumentMatrixWithRelevantDocuments(List<Integer>relDocuments){
+		if (relDocuments.size() > 1) {
+			double offset = beta / relDocuments.size();
+			for (int i = 0; i < query.vectorInVectorSpaceModel.length ; i++) {
+				double weight = 0;
+				for (int j = 0; j < relDocuments.size(); j++) {
+					weight += TERM_DOCUMENT_MATRIX[i][relDocuments.get(j)];
+				}
+				query.vectorInVectorSpaceModel[i] += VectorSpaceModel.validateTermWeight(weight * offset);
+			}
+		}
+	}
+	// update with irrelevant document
+	private void updateNewDocumentMatrixWithIrrelevantDocuments(List<Integer>irrelDocuments){
+		if (irrelDocuments.size() > 1) {
+			double offset = gyma / irrelDocuments.size();
+			for (int i = 0; i < query.vectorInVectorSpaceModel.length ; i++) {
+				double weight = 0;
+				for (int j = 0; j < irrelDocuments.size(); j++) {
+					weight += TERM_DOCUMENT_MATRIX[i][irrelDocuments.get(j)];
+				}
+				query.vectorInVectorSpaceModel[i] -= VectorSpaceModel.validateTermWeight(weight * offset);
+			}
+		}
+	}
+	*//**
+	 * validate term weight
+	 */
+	private static double validateTermWeight(double termWeight){
+		if (termWeight < 0) {
+			return 0;
+		}
+		return termWeight;
 	}
 	/* for normalization*/
 	private double getNormalizedValue(double value){

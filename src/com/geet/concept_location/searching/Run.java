@@ -22,6 +22,7 @@ import org.xml.sax.SAXException;
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.DocumentExtractor;
 import com.geet.concept_location.corpus_creation.SimpleDocument;
+import com.geet.concept_location.indexing_vsm.Query;
 import com.geet.concept_location.indexing_vsm.VectorSpaceMatrix;
 import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
 import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
@@ -33,6 +34,8 @@ public class Run {
 	List<Bug> bugs = new ArrayList<Bug>();
 	private JTree tree;
 	public List<String> javaFilePaths = new ArrayList<String>();
+	//Rocchio Algorithm 
+	private final static double alpha = 1.0, beta = 0.75, gyma = 0.25;	
 	public Run(File dir) {
 		// Make a tree list with all the nodes, and make it a JTree
 		tree = new JTree(addNodes(null, dir));
@@ -83,15 +86,110 @@ public class Run {
 		//run.createVectorSpaceMatrix();
 		Run run = new Run();
 		run.setRatio();
-//		run.readFeatures();
 //		VectorSpaceMatrix vectorSpaceMatrix = run.loadVectorSpaceMatrix();
-//		System.out.println(run.loadVectorSpaceMatrix().toString());
-//		System.out.println(vectorSpaceMatrix.terms.size()+"X"+vectorSpaceMatrix.documents.size());
-//		for (int i = 0; i < vectorSpaceMatrix.documents.size(); i++) {
-//			System.out.println(vectorSpaceMatrix.documents.get(i));
-//		}
+//		run.updateTheQueryOnRelevanceFeedback(vectorSpaceMatrix,10);
+	}	
+	public void updateTheQueryOnRelevanceFeedback(VectorSpaceMatrix vectorSpaceMatrix, int id) throws ParserConfigurationException, SAXException, IOException{
+		// read the feedback.xml
+		File inputFile = new File("feedback.xml");
+        DocumentBuilderFactory dbFactory 
+           = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        org.w3c.dom.Document doc = dBuilder.parse(inputFile);
+        doc.getDocumentElement().normalize();
+        System.out.println("Root element :" 
+           + doc.getDocumentElement().getNodeName());
+        NodeList nList = doc.getElementsByTagName("ret");
+        System.out.println("----------------------------");
+        List<Integer> relDocs = new ArrayList<Integer>();
+        List<Integer> irrelDocs = new ArrayList<Integer>();
+		for(int i=0;i<nList.getLength();i++)
+	    {
+			 
+			Element bugElement = (Element) nList.item(i);
+			String file ="";
+		    String feedback = "";
+		    NodeList summary = bugElement.getElementsByTagName("file");
+	        for (int j = 0; j < summary.getLength(); ++j)
+	        {
+	            Element option = (Element) summary.item(j);
+	            if (option.hasChildNodes()) {
+		            String optionText = option.getFirstChild().getNodeValue();
+			        //    System.out.println("Summary :"+optionText);
+			            file = optionText;
+				}
+	        }
+	        NodeList fileList = bugElement.getElementsByTagName("rf");
+	        for (int j = 0; j < fileList.getLength(); ++j)
+	        {
+	            Element option = (Element) fileList.item(j);
+	            if (option.hasChildNodes()) {
+		            String optionText = option.getFirstChild().getNodeValue();
+			        //    System.out.println("File :"+optionText);
+			            feedback = (optionText);					
+				}
+	        }
+	        if (feedback.equals("1")) {
+	        	for (int j = 0; j < vectorSpaceMatrix.documents.size(); j++) {
+					if (file.equals(vectorSpaceMatrix.documents.get(j))) {
+//						System.out.println("Hello");
+						relDocs.add(j);
+						break;
+					}
+				}
+			}
+	        if (feedback.equals("-1")) {
+	        	for (int j = 0; j < vectorSpaceMatrix.documents.size(); j++) {
+					if (file.equals(vectorSpaceMatrix.documents.get(j))) {
+//						System.out.println("Bye");
+						irrelDocs.add(j);
+						break;
+					}
+				}
+			}
+	    }
+		// load the query
+		Query query = loadQuery(id);
+		// update with relevant docs
+		if (relDocs.size() >= 1) {
+			double offset = beta / relDocs.size();
+			for (int i = 0; i < query.vectorInVectorSpaceModel.length ; i++) {
+				double weight = 0;
+				for (int j = 0; j < relDocs.size(); j++) {
+					weight += vectorSpaceMatrix.TERM_DOCUMENT_MATRIX[i][relDocs.get(j)];
+					System.out.println("YES");
+				}
+				query.vectorInVectorSpaceModel[i] += (weight * offset);
+				query.vectorInVectorSpaceModel[i] = validateTermWeight(query.vectorInVectorSpaceModel[i]);
+
+			}
+		}
+		
+		if (irrelDocs.size() >= 1) {
+			double offset = gyma / irrelDocs.size();
+			for (int i = 0; i < query.vectorInVectorSpaceModel.length ; i++) {
+				double weight = 0;
+				for (int j = 0; j < irrelDocs.size(); j++) {
+					weight += vectorSpaceMatrix.TERM_DOCUMENT_MATRIX[i][irrelDocs.get(j)];
+				}
+				query.vectorInVectorSpaceModel[i] -= (weight * offset);
+				query.vectorInVectorSpaceModel[i] = validateTermWeight(query.vectorInVectorSpaceModel[i]);
+			}
+		}
+		storeQuery(query,id);
 		
 	}
+	
+	/**
+	 * validate term weight
+	 */
+	private static double validateTermWeight(double termWeight){
+		if (termWeight < 0) {
+			return 0;
+		}
+		return termWeight;
+	}
+	
 	public void createVectorSpaceMatrix(){
 		List<SimpleDocument> allDocuments = new ArrayList<SimpleDocument>();
 		int classNo = 0;
@@ -171,7 +269,7 @@ public class Run {
            + doc.getDocumentElement().getNodeName());
         NodeList nList = doc.getElementsByTagName("feature");
         System.out.println("----------------------------");
-		for(int i=0;i<nList.getLength();i++)
+		for(int i=10;i<nList.getLength();i++)
 	    {
 			Feature feature =new Feature();
 	        Element bugElement = (Element) nList.item(i);
@@ -201,8 +299,9 @@ public class Run {
 	        System.out.println(simpleDocument.getArticle());
 	        System.out.println(simpleDocument.getTermsInString());
 	        //System.exit(0);
-	        List<SimpleDocument> returnDocuments = vectorSpaceModel.search(simpleDocument);
-			int index = 10;// not in desired place
+	        Query query = loadQuery(i);
+	        List<SimpleDocument> returnDocuments = vectorSpaceModel.searchWithQueryVector(query);
+	        int index = 10;// not in desired place
 			for (int j = 0; j < feature.getFixedFiles().size(); j++) {
 				for (int k = 0; j < returnDocuments.size(); k++) {
 					if (feature.getFixedFiles().get(j).equals(returnDocuments.get(k).docInJavaFile)) {
@@ -214,6 +313,7 @@ public class Run {
 					}
 				}
 			}
+			printSearchResults(returnDocuments);
 			System.out.println(feature.id+" "+index);
 			fileWriter.write(feature.id+","+index+"\n");
 			if (index == 0 ) {
@@ -230,9 +330,51 @@ public class Run {
 				topTen++;
 //				System.out.println(topTen);
 			}
+			if (i >= 10) {
+				break;
+			}
 	    }
 		fileWriter.write(nList.getLength()+","+topOne+","+topFive+","+topTen);
 		fileWriter.close();
+	}
+	
+	public void printSearchResults(List<SimpleDocument> simpleDocuments) throws IOException{
+		FileWriter fileWriter = new FileWriter(new File("feedback.xml"));
+		fileWriter.write("<feedbacks>\n");
+		for (SimpleDocument simpleDocument : simpleDocuments) {
+			String toString = "<ret>\n";
+			toString += "<file>"+simpleDocument.docInJavaFile+"</file>\n";
+			toString += "<rf>"+0+"</rf>\n";
+			toString +="</ret>\n";
+			fileWriter.write(toString);
+		}
+		fileWriter.write("</feedbacks>");
+		fileWriter.close();
+		
+	}
+	public void storeQuery(Query query, int id){
+		System.out.println("Query Space Model is storing...");
+		try {
+			FileOutputStream file = new FileOutputStream(id+"query.ser");
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream(file);
+			objectOutputStream.writeObject(query);
+			objectOutputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	public Query loadQuery(int id) throws IOException{
+		System.out.println("Query Space Model is loading...");
+		Query query = null;
+		FileInputStream file = new FileInputStream(id+"query.ser");
+		ObjectInputStream objectInputStream = new ObjectInputStream(file);
+		try {
+			query = (Query) objectInputStream.readObject();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		objectInputStream.close();
+		return query;
 	}
 	public void storeVectorSpaceMatrix(VectorSpaceMatrix vectorSpaceMatrix){
 		System.out.println("Vector Space Model is storing...");
