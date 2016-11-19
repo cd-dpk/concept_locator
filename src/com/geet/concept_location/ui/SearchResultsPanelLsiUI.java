@@ -13,6 +13,7 @@ import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
 import javax.swing.Scrollable;
 import com.geet.concept_location.corpus_creation.Document;
+import com.geet.concept_location.corpus_creation.SimpleDocument;
 /**
  * 
  * @author geet
@@ -21,18 +22,18 @@ import com.geet.concept_location.corpus_creation.Document;
 public class SearchResultsPanelLsiUI extends JPanel{
 	DefaultListModel listModel = new DefaultListModel();
 	public JList searchResultList = new JList(listModel);
-	public List<Document> lsiDocuments = new ArrayList<Document>();
-	public SearchResultsPanelLsiUI(List<Document>vectorDocuments, Bound bound) {
+	public List<SimpleDocument> lsiDocuments = new ArrayList<SimpleDocument>();
+	public SearchResultsPanelLsiUI(List<SimpleDocument>vectorDocuments, Bound bound) {
 		super();
 		setLayout(null);
 		this.lsiDocuments = vectorDocuments;
 		searchResultList.setCellRenderer(new TextAreaListItem(10, 20));
-		for (Document document : lsiDocuments) {
+		for (SimpleDocument document : lsiDocuments) {
 			String str="";
 			str += document.score+"\n";
-			str += document.getDocInJavaFile()+"\n";
-			str += document.getDocInJavaFile()+"\n";
-			str += document.getArticle()+"\n";
+		//	str += document.getDocInJavaFile()+"\n";
+		//	str += document.getDocInJavaFile()+"\n";
+		//	str += document.getArticle()+"\n";
 			listModel.addElement(str);
 		}
 		JScrollPane scrollPane =new JScrollPane(searchResultList);
