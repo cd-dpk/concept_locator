@@ -2,16 +2,16 @@ package com.geet.concept_location.ui;
 
 import java.io.File;
 
-public class SearchPage extends Page{
+import com.geet.concept_location.constants.UIConstants;
 
+public class SearchPage extends Page{
 	SearchUI searchUI;
 	public SearchPage(File f) {
 		super(f);
-		searchUI = new SearchUI();
+		searchUI = new SearchUI(new Bound(0, 0, UIConstants.Width, UIConstants.Height));
 	}
-
 	public SearchPage(String string) {
 		super(string);
-		searchUI = new SearchUI();
+		searchUI = new SearchUI(new Bound(0, 0, UIConstants.Width, UIConstants.Height));
 	}
 }

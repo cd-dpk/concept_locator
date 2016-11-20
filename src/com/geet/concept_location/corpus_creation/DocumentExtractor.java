@@ -1,9 +1,11 @@
 package com.geet.concept_location.corpus_creation;
 import java.io.File;
 import java.io.IOException;
-import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
+import java.util.ArrayList;
+import java.util.List;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseException;
+import com.github.javaparser.Position;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
@@ -13,133 +15,176 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-/**
- * In bug localization, each java class return a document
- * @author iit
- *
- */
 public class DocumentExtractor {
 	CompilationUnit compilationUnit;
-	Document/*Hello*/ document ;
+	private  List<MethodOrConstructorDocument> myMethodOrConstructorDocuments = new ArrayList<MethodOrConstructorDocument>();
+	private  List<ClassDocument> myClassDocuments = new ArrayList<ClassDocument>();
+	private  List<EnumDocument> myEnumDocuments = new ArrayList<EnumDocument>();
+	private  List<Document> allDocuments = new ArrayList<Document>();
 	static String fileName;
-	int/*Hello*/ i,/*Hello*/ j=10,k;
-	// bug localization starts
 	public DocumentExtractor(File javaFile) {
+		allDocuments = new ArrayList<Document>();
 		try {
 			fileName = javaFile.getAbsolutePath();
 			compilationUnit = JavaParser.parse(javaFile);
-			} catch (ParseException e) {
+		} catch (ParseException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		document = new Document();
-		document.docInJavaFile = fileName;
 	}
-	public Document getExtractedDocument(){
-		// all methods
-		new MethodVisitor().visit(compilationUnit, null);		
-		// all constructors
-		new ConstructorVisitor().visit(compilationUnit, null);		
-		// all enum
+	public List<Document> getAllDocuments(){
+		new MethodVisitor().visit(compilationUnit, null);
+		new ConstructorVisitor().visit(compilationUnit, null);
 		new EnumVisitor().visit(compilationUnit, null);
-		// all classes
 		new ClassOrInterfaceVisitor().visit(compilationUnit, null);
-		// all field
-		new FieldVisitor().visit(compilationUnit, null);
-		return document;
+		for (ClassDocument document : myClassDocuments) {
+			new FieldVisitor(document).visit(compilationUnit, null);
+		}
+		allDocuments.addAll(myMethodOrConstructorDocuments);
+		allDocuments.addAll(myEnumDocuments);
+		allDocuments.addAll(myClassDocuments);
+		return allDocuments;
 	}
 	private  class MethodVisitor extends VoidVisitorAdapter{
 		@Override
 		public void visit(MethodDeclaration methodDeclaration, Object arg1) {
-			document.docTitles.add(methodDeclaration.getName());
 			Comment methodComment = methodDeclaration.getComment();
+			Position startPosition = new Position(methodDeclaration.getBeginLine(), methodDeclaration.getBeginColumn());
+			Position endPosition = new Position(methodDeclaration.getEndLine(), methodDeclaration.getEndLine());
+			MethodOrConstructorDocument methodOrConstructorDocument = new MethodOrConstructorDocument();
+			methodOrConstructorDocument.docInJavaFile = fileName;
+			methodOrConstructorDocument.docName = methodDeclaration.getName();
+			methodOrConstructorDocument.setStartPosition(new com.geet.concept_location.corpus_creation.Position(startPosition));
+			methodOrConstructorDocument.setEndPosition(new com.geet.concept_location.corpus_creation.Position(endPosition));			
 			if (methodComment != null && methodComment instanceof JavadocComment) {
-				document.javaDocComments.add((JavadocComment) methodComment);
+				methodOrConstructorDocument.javaDocComments.add((JavadocComment) methodComment);
 			}else if ((methodComment != null )&& (methodComment instanceof JavadocComment == false)) {
-				document.implementationComments.add(methodComment);
+				methodOrConstructorDocument.implementationComments.add(methodComment);
 			}
 			for (Comment containedComment : methodDeclaration.getAllContainedComments()) {
 				if (containedComment instanceof JavadocComment) {
-					document.javaDocComments.add((JavadocComment) containedComment);
+					methodOrConstructorDocument.javaDocComments.add((JavadocComment) containedComment);
 				}else {
-					document.implementationComments.add(containedComment);
+					methodOrConstructorDocument.implementationComments.add(containedComment);
 				}
 			}
-			if (methodDeclaration.getBody() != null) {
-				document.implementionBody += methodDeclaration.getBody().toStringWithoutComments()+"\n";
-			}
+			methodOrConstructorDocument.implementionBody = methodDeclaration.getBody().toStringWithoutComments();
+			myMethodOrConstructorDocuments.add(methodOrConstructorDocument);
 		}
 	}
 	private class ConstructorVisitor extends VoidVisitorAdapter{
 		@Override
 		public void visit(ConstructorDeclaration constructorDeclaration, Object arg1) {
-			document.docTitles.add(constructorDeclaration.getName());
 			Comment methodComment = constructorDeclaration.getComment();
+			Position startPosition = new Position(constructorDeclaration.getBeginLine(), constructorDeclaration.getBeginColumn());
+			Position endPosition = new Position(constructorDeclaration.getEndLine(), constructorDeclaration.getEndLine());
+			MethodOrConstructorDocument methodOrConstructorDocument = new MethodOrConstructorDocument();
+			methodOrConstructorDocument.docInJavaFile = fileName;
+			methodOrConstructorDocument.docName = constructorDeclaration.getName();
+			methodOrConstructorDocument.setStartPosition(new com.geet.concept_location.corpus_creation.Position(startPosition));
+			methodOrConstructorDocument.setEndPosition(new com.geet.concept_location.corpus_creation.Position(endPosition));			
 			if (methodComment != null && methodComment instanceof JavadocComment) {
-				document.javaDocComments.add((JavadocComment) methodComment);
+				methodOrConstructorDocument.javaDocComments.add((JavadocComment) methodComment);
 			}else if ((methodComment != null )&& (methodComment instanceof JavadocComment == false)) {
-				document.implementationComments.add(methodComment);
+				methodOrConstructorDocument.implementationComments.add(methodComment);
 			}
 			for (Comment containedComment : constructorDeclaration.getAllContainedComments()) {
 				if (containedComment instanceof JavadocComment) {
-					document.javaDocComments.add((JavadocComment) containedComment);
+					methodOrConstructorDocument.javaDocComments.add((JavadocComment) containedComment);
 				}else {
-					document.implementationComments.add(containedComment);
+					methodOrConstructorDocument.implementationComments.add(containedComment);
 				}
 			}
-			if (constructorDeclaration.getBlock() != null) {
-				document.implementionBody += constructorDeclaration.getBlock().toStringWithoutComments()+"\n";
-			}
+			methodOrConstructorDocument.implementionBody = constructorDeclaration.getBlock().toStringWithoutComments();
+			myMethodOrConstructorDocuments.add(methodOrConstructorDocument);
 		}
 	}
 	private class ClassOrInterfaceVisitor extends VoidVisitorAdapter{
 		@Override
 		public void visit(ClassOrInterfaceDeclaration classOrInterfaceDeclaration, Object arg1) {
-			document.docTitles.add(classOrInterfaceDeclaration.getName());
 			Comment classComment = classOrInterfaceDeclaration.getComment();
+			Position startPosition = new Position(classOrInterfaceDeclaration.getBeginLine(), classOrInterfaceDeclaration.getBeginColumn());
+			Position endPosition = new Position(classOrInterfaceDeclaration.getEndLine(), classOrInterfaceDeclaration.getEndLine());
+			ClassDocument classDocument = new ClassDocument();
+			classDocument.docInJavaFile = fileName;
+			classDocument.docName = classOrInterfaceDeclaration.getName();
+			classDocument.setStartPosition(new com.geet.concept_location.corpus_creation.Position(startPosition));
+			classDocument.setEndPosition(new com.geet.concept_location.corpus_creation.Position(endPosition));			
 			if (classComment != null && classComment instanceof JavadocComment) {
-				document.javaDocComments.add((JavadocComment) classComment);
+				classDocument.javaDocComments.add((JavadocComment) classComment);
 			}else if ((classComment != null )&& (classComment instanceof JavadocComment == false)) {
-				document.implementationComments.add(classComment);
+				classDocument.implementationComments.add(classComment);
 			}
+			myClassDocuments.add(classDocument);
 		}
 	}
-	private  class EnumVisitor extends VoidVisitorAdapter{
-		@Override
-		public void visit(EnumDeclaration enumDeclaration, Object arg1) {
-				Comment classComment = enumDeclaration.getComment();
-				if (classComment != null && classComment instanceof JavadocComment) {
-					document.javaDocComments.add((JavadocComment) classComment);
-				}else if ((classComment != null )&& (classComment instanceof JavadocComment == false)) {
-					document.implementationComments.add(classComment);
-				}
-				document.implementionBody += enumDeclaration.toStringWithoutComments()+"\n";
-			}			
+	private static class FieldVisitor extends VoidVisitorAdapter{
+		ClassDocument classDocument;
+		public FieldVisitor(ClassDocument classDocument) {
+			// TODO Auto-generated constructor stub
+			this.classDocument = classDocument;
 		}
-	private  class FieldVisitor extends VoidVisitorAdapter{
 		@Override
 		public void visit(FieldDeclaration fieldDeclaration, Object arg1) {
 			// if the field declaration belongs to that class, then it is added to this class
 			// belonging to a class is determined by the position of class and field declaration 
-			Comment classComment = fieldDeclaration.getComment();
-			if (classComment != null && classComment instanceof JavadocComment) {
-				document.javaDocComments
-						.add((JavadocComment) classComment);
-			} else if ((classComment != null)
-					&& (classComment instanceof JavadocComment == false)) {
-				document.implementationComments.add(classComment);
-			}
-			document.implementionBody += fieldDeclaration
-					.toStringWithoutComments() + "\n";
+			Position startPosition = new Position(fieldDeclaration.getBeginLine(), fieldDeclaration.getBeginColumn());
+			Position endPosition = new Position(fieldDeclaration.getEndLine(), fieldDeclaration.getEndColumn());
+			if (isParamOneBelongsToParamTwo( new Range(startPosition, endPosition), classDocument.getRange())) {
+				Comment classComment = fieldDeclaration.getComment();
+				if (classComment != null && classComment instanceof JavadocComment) {
+					classDocument.javaDocComments.add((JavadocComment) classComment);
+				}else if ((classComment != null )&& (classComment instanceof JavadocComment == false)) {
+					classDocument.implementationComments.add(classComment);
+				}
+				classDocument.implementionBody += fieldDeclaration.toStringWithoutComments()+"\n";
+			}			
 		}
 	}
+	
+	private  class EnumVisitor extends VoidVisitorAdapter{
+		@Override
+		public void visit(EnumDeclaration enumDeclaration, Object arg1) {
+				Comment classComment = enumDeclaration.getComment();
+				Position startPosition = new Position(enumDeclaration.getBeginLine(), enumDeclaration.getBeginColumn());
+				Position endPosition = new Position(enumDeclaration.getEndLine(), enumDeclaration.getEndLine());
+				EnumDocument enumDocument = new EnumDocument();
+				enumDocument.docInJavaFile = fileName;
+				enumDocument.docName = enumDeclaration.getName();
+				enumDocument.setStartPosition(new com.geet.concept_location.corpus_creation.Position(startPosition));
+				enumDocument.setEndPosition(new com.geet.concept_location.corpus_creation.Position(endPosition));			
+				if (classComment != null && classComment instanceof JavadocComment) {
+					enumDocument.javaDocComments.add((JavadocComment) classComment);
+				}else if ((classComment != null )&& (classComment instanceof JavadocComment == false)) {
+					enumDocument.implementationComments.add(classComment);
+				}
+				enumDocument.implementionBody = enumDeclaration.toStringWithoutComments()+"\n";
+				myEnumDocuments.add(enumDocument);
+			}			
+		}
+	private static boolean isParamOneBelongsToParamTwo(Range paramOne, Range paramTwo){
+		if (isPositionBelongsToANode(new Position(paramOne.getBeginLine(), paramOne.getBeginColumn()), paramTwo) && isPositionBelongsToANode(new Position(paramOne.getEndLine(), paramOne.getEndColumn()), paramTwo)) {
+			return true;
+		}
+		return false;
+	}
+	private static boolean isPositionBelongsToANode(Position position, Range node){
+		if (position.getLine() == node.getBeginLine() && position.getColumn() > node.getBeginColumn() ) {
+			return true;
+		} 
+		else if(position.getLine() > node.getBeginLine()  && position.getLine() < node.getEndLine()){
+			return true;
+		}
+		else if(position.getLine() == node.getEndLine() && position.getColumn() < node.getEndColumn()){
+			return true;
+		}
+		return false;
+	}
 	public static void main(String[] args) {
-			String path ="D:\\org\\eclipse\\swt\\internal\\image\\WinBMPFileFormat.java";
-			if(new JavaClassPreprocessor().processJavaFile(new File(path))){
-				DocumentExtractor documentExtractor = new DocumentExtractor(
-						new File(path));
-				System.out.println(documentExtractor.getExtractedDocument().getArticle());				
-			}
+			String path ="src/com/geet/concept_location/corpus_creation/Document.java";
+			DocumentExtractor documentExtractor = new DocumentExtractor(
+					new File(path));
+			System.out.println(path+" has "+documentExtractor.getAllDocuments().size()+" document(s)");
 	}
 }

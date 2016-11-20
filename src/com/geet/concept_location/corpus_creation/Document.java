@@ -8,20 +8,35 @@ import com.geet.concept_location.utils.StringUtils;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
 public class Document  extends SimpleDocument {
-	public List<String> docTitles = new ArrayList<String>();
+	public String docName = "";
 	public List<JavadocComment> javaDocComments = new ArrayList<JavadocComment>();
 	protected List<Comment> implementationComments = new ArrayList<Comment>();
 	protected String implementionBody = "";
+	protected Position startPosition, endPosition; 
+	public Position getStartPosition() {
+		return startPosition;
+	}
+	public void setStartPosition(Position startPosition) {
+		this.startPosition = startPosition;
+	}
+	public Position getEndPosition() {
+		return endPosition;
+	}
+	public void setEndPosition(Position endPosition) {
+		this.endPosition = endPosition;
+	}
 	public Document() {}
-	public Document(String docInJavaFile, List<String> docTitles,
+	public Document(String docInJavaFile, String docName,
 			List<JavadocComment> javaDocComments,
-			List<Comment> implementationComments, String implementionBody) {
+			List<Comment> implementationComments, String implementionBody, Position startPosition, Position endPosition) {
 		super();
 		this.docInJavaFile = docInJavaFile;
-		this.docTitles = docTitles;
+		this.docName = docName;
 		this.javaDocComments = javaDocComments;
 		this.implementationComments = implementationComments;
 		this.implementionBody = implementionBody;
+		this.startPosition = startPosition;
+		this.endPosition = endPosition;
 	}
 	public String getDocInJavaFile() {
 		return docInJavaFile;
@@ -29,11 +44,11 @@ public class Document  extends SimpleDocument {
 	public void setDocInJavaFile(String docInJavaFile) {
 		this.docInJavaFile = docInJavaFile;
 	}
-	public List<String> getDocTitles() {
-		return docTitles;
+	public String getDocName() {
+		return docName;
 	}
-	public void setDocTitles(List<String> docTitles) {
-		this.docTitles = docTitles;
+	public void setDocName(String docName) {
+		this.docName = docName;
 	}
 	public List<JavadocComment> getJavaDocComments() {
 		return javaDocComments;
@@ -60,7 +75,7 @@ public class Document  extends SimpleDocument {
 	public String getArticle() {
 		article = "";
 		article += " "+ getArticleFromName();
-		article += " "+ getArticleFromTitles();
+		article += " "+ getArticleFromDocName();
 		article += " "+ getArticleFromComment();
 		article += " "+ getArticleFromJavaDocComments();
 		article += " "+ getArticleFromImplementation();
@@ -98,12 +113,10 @@ public class Document  extends SimpleDocument {
 		}
 		return terms;
 	}
-	private String getArticleFromTitles(){
+	private String getArticleFromDocName(){
 		String subArticle = "";
 		// titles extraction
-		for (String title : getDocTitles()) {
-			subArticle+=" "+(StringUtils.getIdentifierSeparationsWithCamelCase(title));
-		}
+		subArticle+=" "+(StringUtils.getIdentifierSeparationsWithCamelCase(docName));
 		return subArticle;
 	}
 	private String getArticleFromJavaDocComments(){
@@ -160,5 +173,21 @@ public class Document  extends SimpleDocument {
 			}
 		}
 		return subArticle;
+	}
+
+	public boolean isBetweenPosition(Position position){
+		if (position.getLine() == startPosition.getLine() && position.getColumn() > startPosition.getColumn() ) {
+			return true;
+		} 
+		else if(position.getLine() > startPosition.getLine() && position.getLine() < endPosition.getLine()){
+			return true;
+		}
+		else if(position.getLine() == endPosition.getLine() && position.getColumn() < endPosition.getColumn()){
+			return true;
+		}
+		return false;
+	}
+	public Range getRange(){
+		return new Range(startPosition.toParserPosition(), endPosition.toParserPosition());
 	}
 }

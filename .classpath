@@ -13,6 +13,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/aliasi-lingpipe-4.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/javaparser-core-2.0.0.jar"/>
-	<classpathentry kind="lib" path="/media/Files/IITDU/8thSemester/Project/Final/concept_locator/lib/rsyntaxtextarea.jar"/>
+	<classpathentry kind="lib" path="D:/BSSE0501/Project-801/concept_locator/lib/rsyntaxtextarea-2.5.8.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
