@@ -1,4 +1,4 @@
-package com.geet.concept_location.searching;
+/*package com.geet.concept_location.searching;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -44,7 +44,7 @@ public class Run {
 		// Make a tree list with all the nodes, and make it a JTree
 		tree = new JTree(addNodes(null, dir));
 	}
-	/** Add nodes from under "dir" into curTop. Highly recursive. */
+	*//** Add nodes from under "dir" into curTop. Highly recursive. *//*
 	DefaultMutableTreeNode addNodes(DefaultMutableTreeNode curTop, File dir) {
 		String curPath = dir.getPath();
 		DefaultMutableTreeNode curDir = new DefaultMutableTreeNode(curPath);
@@ -185,9 +185,9 @@ public class Run {
 		
 	}
 	
-	/**
+	*//**
 	 * validate term weight
-	 */
+	 *//*
 	private static double validateTermWeight(double termWeight){
 		if (termWeight < 0) {
 			return 0;
@@ -219,14 +219,14 @@ public class Run {
 			System.out.println("------------------------------------------------------------------------");
 			System.out.println(document.getArticle());
 		}
-		System.exit(0);
+//		System.exit(0);
 		VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(allDocuments);
 		System.out.println("Initializing.............");
 		storeVectorSpaceMatrix(vectorSpaceModel.getVectorSpaceMatrix());
 	}
-	/*
+	
 	 * @deprecated
-	 */
+	 
 	public void readFeatures() throws Exception{
 		File inputFile = new File("features.xml");
         DocumentBuilderFactory dbFactory 
@@ -413,4 +413,4 @@ public class Run {
 		objectInputStream.close();
 		return vectorSpaceMatrix;
 	}
-}
+}*/

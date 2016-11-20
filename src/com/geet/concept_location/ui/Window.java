@@ -10,27 +10,38 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
+
+import com.geet.concept_location.constants.UIConstants;
+import com.geet.concept_location.corpus_creation.Document;
+import com.geet.concept_location.corpus_creation.DocumentExtractor;
 import com.geet.concept_location.corpus_creation.SimpleDocument;
 import com.geet.concept_location.indexing_vsm.Query;
 import com.geet.concept_location.indexing_vsm.VectorSpaceMatrix;
 import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
+import com.geet.concept_location.io.JavaFileReader;
+import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
 
 public class Window {
-	
+	public String projectPath="D:\\BSSE0501\\Project-801\\UltimateCalculator-master";
+	public List<String> javaFilePaths =new ArrayList<String>();
 	ExplorerPage explorerPage;
 	SearchPage searchPage;
 	private JFrame frame = null,
@@ -58,8 +69,7 @@ public class Window {
 	}
 	public JFrame getFrame() {
 		return frame;
-	}
-	
+	}	
 	public void setAboutFrame(JFrame f) {
 		aboutFrame = f;
 	}
@@ -69,8 +79,6 @@ public class Window {
 	public void setSearchFrame(JFrame f) {
 		searchFrame = f;
 	}
-	
-	
 	private void createControls() {
 		frame.setSize(width, height);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -91,39 +99,9 @@ public class Window {
 		frame.add(panel);
 		frame.setVisible(true);
 	}
-	
 	private void setSearchPage() {
 		searchPage = new SearchPage("Search Home");
 		searchPage.searchUI.doLayout();
-		searchPage.searchUI.getSearchButton().addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				SimpleDocument queryDocument = new SimpleDocument("Query",searchPage.searchUI.getSearchTextField().getText());
-				VectorSpaceModel vectorSpaceModel;
-				try {
-					vectorSpaceModel = new VectorSpaceModel(loadVectorSpaceMatrix());
-					Query query = vectorSpaceModel.getQuery(queryDocument);
-					documents = vectorSpaceModel.searchWithQueryVector(query);
-					Collections.sort(documents);
-					Collections.reverse(documents);
-					searchPage.searchUI.updateList(documents);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
-		
-		searchPage.searchUI.openButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// java file
-				openJavaFile("");
-			}
-		});
-		
-		
 		AppManager.addDocument(searchPage);
 		tabs.addTab(searchPage.getFilename(), searchPage.searchUI);
 		int index = tabs.getTabCount()-1;
@@ -140,10 +118,39 @@ public class Window {
 		gbc.weightx = 0;
 		gbc.ipadx = 5;
 		tabs.setTabComponentAt(index, pnlTab);	
+		
+		searchPage.searchUI.getSearchButton().addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SimpleDocument queryDocument = new SimpleDocument("Query",searchPage.searchUI.getSearchTextField().getText());
+				VectorSpaceModel vectorSpaceModel;
+				try {
+					vectorSpaceModel = new VectorSpaceModel(loadVectorSpaceMatrix());
+					for (String string : vectorSpaceModel.terms) {
+						System.out.println(string);
+					}
+					Query query = vectorSpaceModel.getQuery(queryDocument);
+					documents = vectorSpaceModel.searchWithQueryVector(query);
+					Collections.sort(documents);
+					Collections.reverse(documents);
+					searchPage.searchUI.updateList(documents);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		searchPage.searchUI.openButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// java file
+				openJavaFile("temp.java");
+			}
+		});
 	}
 	private void setProjectExplorerPage() {
 		explorerPage = new ExplorerPage("Project Explorer");
-		explorerPage.projectExplorerViewPanel = new ProjectExplorerViewPanel(new Bound(0, 0,1300 - 100, 800 - 50),new File( "."));
+		explorerPage.projectExplorerViewPanel = new ProjectExplorerViewPanel(new Bound(0, 0,1300 - 100, 800 - 50),new File( projectPath));
 		AppManager.addDocument(explorerPage);
 		tabs.addTab(explorerPage.getFilename(), explorerPage.getProjectExplorerViewPanel());
 		int index = tabs.getTabCount()-1;
@@ -159,7 +166,9 @@ public class Window {
 		gbc.gridx++;
 		gbc.weightx = 0;
 		gbc.ipadx = 5;
-		tabs.setTabComponentAt(index, pnlTab);	
+		tabs.setTabComponentAt(index, pnlTab);
+		javaFilePaths = explorerPage.projectExplorerViewPanel.projectTreePanel.javaFilePaths;
+		createVectorSpaceMatrix();
 	}
 	public Window(int w, int h) throws Exception {
 		width = w;
@@ -168,17 +177,54 @@ public class Window {
 		createControls();
 	}
 	
-	private void setProjectExplorerViewPanel() {
-		/*projectExplorerViewPanel = new ProjectExplorerViewPanel(new Bound(0, 0,
-				1300 - 100, 800 - 50), new File(projectPath));
-		projectExplorerViewPanel.setBounds(UIConstants.PADDING_LEFT,
-				UIConstants.Menu_Height + UIConstants.PADDING_TOP, 1300, 800);
-		projectExplorerViewPanel.setVisible(true);
-		add(projectExplorerViewPanel);
-		projectExplorerViewPanel.revalidate();
-		initIndexing(projectExplorerViewPanel.getProjectTreePanel().javaFilePaths);*/
-	}
 	
+	// indexing...
+	private void createVectorSpaceMatrix(){
+			List<SimpleDocument> allDocuments = new ArrayList<SimpleDocument>();
+			int classNo = 0;
+			for (String path : javaFilePaths) {
+				if (new JavaClassPreprocessor().processJavaFile(new File(path))) {
+					System.out.println(classNo);
+					System.out.println(path);
+					allDocuments.addAll(new DocumentExtractor(new File(path)).getAllDocuments());
+				}
+				if (classNo >= 0) {
+				//	break;
+				}
+				classNo++;
+			}
+			System.out.println("Size "+allDocuments.size());
+			for (SimpleDocument simpleDocument : allDocuments) {
+				System.out.println("------------------------------------------------------------------------");
+				Document document = (Document)simpleDocument;
+				System.out.println(document.docInJavaFile+","+document.docName);
+				System.out.println(document.getStartPosition().line+" , "+document.getEndPosition().line);
+				System.out.println(new JavaFileReader().getText(document));
+				System.out.println("------------------------------------------------------------------------");
+				System.out.println(document.getArticle());
+			}
+			VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(allDocuments);
+			System.out.println("Initializing.............");
+			storeVectorSpaceMatrix(vectorSpaceModel.getVectorSpaceMatrix());
+	}
+
+	private void storeVectorSpaceMatrix(VectorSpaceMatrix vectorSpaceMatrix) {
+		for (int i = 0; i < vectorSpaceMatrix.simpleDocuments.size(); i++) {
+			System.out.println(vectorSpaceMatrix.simpleDocuments.get(i).getDocInJavaFile()+","+ vectorSpaceMatrix.simpleDocuments.get(i).getDocName());
+		}
+		
+		System.out.println("Vector Space Model is storing...");
+		System.exit(0);
+		try {
+			FileOutputStream file = new FileOutputStream("vectorspace.ser");
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream(file);
+			objectOutputStream.writeObject(vectorSpaceMatrix);
+			objectOutputStream.close();
+			System.out.println("Vector Space Model is stored");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	/*private void setAndViewSearchBoxPanel() {
 		searchBoxPanel = new SearchBoxPanelUI(UIConstants.Width,
@@ -214,14 +260,14 @@ public class Window {
 		ObjectInputStream objectInputStream = new ObjectInputStream(file);
 		try {
 			vectorSpaceMatrix = (VectorSpaceMatrix) objectInputStream.readObject();
+			objectInputStream.close();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		objectInputStream.close();
+		
 		return vectorSpaceMatrix;
 	}
-	
-	public void openJavaFile(String fileName){
+	private void openJavaFile(String fileName){
 		File file = new File(fileName);
 		String val = "";
 		try {

@@ -33,14 +33,11 @@ public class VectorSpaceModel implements Serializable{
 		TERM_DOCUMENT_MATRIX = new double[totalTerm][totalDocs];
 		df = new double [totalTerm];
 		System.out.println("Terms "+totalTerm+" Documents "+totalDocs);
-		System.exit(0);
-		//writeTermsIntoFile();
-		//System.exit(0);
 		setTERM_DOCUMENT_MATRIX(terms, documents);
 	}
 	public VectorSpaceModel(VectorSpaceMatrix vectorSpaceMatrix){
-		for (int i = 0; i < vectorSpaceMatrix.documents.size(); i++) {
-			documents.add(new SimpleDocument(vectorSpaceMatrix.documents.get(i), ""));
+		for (int i = 0; i < vectorSpaceMatrix.simpleDocuments.size(); i++) {
+			documents.add(new SimpleDocument(vectorSpaceMatrix.simpleDocuments.get(i).docInJavaFile,vectorSpaceMatrix.simpleDocuments.get(i).docName,vectorSpaceMatrix.simpleDocuments.get(i).getStartPosition(),vectorSpaceMatrix.simpleDocuments.get(i).getEndPosition(),vectorSpaceMatrix.simpleDocuments.get(i).score));
 		}
 		terms = vectorSpaceMatrix.terms;
 		TERM_DOCUMENT_MATRIX = vectorSpaceMatrix.TERM_DOCUMENT_MATRIX;
@@ -48,12 +45,11 @@ public class VectorSpaceModel implements Serializable{
 	}
 
 	public VectorSpaceMatrix getVectorSpaceMatrix(){
-		List<String> documents = new ArrayList<String>();
-		for (int i = 0; i < this.documents.size(); i++) {
-			System.out.println();
-			documents.add(this.documents.get(i).docInJavaFile);
+		List<SimpleDocument> simpleDocuments = new ArrayList<SimpleDocument>();
+		for (int i = 0; i < documents.size(); i++) {
+			simpleDocuments.add(new SimpleDocument(documents.get(i).docInJavaFile, documents.get(i).docName, documents.get(i).startPosition, documents.get(i).endPosition, 0.0));
 		}
-		return new VectorSpaceMatrix(documents,terms,TERM_DOCUMENT_MATRIX, df);
+		return new VectorSpaceMatrix(simpleDocuments,terms,TERM_DOCUMENT_MATRIX, df);
 	}
 	
 	public void writeTermsIntoFile(){

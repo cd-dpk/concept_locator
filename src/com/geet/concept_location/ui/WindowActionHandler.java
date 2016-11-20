@@ -110,52 +110,17 @@ public class WindowActionHandler implements ActionListener {
 				win.getFrame().repaint();
 */			}
 		} else if (e.getSource().equals(win.getMenu().fileNewItem)) {
-			ClassPage classPage = new ClassPage("New");
-			classPage.setEditor(new RSyntaxTextArea());
-		    classPage.getEditor().setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
-		    classPage.getEditor().setCodeFoldingEnabled(true);
-		    classPage.getEditor().setAntiAliasingEnabled(true);
-			//RTextScrollPane sp = new RTextScrollPane(d.getEditor());
-			classPage.setScroll(new RTextScrollPane(classPage.getEditor()));
-			classPage.getScroll().setFoldIndicatorEnabled(true);
-			JPanel t = classPage.getTabPanel();
-			t.add(classPage.getScroll(), BorderLayout.CENTER);
-			t.doLayout();
-			classPage.setType(SyntaxConstants.SYNTAX_STYLE_JAVA);
-			AppManager.addDocument(classPage);
-			ImageIcon icon = new ImageIcon("src/res/close.png");
-			win.getTabs().addTab(classPage.getFilename(), t);
-			int index = win.getTabs().getTabCount()-1;
-			JPanel pnlTab = new JPanel(new GridBagLayout()), iconPanel = new JPanel(new GridLayout(1, 1, 4, 4));
-			//iconPanel.setPreferredSize(new Dimension(12, 12));
-			pnlTab.setOpaque(false);
-			JLabel lblTitle = new JLabel(classPage.getFilename());
-			JButton btnClose = new JButton(new ImageIcon(icon.getImage().getScaledInstance(12, 12, 4)));
-			btnClose.setActionCommand("TabClose");
-			btnClose.setOpaque(false);
-			btnClose.setBorderPainted(false);
-			btnClose.setContentAreaFilled(false);
-			btnClose.setFocusPainted(false);
-			//btnClose.setSize(10, 10);
-			btnClose.setPreferredSize(new Dimension(11, 15));
-
-			GridBagConstraints gbc = new GridBagConstraints();
-			gbc.gridx = 0;
-			gbc.gridy = 0;
-			gbc.weightx = 1;
-			gbc.ipadx = 5;
-
-			pnlTab.add(lblTitle, gbc);
-
-			gbc.gridx++;
-			gbc.weightx = 0;
-			gbc.ipadx = 5;
-			iconPanel.add(btnClose);
-			pnlTab.add(btnClose, gbc);
-
-			win.getTabs().setTabComponentAt(index, pnlTab);
-
-			btnClose.addActionListener(this);
+			// new project indexing...
+			final JFileChooser fc = new JFileChooser();
+			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			int ret = fc.showOpenDialog(win.getFrame());
+			if(ret == JFileChooser.APPROVE_OPTION) {
+				File file = fc.getSelectedFile();
+				win.projectPath = file.getAbsolutePath();
+				
+				
+			}
+			
 		} else if (e.getSource().equals(win.getMenu().fileCloseItem)) {
 			AppManager.getDocuments().remove(win.getTabs().getSelectedIndex());
 			win.getTabs().remove(win.getTabs().getSelectedIndex());

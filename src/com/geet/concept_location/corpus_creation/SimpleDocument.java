@@ -6,9 +6,47 @@ import java.util.StringTokenizer;
 
 import com.geet.concept_location.indexing_vsm.Term;
 import com.geet.concept_location.utils.StringUtils;
+
 public class SimpleDocument implements Comparable<SimpleDocument>, Serializable{
 	protected String article= "";
 	public String docInJavaFile;
+	public String docName = "";
+	public double score = 0.0;
+	public Position startPosition;
+	public Position endPosition;
+	
+	
+	public Position getStartPosition() {
+		return startPosition;
+	}
+	public void setStartPosition(Position startPosition) {
+		this.startPosition = startPosition;
+	}
+	public Position getEndPosition() {
+		return endPosition;
+	}
+	public void setEndPosition(Position endPosition) {
+		this.endPosition = endPosition;
+	}
+	
+	public String getDocName() {
+		return docName;
+	}
+
+	public SimpleDocument( String docInJavaFile, String docName,
+			Position startPosition, Position endPosition, double score) {
+		super();
+		this.docInJavaFile = docInJavaFile;
+		this.docName = docName;
+		this.startPosition = startPosition;
+		this.endPosition = endPosition;
+		this.score = score;
+	}
+	public void setDocName(String docName) {
+		this.docName = docName;
+	}
+
+
 	public String getDocInJavaFile() {
 		return docInJavaFile;
 	}
@@ -17,9 +55,10 @@ public class SimpleDocument implements Comparable<SimpleDocument>, Serializable{
 	public void setDocInJavaFile(String docInJavaFile) {
 		this.docInJavaFile = docInJavaFile;
 	}
-	public double score = 0.0;
+	
 	public SimpleDocument(){
 	}
+	
 	
 	
 	public SimpleDocument( String docInJavaFile, String article) {

@@ -9,23 +9,9 @@ import com.geet.concept_location.utils.StringUtils;
 import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
 public class Document  extends SimpleDocument {
-	public String docName = "";
 	public List<JavadocComment> javaDocComments = new ArrayList<JavadocComment>();
 	protected List<Comment> implementationComments = new ArrayList<Comment>();
 	protected String implementionBody = "";
-	protected Position startPosition, endPosition; 
-	public Position getStartPosition() {
-		return startPosition;
-	}
-	public void setStartPosition(Position startPosition) {
-		this.startPosition = startPosition;
-	}
-	public Position getEndPosition() {
-		return endPosition;
-	}
-	public void setEndPosition(Position endPosition) {
-		this.endPosition = endPosition;
-	}
 	public Document() {}
 	public Document(String docInJavaFile, String docName,
 			List<JavadocComment> javaDocComments,

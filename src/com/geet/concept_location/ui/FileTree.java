@@ -2,14 +2,26 @@ package com.geet.concept_location.ui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
+
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+
+import com.geet.concept_location.corpus_creation.Document;
+import com.geet.concept_location.corpus_creation.DocumentExtractor;
+import com.geet.concept_location.corpus_creation.SimpleDocument;
+import com.geet.concept_location.indexing_vsm.VectorSpaceMatrix;
+import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
+import com.geet.concept_location.io.JavaFileReader;
+import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
 import com.geet.concept_location.utils.JavaFileFilter;
 public class FileTree extends JPanel {
 	JTree tree;
@@ -78,4 +90,5 @@ public class FileTree extends JPanel {
 	  public Dimension getPreferredSize() {
 	    return new Dimension(200, 400);
 	  }
+
 }
