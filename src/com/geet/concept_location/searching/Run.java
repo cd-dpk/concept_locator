@@ -1,4 +1,4 @@
-/*package com.geet.concept_location.searching;
+package com.geet.concept_location.searching;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -11,20 +11,24 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
+
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.DocumentExtractor;
 import com.geet.concept_location.corpus_creation.SimpleDocument;
 import com.geet.concept_location.indexing_vsm.Query;
 import com.geet.concept_location.indexing_vsm.VectorSpaceMatrix;
 import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
+import com.geet.concept_location.io.JavaFileReader;
 import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
 import com.geet.concept_location.utils.JavaFileFilter;
 public class Run {
@@ -40,7 +44,7 @@ public class Run {
 		// Make a tree list with all the nodes, and make it a JTree
 		tree = new JTree(addNodes(null, dir));
 	}
-	*//** Add nodes from under "dir" into curTop. Highly recursive. *//*
+	/** Add nodes from under "dir" into curTop. Highly recursive. */
 	DefaultMutableTreeNode addNodes(DefaultMutableTreeNode curTop, File dir) {
 		String curPath = dir.getPath();
 		DefaultMutableTreeNode curDir = new DefaultMutableTreeNode(curPath);
@@ -82,9 +86,10 @@ public class Run {
 	public Run() {
 	}
 	public static void main(String[] args) throws Exception, SAXException, IOException {
-		//Run run = new Run(new File("/media/Video/SRC/ResultAnalysisTool"));
-		//run.createVectorSpaceMatrix();
-		Run run = new Run();
+		Run run = new Run(new File("D:\\BSSE0501\\Project-801\\UltimateCalculator-master"));
+		System.out.println(run.javaFilePaths.size());
+		run.createVectorSpaceMatrix();
+	//	Run run = new Run();
 		run.setRatio();
 //		VectorSpaceMatrix vectorSpaceMatrix = run.loadVectorSpaceMatrix();
 //		run.updateTheQueryOnRelevanceFeedback(vectorSpaceMatrix,10);
@@ -180,9 +185,9 @@ public class Run {
 		
 	}
 	
-	*//**
+	/**
 	 * validate term weight
-	 *//*
+	 */
 	private static double validateTermWeight(double termWeight){
 		if (termWeight < 0) {
 			return 0;
@@ -197,9 +202,7 @@ public class Run {
 			if (new JavaClassPreprocessor().processJavaFile(new File(path))) {
 				System.out.println(classNo);
 				System.out.println(path);
-				Document document = new DocumentExtractor(new File(path)).getExtractedDocument();
-				System.out.println(document.getArticle());
-				allDocuments.add(document);
+				allDocuments.addAll(new DocumentExtractor(new File(path)).getAllDocuments());
 			}
 			if (classNo >= 0) {
 			//	break;
@@ -207,13 +210,23 @@ public class Run {
 			classNo++;
 		}
 		System.out.println("Size "+allDocuments.size());
+		for (SimpleDocument simpleDocument : allDocuments) {
+			System.out.println("------------------------------------------------------------------------");
+			Document document = (Document)simpleDocument;
+			System.out.println(document.docInJavaFile+","+document.docName);
+			System.out.println(document.getStartPosition().line+" , "+document.getEndPosition().line);
+			System.out.println(new JavaFileReader().getText(document));
+			System.out.println("------------------------------------------------------------------------");
+			System.out.println(document.getArticle());
+		}
+		System.exit(0);
 		VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(allDocuments);
 		System.out.println("Initializing.............");
 		storeVectorSpaceMatrix(vectorSpaceModel.getVectorSpaceMatrix());
 	}
-	
+	/*
 	 * @deprecated
-	 
+	 */
 	public void readFeatures() throws Exception{
 		File inputFile = new File("features.xml");
         DocumentBuilderFactory dbFactory 
@@ -400,4 +413,4 @@ public class Run {
 		objectInputStream.close();
 		return vectorSpaceMatrix;
 	}
-}*/
+}

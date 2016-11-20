@@ -142,7 +142,6 @@ public class DocumentExtractor {
 			}			
 		}
 	}
-	
 	private  class EnumVisitor extends VoidVisitorAdapter{
 		@Override
 		public void visit(EnumDeclaration enumDeclaration, Object arg1) {
@@ -186,5 +185,6 @@ public class DocumentExtractor {
 			DocumentExtractor documentExtractor = new DocumentExtractor(
 					new File(path));
 			System.out.println(path+" has "+documentExtractor.getAllDocuments().size()+" document(s)");
-	}
+	}	
+	
 }

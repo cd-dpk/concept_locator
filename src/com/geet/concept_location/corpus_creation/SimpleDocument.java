@@ -9,6 +9,14 @@ import com.geet.concept_location.utils.StringUtils;
 public class SimpleDocument implements Comparable<SimpleDocument>, Serializable{
 	protected String article= "";
 	public String docInJavaFile;
+	public String getDocInJavaFile() {
+		return docInJavaFile;
+	}
+
+
+	public void setDocInJavaFile(String docInJavaFile) {
+		this.docInJavaFile = docInJavaFile;
+	}
 	public double score = 0.0;
 	public SimpleDocument(){
 	}

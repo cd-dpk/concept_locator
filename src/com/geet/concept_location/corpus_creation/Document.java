@@ -2,6 +2,7 @@ package com.geet.concept_location.corpus_creation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+
 import com.geet.concept_location.indexing_vsm.Term;
 import com.geet.concept_location.utils.CommentStringTokenizer;
 import com.geet.concept_location.utils.StringUtils;
@@ -39,7 +40,7 @@ public class Document  extends SimpleDocument {
 		this.endPosition = endPosition;
 	}
 	public String getDocInJavaFile() {
-		return docInJavaFile;
+		return docInJavaFile+","+docName;
 	}
 	public void setDocInJavaFile(String docInJavaFile) {
 		this.docInJavaFile = docInJavaFile;
@@ -74,7 +75,7 @@ public class Document  extends SimpleDocument {
 	@Override
 	public String getArticle() {
 		article = "";
-		article += " "+ getArticleFromName();
+	//	article += " "+ getArticleFromName();
 		article += " "+ getArticleFromDocName();
 		article += " "+ getArticleFromComment();
 		article += " "+ getArticleFromJavaDocComments();
@@ -190,4 +191,17 @@ public class Document  extends SimpleDocument {
 	public Range getRange(){
 		return new Range(startPosition.toParserPosition(), endPosition.toParserPosition());
 	}
+	
+	/**
+	 * @return true when the two document is same 
+	 */
+	public boolean isSameDocument(Document document){
+		boolean status = false;
+		if (docName.equals(document.docName) && docInJavaFile.equals(document.docInJavaFile) && startPosition.isEqual(document.getStartPosition()) && endPosition.isEqual(document.getEndPosition())) {
+			return true;
+		}
+		return status;
+	}
+
+	
 }

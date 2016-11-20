@@ -57,7 +57,7 @@ public class AppManager {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					AppManager.win = new Window(UIConstants.Width, UIConstants.Height);
+					AppManager.win = new Window(UIConstants.Width, UIConstants.Height);					
 				} catch(Exception e) {
 					e.printStackTrace();
 					System.out.println("Failed to create the main window; quitting...");
