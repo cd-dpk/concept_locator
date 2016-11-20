@@ -19,7 +19,7 @@ public class VectorSpaceModel implements Serializable{
 	public double [] df;
 	private int totalTerm=0;
 	private int totalDocs=0;
-	private double MINIMUM_SCORE = 0.2;
+	private double MINIMUM_SCORE = 0.0;
 	private double MAX = 2;
 	private double a = 1.0;
 	private double b = 2.0;
@@ -133,9 +133,9 @@ public class VectorSpaceModel implements Serializable{
 				}
 				documents.get(i).score = (dotProduct)/(Math.sqrt(scalarOne)*Math.sqrt(scalarTwo));
 		//		System.out.println(documents.get(i).score);
-		//		if (documents.get(i).score > MINIMUM_SCORE) {
+				if (documents.get(i).score > MINIMUM_SCORE) {
 					lsiDocuments.add(documents.get(i));
-		//		}
+				}
 		}
 		Collections.sort(lsiDocuments);
 		Collections.reverse(lsiDocuments);

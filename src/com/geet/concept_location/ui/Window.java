@@ -24,6 +24,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
@@ -33,16 +39,19 @@ import com.geet.concept_location.constants.UIConstants;
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.DocumentExtractor;
 import com.geet.concept_location.corpus_creation.SimpleDocument;
+import com.geet.concept_location.indexing_vsm.Feedback;
 import com.geet.concept_location.indexing_vsm.Query;
 import com.geet.concept_location.indexing_vsm.VectorSpaceMatrix;
 import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
 import com.geet.concept_location.io.JavaFileReader;
 import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
+import com.geet.concept_location.utils.StringUtils;
 
 public class Window {
-	public String projectPath="D:\\BSSE0501\\Project-801\\UltimateCalculator-master";
+	public String projectPath="/media/Random/UltimateCalculator-master";
 	public List<String> javaFilePaths =new ArrayList<String>();
 	ExplorerPage explorerPage;
+	int rel = 0, irrel = 0, round = 0;
 	SearchPage searchPage;
 	private JFrame frame = null,
 				   searchFrame = null,
@@ -51,7 +60,10 @@ public class Window {
 	private JPanel panel;
 	private JTabbedPane tabs;
 	private Menu menu;
-	List<SimpleDocument> documents = new ArrayList<SimpleDocument>();
+	Query query;
+	VectorSpaceModel vectorSpaceModel;
+	List<Feedback> feedbacks = new ArrayList<Feedback>();
+	List<SimpleDocument> returnDocuments = new ArrayList<SimpleDocument>();
 	public JFrame getSearchFrame() {
 		return searchFrame;
 	}
@@ -79,17 +91,21 @@ public class Window {
 	public void setSearchFrame(JFrame f) {
 		searchFrame = f;
 	}
-	private void createControls() {
+	private void createControls() throws IOException {
 		frame.setSize(width, height);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setIconImage(Toolkit.getDefaultToolkit().getImage("src/res/icon.png"));
 		panel = new JPanel(new java.awt.BorderLayout()); 
 		
 		tabs = new JTabbedPane();
-		
-		// Project Explorer
+		/// Project Explorer
 		setProjectExplorerPage();
-		
+		/*VectorSpaceMatrix vectorSpaceMatrix = loadVectorSpaceMatrix();
+		for (SimpleDocument simpleDocument : vectorSpaceMatrix.simpleDocuments) {
+			System.out.println(simpleDocument.docInJavaFile+","+simpleDocument.docName);
+		}	
+		System.exit(0);
+		*/
 		// SearchPage added
 		setSearchPage();
 		
@@ -123,28 +139,107 @@ public class Window {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				SimpleDocument queryDocument = new SimpleDocument("Query",searchPage.searchUI.getSearchTextField().getText());
-				VectorSpaceModel vectorSpaceModel;
 				try {
 					vectorSpaceModel = new VectorSpaceModel(loadVectorSpaceMatrix());
-					for (String string : vectorSpaceModel.terms) {
-						System.out.println(string);
+					query = vectorSpaceModel.getQuery(queryDocument);
+					returnDocuments = vectorSpaceModel.searchWithQueryVector(query);
+					round=1;
+					searchPage.searchUI.relevanceFeedback.roundLabel.setText(round+"");
+					feedbacks = new ArrayList<Feedback>();
+					for (int i = 0; i < returnDocuments.size(); i++) {
+						feedbacks.add(Feedback.NORMAL);
 					}
-					Query query = vectorSpaceModel.getQuery(queryDocument);
-					documents = vectorSpaceModel.searchWithQueryVector(query);
-					Collections.sort(documents);
-					Collections.reverse(documents);
-					searchPage.searchUI.updateList(documents);
+					updateNoOfRelDocs();
+					searchPage.searchUI.relevanceFeedback.relLabel.setText(rel+"");
+					searchPage.searchUI.relevanceFeedback.irrelLabel.setText(irrel+"");
+					searchPage.searchUI.updateList(returnDocuments);
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+			}
+		});
+		searchPage.searchUI.searchResultList.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				int index = searchPage.searchUI.searchResultList.getSelectedIndex();
+				if (index !=-1) {
+					if (feedbacks.get(index).equals(Feedback.NORMAL)) {
+						searchPage.searchUI.relevanceFeedback.normalButton
+								.setSelected(true);
+					} else if (feedbacks.get(index).equals(
+							Feedback.REL)) {
+						searchPage.searchUI.relevanceFeedback.relButton
+								.setSelected(true);
+					} else if (feedbacks.get(index).equals(Feedback.IRRL)) {
+						searchPage.searchUI.relevanceFeedback.irrelButton.setSelected(true);
+					}
+				}	
+			}
+		});
+		searchPage.searchUI.relevanceFeedback.relButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int index = searchPage.searchUI.searchResultList.getSelectedIndex();
+				if (index !=-1) {
+					feedbacks.set(index,Feedback.REL);
+					System.out.println(feedbacks.size());
+//					System.out.println(feedbacks.get(index).toString());
+					updateNoOfRelDocs();
+					searchPage.searchUI.relevanceFeedback.relLabel.setText(rel+"");
+					searchPage.searchUI.relevanceFeedback.irrelLabel.setText(irrel+"");
+				}
+			}
+		});
+		searchPage.searchUI.relevanceFeedback.irrelButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int index = searchPage.searchUI.searchResultList.getSelectedIndex();
+				if (index !=-1) {
+					feedbacks.set(index,Feedback.IRRL);
+					updateNoOfRelDocs();
+					searchPage.searchUI.relevanceFeedback.relLabel.setText(rel+"");
+					searchPage.searchUI.relevanceFeedback.irrelLabel.setText(irrel+"");
+				}
+			}
+		});
+		searchPage.searchUI.relevanceFeedback.normalButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int index = searchPage.searchUI.searchResultList.getSelectedIndex();
+				if (index !=-1) {
+					feedbacks.set(index,Feedback.NORMAL);
+					updateNoOfRelDocs();
+					searchPage.searchUI.relevanceFeedback.relLabel.setText(rel+"");
+					searchPage.searchUI.relevanceFeedback.irrelLabel.setText(irrel+"");
+				}
+			}
+		});
+		searchPage.searchUI.relevanceFeedback.relevanceFeedback.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				updateTheQueryOnRelevanceFeedback(vectorSpaceModel.getVectorSpaceMatrix());
+				returnDocuments = vectorSpaceModel.searchWithQueryVector(query);
+				feedbacks = new ArrayList<Feedback>();
+				round++;
+				searchPage.searchUI.relevanceFeedback.roundLabel.setText(round+"");
+				for (int i = 0; i < returnDocuments.size(); i++) {
+					feedbacks.add(Feedback.NORMAL);
+				}
+				System.out.println(returnDocuments.size()+","+feedbacks.size());
+				updateNoOfRelDocs();
+				searchPage.searchUI.relevanceFeedback.relLabel.setText(rel+"");
+				searchPage.searchUI.relevanceFeedback.irrelLabel.setText(irrel+"");
+				searchPage.searchUI.updateList(returnDocuments);
 			}
 		});
 		searchPage.searchUI.openButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// java file
-				openJavaFile("temp.java");
+				int index = searchPage.searchUI.searchResultList.getSelectedIndex();
+				if (index != -1) {
+					openJavaFile(returnDocuments.get(index).getDocInJavaFile());
+				}
 			}
 		});
 	}
@@ -168,7 +263,29 @@ public class Window {
 		gbc.ipadx = 5;
 		tabs.setTabComponentAt(index, pnlTab);
 		javaFilePaths = explorerPage.projectExplorerViewPanel.projectTreePanel.javaFilePaths;
-		createVectorSpaceMatrix();
+		explorerPage.projectExplorerViewPanel.projectTreePanel.tree.addTreeSelectionListener(new TreeSelectionListener() {
+			@Override
+			public void valueChanged(TreeSelectionEvent e) {
+				// TODO Auto-generated method stub
+				JavaFileReader javaFileReader = new JavaFileReader();
+				System.out.println(e.getPath().toString());
+				String filePath = StringUtils.getFilePathNameNew(e
+						.getPath().toString());
+				System.out.println("File Path:"+filePath);
+				File selectedFile = new File(filePath);
+				if (!selectedFile.isDirectory()) {
+					if (javaFileReader.openFile(selectedFile)) {
+						explorerPage.projectExplorerViewPanel.sourceViewPanel.getSourceTextArea().setText(
+								javaFileReader.getText());
+						explorerPage.projectExplorerViewPanel.sourceViewPanel.getFileName().setText(
+								selectedFile.getName());
+						
+					}
+				}
+			}
+		});
+//		createVectorSpaceMatrix();
+//		System.exit(0);
 	}
 	public Window(int w, int h) throws Exception {
 		width = w;
@@ -209,12 +326,7 @@ public class Window {
 	}
 
 	private void storeVectorSpaceMatrix(VectorSpaceMatrix vectorSpaceMatrix) {
-		for (int i = 0; i < vectorSpaceMatrix.simpleDocuments.size(); i++) {
-			System.out.println(vectorSpaceMatrix.simpleDocuments.get(i).getDocInJavaFile()+","+ vectorSpaceMatrix.simpleDocuments.get(i).getDocName());
-		}
-		
 		System.out.println("Vector Space Model is storing...");
-		System.exit(0);
 		try {
 			FileOutputStream file = new FileOutputStream("vectorspace.ser");
 			ObjectOutputStream objectOutputStream = new ObjectOutputStream(file);
@@ -226,33 +338,6 @@ public class Window {
 		}
 	}
 	
-	/*private void setAndViewSearchBoxPanel() {
-		searchBoxPanel = new SearchBoxPanelUI(UIConstants.Width,
-				UIConstants.Menu_Height);
-		searchBoxPanel.setBounds(UIConstants.PADDING_LEFT,
-				UIConstants.PADDING_TOP, UIConstants.Width
-						- UIConstants.PADDING_RIGHT, UIConstants.Menu_Height);
-		add(searchBoxPanel);
-	}
-	*/
-	/*private void setSearchResultsPanelLsiUI() {
-		searchPage.searchUI.searchResultsPanelLsiUI = new SearchResultsPanelLsiUI(documents,
-				new Bound(0, 0, 1300 - 100, 800 - 50));
-		searchPage.searchUI.searchResultsPanelLsiUI.setBounds(UIConstants.PADDING_LEFT,
-				UIConstants.Menu_Height + UIConstants.PADDING_TOP, 1300, 800);
-		searchPage.searchUI.add(searchPage.searchUI.searchResultsPanelLsiUI);
-		searchPage.searchUI.searchResultsPanelLsiUI.revalidate();
-		searchPage.searchUI.searchResultsPanelLsiUI.searchResultList.addListSelectionListener(new ListSelectionListener() {
-			
-			@Override
-			public void valueChanged(ListSelectionEvent arg0) {
-				// TODO Auto-generated method stub
-				System.out.println("Hello");
-			}
-		});
-		
-	}
-*/
 	public VectorSpaceMatrix loadVectorSpaceMatrix() throws IOException{
 		System.out.println("Vector Space Model is loading...");
 		VectorSpaceMatrix vectorSpaceMatrix = null;
@@ -332,5 +417,79 @@ public class Window {
 
 	}
 
+	public void updateTheQueryOnRelevanceFeedback(VectorSpaceMatrix vectorSpaceMatrix){
+        List<Integer> relDocs = new ArrayList<Integer>();
+        List<Integer> irrelDocs = new ArrayList<Integer>();
+		for(int i=0;i<feedbacks.size();i++)
+		{
+			if (feedbacks.get(i).equals(Feedback.REL)) {
+				for (int j = 0; j < vectorSpaceMatrix.simpleDocuments.size(); j++) {
+					if (returnDocuments.get(i).isSameDocument(
+							vectorSpaceMatrix.simpleDocuments.get(j))) {
+						// System.out.println("Hello");
+						relDocs.add(j);
+						break;
+					}
+				}
+			} else if (feedbacks.get(i).equals(Feedback.IRRL)) {
+				for (int j = 0; j < vectorSpaceMatrix.simpleDocuments.size(); j++) {
+					if (returnDocuments.get(i).isSameDocument(
+							vectorSpaceMatrix.simpleDocuments.get(j))) {
+						// System.out.println("Hello");
+						irrelDocs.add(j);
+						break;
+					}
+				}
+			}
+		}
+	    double alpha = 1.0,beta=0.75, gyma=0.25;
+		// update with relevant docs
+		if (relDocs.size() >= 1) {
+			double offset = beta / relDocs.size();
+			for (int i = 0; i < query.vectorInVectorSpaceModel.length ; i++) {
+				double weight = 0;
+				for (int j = 0; j < relDocs.size(); j++) {
+					weight += vectorSpaceMatrix.TERM_DOCUMENT_MATRIX[i][relDocs.get(j)];
+					System.out.println("YES");
+				}
+				query.vectorInVectorSpaceModel[i] += (weight * offset);
+				query.vectorInVectorSpaceModel[i] = validateTermWeight(query.vectorInVectorSpaceModel[i]);
+			}
+		}
+		// update with irrelevant docs
+		if (irrelDocs.size() >= 1) {
+			double offset = gyma / irrelDocs.size();
+			for (int i = 0; i < query.vectorInVectorSpaceModel.length ; i++) {
+				double weight = 0;
+				for (int j = 0; j < irrelDocs.size(); j++) {
+					weight += vectorSpaceMatrix.TERM_DOCUMENT_MATRIX[i][irrelDocs.get(j)];
+				}
+				query.vectorInVectorSpaceModel[i] -= (weight * offset);
+				query.vectorInVectorSpaceModel[i] = validateTermWeight(query.vectorInVectorSpaceModel[i]);
+			}
+		}
+	}
+	
+	/**
+	 * validate term weight
+	 */
+	private static double validateTermWeight(double termWeight){
+		if (termWeight < 0) {
+			return 0;
+		}
+		return termWeight;
+	}
+	private void updateNoOfRelDocs(){
+		rel =0;
+		irrel =0;
+		for (Feedback feedback : feedbacks) {
+			if (feedback.equals(Feedback.REL)) {
+				rel++;
+			}
+			else if(feedback.equals(Feedback.IRRL)){
+				irrel++;
+			}
+		}
+	}
 	
 }

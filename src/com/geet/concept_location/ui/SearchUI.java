@@ -27,6 +27,7 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import com.geet.concept_location.corpus_creation.SimpleDocument;
+import com.geet.concept_location.io.JavaFileReader;
 
 public class SearchUI extends JPanel{
 	
@@ -61,25 +62,19 @@ public class SearchUI extends JPanel{
 		add(openButton);
 		
 		relevanceFeedback = new RelevanceFeedback(bound);
-		relevanceFeedback.setBounds(200, 30, 450, 50);
+		relevanceFeedback.setBounds(200, 30, 600, 50);
 		add(relevanceFeedback);
-		
 		searchResultList.setCellRenderer(new SearhResult());
-		listModel.addElement(new SimpleDocument("Main", "public dipok"));
-		listModel.addElement(new SimpleDocument("Query","public dipok\npublic dipok\npublic dipok\npublic dipok\npublic dipokpublic dipok\npublic dipok\npublic dipok\npublic dipok\npublic dipokpublic dipok\npublic dipok\npublic dipok\npublic dipok\npublic dipok"));
-		listModel.addElement(new SimpleDocument("QueryHHHHHHHHHHHHHH","public dipok\npublic dipok\npublic dipok\npublic dipok\npublic dipokpublic dipok\npublic dipok\npublic dipok\npublic dipok\npublic dipokpublic dipok\npublic dipok\npublic dipok\npublic dipok\npublic dipok"));
 		for (SimpleDocument document : lsiDocuments) {
-//			String str="";
-//			str += document.score+"\n";
-		//	str += document.getDocInJavaFile()+"\n";
-		//	str += document.getDocInJavaFile()+"\n";
-		//	str += document.getArticle()+"\n";
 			listModel.addElement(document);
 		}
 		JScrollPane scrollPane =new JScrollPane(searchResultList);
 		scrollPane.setBounds(0, 80, bound.width,bound.height);
 		add(scrollPane);
 	}
+	/*
+	 * @deprecated
+	 */
 	private class RTextAreaListItem extends RSyntaxTextArea implements ListCellRenderer, Scrollable{
 		protected RTextAreaListItem() {
 	        setBorder(BorderFactory.createLineBorder(Color.blue));
@@ -108,14 +103,18 @@ public class SearchUI extends JPanel{
 				int index, boolean isSelected, boolean cellHasFocus) {
 			// TODO Auto-generated method stub
 			SimpleDocument simpleDocument = (SimpleDocument) value;
-			fileName.setText(simpleDocument.docInJavaFile);
-			rSyntaxTextArea.setText(simpleDocument.getArticle());
+			fileName.setText(simpleDocument.docInJavaFile+"\n"+simpleDocument.docName+"\n["+simpleDocument.getStartPosition().line+","+simpleDocument.getEndPosition().line+"]\n"+simpleDocument.score);
+			fileName.setEditable(false);
+//			System.out.println(simpleDocument.docInJavaFile);
+			rSyntaxTextArea.setText(new JavaFileReader().getText(simpleDocument));
 			rSyntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
 			rSyntaxTextArea.setCodeFoldingEnabled(true);
 			rSyntaxTextArea.setAntiAliasingEnabled(true);
-				//RTextScrollPane sp = new RTextScrollPane(d.getEditor());
-			
-		//	add(new RTextScrollPane(rSyntaxTextArea));
+			if (isSelected) {
+				rSyntaxTextArea.setBackground(Color.LIGHT_GRAY);
+			}else{
+				rSyntaxTextArea.setBackground(Color.WHITE);
+			}
 			return this;
 		}
 	}
@@ -146,12 +145,6 @@ public class SearchUI extends JPanel{
 	public void updateList(List<SimpleDocument> documents){
 		listModel = new DefaultListModel<SimpleDocument>();
 		for (SimpleDocument document : documents) {
-			String str="";
-			System.out.println("Hello");
-			str += document.score+"\n";
-		//	str += document.getDocInJavaFile()+"\n";
-		//	str += document.getDocInJavaFile()+"\n";
-		//	str += document.getArticle()+"\n";
 			listModel.addElement(document);
 		}	
 		searchResultList.setModel(listModel);

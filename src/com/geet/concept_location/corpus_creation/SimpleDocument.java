@@ -134,4 +134,15 @@ public class SimpleDocument implements Comparable<SimpleDocument>, Serializable{
 		}
 		return termsInString;
 	}
+	/**
+	 * @return true when the two document is same 
+	 */
+	public boolean isSameDocument(SimpleDocument simpleDocument){
+		boolean status = false;
+		if (docName.equals(simpleDocument.docName) && docInJavaFile.equals(simpleDocument.docInJavaFile) && startPosition.isEqual(simpleDocument.getStartPosition()) && endPosition.isEqual(simpleDocument.getEndPosition())) {
+			return true;
+		}
+		return status;
+	}
 }
+

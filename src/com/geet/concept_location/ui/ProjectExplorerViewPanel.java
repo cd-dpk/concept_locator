@@ -24,7 +24,7 @@ public class ProjectExplorerViewPanel extends JPanel{
 		sourceViewPanel = new SourceViewPanel(source,new Bound(0,0, bound.width - UIConstants.FILE_TREE_WIDTH, bound.height));
 		sourceViewPanel.setBounds(UIConstants.FILE_TREE_WIDTH+20, 0, bound.width - UIConstants.FILE_TREE_WIDTH, bound.height);
 		add(sourceViewPanel);
-		projectTreePanel.tree
+/*		projectTreePanel.tree
 				.addTreeSelectionListener(new TreeSelectionListener() {
 					@Override
 					public void valueChanged(TreeSelectionEvent e) {
@@ -42,7 +42,7 @@ public class ProjectExplorerViewPanel extends JPanel{
 						}
 					}
 				});
-	}
+*/	}
 	public FileTree getProjectTreePanel() {
 		return projectTreePanel;
 	}

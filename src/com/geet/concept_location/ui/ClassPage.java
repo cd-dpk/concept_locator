@@ -33,6 +33,7 @@ public class ClassPage extends Page{
 
 	public void setEditor(RSyntaxTextArea e) {
 		editor = e;
+		editor.setEditable(false);
 	}
 	public void setScroll(RTextScrollPane s) {
 		linenumbers = s;

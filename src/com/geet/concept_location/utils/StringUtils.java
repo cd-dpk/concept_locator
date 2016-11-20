@@ -1,4 +1,5 @@
 package com.geet.concept_location.utils;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -8,6 +9,7 @@ public class StringUtils {
 	public static char upperCase_high  = 96;
 	public static char lowerCase_low  = 97;
 	public static char lowerCase_high  = 97+25;
+	
 	public static String getFilePathName(String treePath){
 		String filePath ="";
 		List<String> uniqueNames = new ArrayList<String>();
@@ -20,6 +22,22 @@ public class StringUtils {
 				uniqueNames.add(token);
 			}
 		}	
+		return filePath;
+	}
+	public static String getFilePathNameNew(String treePath){
+		String filePath ="";
+		StringTokenizer stringTokenizer = new StringTokenizer(treePath,"[], ",false);
+		while (stringTokenizer.hasMoreTokens()) {
+			String token = stringTokenizer.nextToken();
+			System.out.print(token+"->");
+			if (token.startsWith(filePath)) {
+				filePath = token;
+			}
+			else{
+				filePath +=File.separatorChar+token;
+			}
+			System.out.println(filePath);
+		}
 		return filePath;
 	}
 	public static boolean hasStringInList(String string,List<String>list){
@@ -147,7 +165,8 @@ public class StringUtils {
  	   );
  	}
     public static void main(String[] args) {
-    	System.out.println(uderscoreDeletedString("_hel_lo__"));
+    	System.out.println(File.separatorChar);
+    	//    	System.out.println(uderscoreDeletedString("_hel_lo__"));
     }
     public static boolean isConstant(String target){
     	if (target.startsWith("0x")) {

@@ -178,16 +178,7 @@ public class Document  extends SimpleDocument {
 		return new Range(startPosition.toParserPosition(), endPosition.toParserPosition());
 	}
 	
-	/**
-	 * @return true when the two document is same 
-	 */
-	public boolean isSameDocument(Document document){
-		boolean status = false;
-		if (docName.equals(document.docName) && docInJavaFile.equals(document.docInJavaFile) && startPosition.isEqual(document.getStartPosition()) && endPosition.isEqual(document.getEndPosition())) {
-			return true;
-		}
-		return status;
-	}
+	
 
 	
 }
