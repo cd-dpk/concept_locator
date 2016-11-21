@@ -212,7 +212,6 @@ public class VectorSpaceModel {
 		double regularization = 0.00;
 		double minImprovement = 0.0000;
 		int minEpochs = 10;
-		// simple comment
 		int maxEpochs = 50000;
 		System.out.println("  Computing SVD");
 		System.out.println("    maxFactors=" + Lsi.NUM_FACTORS);
@@ -240,8 +239,9 @@ public class VectorSpaceModel {
 			List<Term> termObjects = new ArrayList<Term>(); 
 			for (int i = 0; i < termVectors.length; i++) {
 				Vector vector = new Vector(Lsi.NUM_FACTORS);
-				vector.dimensionValue[0] = termVectors[i][0] * scaleMatrix.getScales()[0];
-				vector.dimensionValue[1] = termVectors[i][1] * scaleMatrix.getScales()[1];
+				for (int j = 0; j < vector.dimensionValue.length; j++) {
+					vector.dimensionValue[j] = termVectors[i][j] * scaleMatrix.getScales()[j];
+				}
 				Term termObject = new Term(terms.get(i));
 				termObject.vector = vector;
 				termObjects.add(termObject);
@@ -260,8 +260,9 @@ public class VectorSpaceModel {
 			ObjectOutputStream objectOutputStream = new ObjectOutputStream(file);
 			for (int i = 0; i < docVectors.length; i++) {
 				Vector vector = new Vector(Lsi.NUM_FACTORS);
-				vector.dimensionValue[0] = docVectors[i][0]* scaleMatrix.getScales()[0];
-				vector.dimensionValue[1] = docVectors[i][1]* scaleMatrix.getScales()[1];
+				for (int j = 0; j < vector.dimensionValue.length; j++) {
+					vector.dimensionValue[j] = termVectors[i][j] * scaleMatrix.getScales()[j];
+				}
 				documents.get(i).vector = vector;
 			}
 			objectOutputStream.writeObject(documents);

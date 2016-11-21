@@ -91,7 +91,8 @@ public class Window {
 		tabs = new JTabbedPane();
 		/// Project Explorer
 		setProjectExplorerPage();
-		/*VectorSpaceMatrix vectorSpaceMatrix = loadVectorSpaceMatrix();
+		/*
+		VectorSpaceMatrix vectorSpaceMatrix = loadVectorSpaceMatrix();
 		for (SimpleDocument simpleDocument : vectorSpaceMatrix.simpleDocuments) {
 			System.out.println(simpleDocument.docInJavaFile+","+simpleDocument.docName);
 		}	
@@ -204,7 +205,8 @@ public class Window {
 				}
 			}
 		});
-		createVectorSpaceMatrix();
+//		createVectorSpaceMatrix();
+//		generateLsiSpaceFromVectorSpaceMatrix();
 //		System.exit(0);
 	}
 	public Window(int w, int h) throws Exception {

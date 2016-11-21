@@ -9,7 +9,7 @@ import com.geet.concept_location.corpus_creation.StopWords;
 import com.geet.concept_location.indexing_vsm.Term;
 public class LsiQuery {
 	public String query;
-	public Vector vector;
+	public Vector vector= new Vector(Lsi.NUM_FACTORS);
 	
 	public LsiQuery(SimpleDocument simpleDocument, Vector vector){
 		super();

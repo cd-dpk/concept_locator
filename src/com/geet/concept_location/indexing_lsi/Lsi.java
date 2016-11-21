@@ -11,8 +11,8 @@ import com.geet.concept_location.indexing_vsm.Term;
 public class Lsi {
 	public List<Term> spaceTerms = new ArrayList<Term>();
 	public List<SimpleDocument> simpleDocuments = new ArrayList<SimpleDocument>();
-	public static final int NUM_FACTORS = 2;
-	public final static double MINIMUM_SCORE = 0.2;
+	public static final int NUM_FACTORS = 10;
+	public final static double MINIMUM_SCORE = 0.0;
 	public double [] scales = new double[NUM_FACTORS];
 	// Lsi bug localization initiated
 	
