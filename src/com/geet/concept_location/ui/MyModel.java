@@ -11,8 +11,8 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 public class MyModel extends JPanel{
-	public JTextArea fileName;
-	public RSyntaxTextArea rSyntaxTextArea = new RSyntaxTextArea();
+	private JTextArea fileName;
+	private RSyntaxTextArea rSyntaxTextArea = new RSyntaxTextArea();
 	public MyModel() {
 		setLayout(new BorderLayout());
 		fileName = new JTextArea();
@@ -21,4 +21,17 @@ public class MyModel extends JPanel{
 		add(rTextScrollPane,BorderLayout.CENTER);
 		rTextScrollPane.setFoldIndicatorEnabled(true);
 	}
+	public JTextArea getFileName() {
+		return fileName;
+	}
+	public void setFileName(JTextArea fileName) {
+		this.fileName = fileName;
+	}
+	public RSyntaxTextArea getrSyntaxTextArea() {
+		return rSyntaxTextArea;
+	}
+	public void setrSyntaxTextArea(RSyntaxTextArea rSyntaxTextArea) {
+		this.rSyntaxTextArea = rSyntaxTextArea;
+	}
+	
 }

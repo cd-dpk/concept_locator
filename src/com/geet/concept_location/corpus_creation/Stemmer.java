@@ -288,12 +288,12 @@ public class Stemmer
 	   for (int i = 0; i < term.length(); i++) {
 		char ch = term.charAt(i);
 		add(ch);
-	}
+	   }
+	   stem();
    }
    
    public static void main(String[] args) {
-	Stemmer stemmer = new Stemmer("dividing");
-	stemmer.stem();
+	Stemmer stemmer = new Stemmer("divide");
 	System.out.println(stemmer.toString());
    }
 }

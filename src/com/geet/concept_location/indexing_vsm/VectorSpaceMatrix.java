@@ -7,10 +7,35 @@ import com.geet.concept_location.corpus_creation.Position;
 import com.geet.concept_location.corpus_creation.SimpleDocument;
 
 public class VectorSpaceMatrix implements Serializable{
-	public List<SimpleDocument> simpleDocuments;
-	public List<String> terms;
-	public double [][]TERM_DOCUMENT_MATRIX;
-	public double [] df;
+	private List<SimpleDocument> simpleDocuments;
+	private List<String> terms;
+	private double [][]TERM_DOCUMENT_MATRIX;
+	private double [] df;
+	
+	public List<SimpleDocument> getSimpleDocuments() {
+		return simpleDocuments;
+	}
+	public void setSimpleDocuments(List<SimpleDocument> simpleDocuments) {
+		this.simpleDocuments = simpleDocuments;
+	}
+	public List<String> getTerms() {
+		return terms;
+	}
+	public void setTerms(List<String> terms) {
+		this.terms = terms;
+	}
+	public double[][] getTERM_DOCUMENT_MATRIX() {
+		return TERM_DOCUMENT_MATRIX;
+	}
+	public void setTERM_DOCUMENT_MATRIX(double[][] tERM_DOCUMENT_MATRIX) {
+		TERM_DOCUMENT_MATRIX = tERM_DOCUMENT_MATRIX;
+	}
+	public double[] getDf() {
+		return df;
+	}
+	public void setDf(double[] df) {
+		this.df = df;
+	}
 	public VectorSpaceMatrix(List<SimpleDocument> simpleDocuments,
 			List<String> terms, double[][] tERM_DOCUMENT_MATRIX, double[] df) {
 		super();

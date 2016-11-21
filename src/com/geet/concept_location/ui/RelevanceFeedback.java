@@ -8,10 +8,10 @@ import javax.swing.JRadioButton;
 
 public class RelevanceFeedback extends JPanel {
 	
-	JRadioButton relButton, irrelButton, normalButton;
-	JLabel relLabel, irrelLabel, normalLabel;
-	JLabel roundLabel;
-	JButton relevanceFeedback;
+	private JRadioButton relButton, irrelButton, normalButton;
+	private JLabel relLabel, irrelLabel, normalLabel;
+	private JLabel roundLabel;
+	private JButton relevanceFeedback;
 	
 	public RelevanceFeedback(Bound bound) {
 		super();
@@ -48,10 +48,74 @@ public class RelevanceFeedback extends JPanel {
 		ButtonGroup buttonGroup = new ButtonGroup();
 		buttonGroup.add(relButton);
 		buttonGroup.add(irrelButton);
-		buttonGroup.add(normalButton);
-
- 
+		buttonGroup.add(normalButton); 
 	}
+
+	public JRadioButton getRelButton() {
+		return relButton;
+	}
+
+	public void setRelButton(JRadioButton relButton) {
+		this.relButton = relButton;
+	}
+
+	public JRadioButton getIrrelButton() {
+		return irrelButton;
+	}
+
+	public void setIrrelButton(JRadioButton irrelButton) {
+		this.irrelButton = irrelButton;
+	}
+
+	public JRadioButton getNormalButton() {
+		return normalButton;
+	}
+
+	public void setNormalButton(JRadioButton normalButton) {
+		this.normalButton = normalButton;
+	}
+
+	public JLabel getRelLabel() {
+		return relLabel;
+	}
+
+	public void setRelLabel(JLabel relLabel) {
+		this.relLabel = relLabel;
+	}
+
+	public JLabel getIrrelLabel() {
+		return irrelLabel;
+	}
+
+	public void setIrrelLabel(JLabel irrelLabel) {
+		this.irrelLabel = irrelLabel;
+	}
+
+	public JLabel getNormalLabel() {
+		return normalLabel;
+	}
+
+	public void setNormalLabel(JLabel normalLabel) {
+		this.normalLabel = normalLabel;
+	}
+
+	public JLabel getRoundLabel() {
+		return roundLabel;
+	}
+
+	public void setRoundLabel(JLabel roundLabel) {
+		this.roundLabel = roundLabel;
+	}
+
+	public JButton getRelevanceFeedback() {
+		return relevanceFeedback;
+	}
+
+	public void setRelevanceFeedback(JButton relevanceFeedback) {
+		this.relevanceFeedback = relevanceFeedback;
+	}
+	
+	
 	
 
 }

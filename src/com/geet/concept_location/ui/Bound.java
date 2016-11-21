@@ -1,6 +1,6 @@
 package com.geet.concept_location.ui;
 public class Bound {
-	public int x,y, width, height;
+	private int x,y, width, height;
 	public Bound(int x, int y, int width, int height) {
 		super();
 		this.x = x;

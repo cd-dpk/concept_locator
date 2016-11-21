@@ -19,6 +19,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -29,9 +30,11 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
+
 import com.geet.concept_location.constants.UIConstants;
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.DocumentExtractor;
@@ -42,9 +45,7 @@ import com.geet.concept_location.indexing_vsm.VectorSpaceMatrix;
 import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
 import com.geet.concept_location.io.JavaFileReader;
 import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
-import com.geet.concept_location.utils.JavaFileFilter;
 import com.geet.concept_location.utils.StringUtils;
-import com.geet.concept_location.utils.TextFileFilter;
 
 public class Window {
 	public String projectPath="UltimateCalculator-master";
@@ -52,9 +53,7 @@ public class Window {
 	ExplorerPage explorerPage;
 	int rel = 0, irrel = 0, round = 0;
 	SearchPage searchPage;
-	private JFrame frame = null,
-				   searchFrame = null,
-				   aboutFrame = null;
+	private JFrame frame = null;
 	private int width, height;
 	private JPanel panel;
 	private JTabbedPane tabs;
@@ -63,12 +62,6 @@ public class Window {
 	VectorSpaceModel vectorSpaceModel;
 	List<Feedback> feedbacks = new ArrayList<Feedback>();
 	List<SimpleDocument> returnDocuments = new ArrayList<SimpleDocument>();
-	public JFrame getSearchFrame() {
-		return searchFrame;
-	}
-	public JFrame getAboutFrame() {
-		return aboutFrame;
-	}
 	public JPanel getPanel() {
 		return panel;
 	}
@@ -81,44 +74,20 @@ public class Window {
 	public JFrame getFrame() {
 		return frame;
 	}	
-	public void setAboutFrame(JFrame f) {
-		aboutFrame = f;
-	}
 	public void setFrame(JFrame f) {
 		frame = f;
-	}
-	public void setSearchFrame(JFrame f) {
-		searchFrame = f;
 	}
 	private void createControls() throws IOException {
 		frame.setSize(width, height);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setIconImage(Toolkit.getDefaultToolkit().getImage("src/res/search.png"));
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage("res/search.png"));
 		frame.setResizable(false);
 		panel = new JPanel(new java.awt.BorderLayout()); 
 		
 		tabs = new JTabbedPane();
 		/// Project Explorer
 		setProjectExplorerPage();
-		/*VectorSpaceMatrix vectorSpaceMatrix = loadVectorSpaceMatrix();
-		for (SimpleDocument simpleDocument : vectorSpaceMatrix.simpleDocuments) {
-			System.out.println(simpleDocument.docInJavaFile+","+simpleDocument.docName);
-		}	
-		System.exit(0);
-		*/
 		// SearchPage added
-		if (javaFilePaths.size()>0) {
-			JavaFileReader javaFileReader = new JavaFileReader();
-			File selectedFile = new File(javaFilePaths.get(0));
-			if (!selectedFile.isDirectory()) {
-				if (javaFileReader.openFile(selectedFile) && new TextFileFilter().accept(selectedFile) && new JavaFileFilter().accept(selectedFile)) {
-					explorerPage.projectExplorerViewPanel.sourceViewPanel.getSourceTextArea().setText(
-							javaFileReader.getText());
-					explorerPage.projectExplorerViewPanel.sourceViewPanel.getFileName().setText(
-							selectedFile.getName());
-				}
-			}
-		}
 		setSearchPage();
 		
 		menu = new Menu(new WindowActionHandler(this));
@@ -129,9 +98,9 @@ public class Window {
 	}
 	private void setSearchPage() {
 		searchPage = new SearchPage("Search Home");
-		searchPage.searchUI.doLayout();
+		searchPage.getSearchUI().doLayout();
 		AppManager.addDocument(searchPage);
-		tabs.addTab(searchPage.getFilename(), searchPage.searchUI);
+		tabs.addTab(searchPage.getFilename(), searchPage.getSearchUI());
 		int index = tabs.getTabCount()-1;
 		JPanel pnlTab = new JPanel(new GridBagLayout()), iconPanel1 = new JPanel(new GridLayout(1, 1, 4, 4));
 		pnlTab.setOpaque(false);
@@ -147,7 +116,7 @@ public class Window {
 		gbc.ipadx = 5;
 		tabs.setTabComponentAt(index, pnlTab);	
 		
-		searchPage.searchUI.getSearchTextField().addKeyListener(new KeyListener() {
+		searchPage.getSearchUI().getSearchTextField().addKeyListener(new KeyListener() {
 			
 			@Override
 			public void keyTyped(KeyEvent e) {
@@ -159,137 +128,137 @@ public class Window {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode()==KeyEvent.VK_ENTER){
-					SimpleDocument queryDocument = new SimpleDocument("Query",searchPage.searchUI.getSearchTextField().getText());
+					SimpleDocument queryDocument = new SimpleDocument.Builder().docName("Query").article(searchPage.getSearchUI().getSearchTextField().getText()).build();
 					try {
 						vectorSpaceModel = new VectorSpaceModel(loadVectorSpaceMatrix());
 						query = vectorSpaceModel.getQuery(queryDocument);
 						returnDocuments = vectorSpaceModel.searchWithQueryVector(query);
-						searchPage.searchUI.getOpenButton().setVisible(true);
-						searchPage.searchUI.getOpenButton().setEnabled(false);
-						searchPage.searchUI.getRelevanceFeedback().setVisible(true);
+						searchPage.getSearchUI().getOpenButton().setVisible(true);
+						searchPage.getSearchUI().getOpenButton().setEnabled(false);
+						searchPage.getSearchUI().getRelevanceFeedback().setVisible(true);
 						round=1;
-						searchPage.searchUI.getRelevanceFeedback().roundLabel.setText("Round "+round+"");
+						searchPage.getSearchUI().getRelevanceFeedback().getRoundLabel().setText("Round "+round+"");
 						feedbacks = new ArrayList<Feedback>();
 						for (int i = 0; i < returnDocuments.size(); i++) {
 							feedbacks.add(Feedback.NORMAL);
 						}
 						updateNoOfRelDocs();
-						searchPage.searchUI.getRelevanceFeedback().relLabel.setText(rel+"");
-						searchPage.searchUI.getRelevanceFeedback().irrelLabel.setText(irrel+"");
-						searchPage.searchUI.updateList(returnDocuments);
+						searchPage.getSearchUI().getRelevanceFeedback().getRelLabel().setText(rel+"");
+						searchPage.getSearchUI().getRelevanceFeedback().getIrrelLabel().setText(irrel+"");
+						searchPage.getSearchUI().updateList(returnDocuments);
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
 				}
 			}
 		});
-		searchPage.searchUI.getSearchButton().addActionListener(new ActionListener() {
+		searchPage.getSearchUI().getSearchButton().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SimpleDocument queryDocument = new SimpleDocument("Query",searchPage.searchUI.getSearchTextField().getText());
+				SimpleDocument queryDocument = new SimpleDocument.Builder().docName("Query").article(searchPage.getSearchUI().getSearchTextField().getText()).build();
 				try {
 					vectorSpaceModel = new VectorSpaceModel(loadVectorSpaceMatrix());
 					query = vectorSpaceModel.getQuery(queryDocument);
 					returnDocuments = vectorSpaceModel.searchWithQueryVector(query);
-					searchPage.searchUI.getOpenButton().setVisible(true);
-					searchPage.searchUI.getOpenButton().setEnabled(false);
-					searchPage.searchUI.getRelevanceFeedback().setVisible(true);
+					searchPage.getSearchUI().getOpenButton().setVisible(true);
+					searchPage.getSearchUI().getOpenButton().setEnabled(false);
+					searchPage.getSearchUI().getRelevanceFeedback().setVisible(true);
 					round=1;
-					searchPage.searchUI.getRelevanceFeedback().roundLabel.setText("Round "+round+"");
+					searchPage.getSearchUI().getRelevanceFeedback().getRoundLabel().setText("Round "+round+"");
 					feedbacks = new ArrayList<Feedback>();
 					for (int i = 0; i < returnDocuments.size(); i++) {
 						feedbacks.add(Feedback.NORMAL);
 					}
 					updateNoOfRelDocs();
-					searchPage.searchUI.getRelevanceFeedback().relLabel.setText(rel+"");
-					searchPage.searchUI.getRelevanceFeedback().irrelLabel.setText(irrel+"");
-					searchPage.searchUI.updateList(returnDocuments);
+					searchPage.getSearchUI().getRelevanceFeedback().getRelLabel().setText(rel+"");
+					searchPage.getSearchUI().getRelevanceFeedback().getIrrelLabel().setText(irrel+"");
+					searchPage.getSearchUI().updateList(returnDocuments);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
 			}
 		});
-		searchPage.searchUI.searchResultList.addListSelectionListener(new ListSelectionListener() {
+		searchPage.getSearchUI().getSearchResultList().addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
-				int index = searchPage.searchUI.searchResultList.getSelectedIndex();
+				int index = searchPage.getSearchUI().getSearchResultList().getSelectedIndex();
 				if (index !=-1) {
 					if (feedbacks.get(index).equals(Feedback.NORMAL)) {
-						searchPage.searchUI.getRelevanceFeedback().normalButton
+						searchPage.getSearchUI().getRelevanceFeedback().getNormalButton()
 								.setSelected(true);
 					} else if (feedbacks.get(index).equals(
 							Feedback.REL)) {
-						searchPage.searchUI.getRelevanceFeedback().relButton
+						searchPage.getSearchUI().getRelevanceFeedback().getRelButton()
 								.setSelected(true);
 					} else if (feedbacks.get(index).equals(Feedback.IRRL)) {
-						searchPage.searchUI.getRelevanceFeedback().irrelButton.setSelected(true);
+						searchPage.getSearchUI().getRelevanceFeedback().getIrrelButton().setSelected(true);
 					}
-					searchPage.searchUI.getOpenButton().setEnabled(true);
+					searchPage.getSearchUI().getOpenButton().setEnabled(true);
 				}	
 			}
 		});
-		searchPage.searchUI.getRelevanceFeedback().relButton.addActionListener(new ActionListener() {
+		searchPage.getSearchUI().getRelevanceFeedback().getRelButton().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int index = searchPage.searchUI.searchResultList.getSelectedIndex();
+				int index = searchPage.getSearchUI().getSearchResultList().getSelectedIndex();
 				if (index !=-1) {
 					feedbacks.set(index,Feedback.REL);
 					System.out.println(feedbacks.size());
 //					System.out.println(feedbacks.get(index).toString());
 					updateNoOfRelDocs();
-					searchPage.searchUI.getRelevanceFeedback().relLabel.setText(rel+"");
-					searchPage.searchUI.getRelevanceFeedback().irrelLabel.setText(irrel+"");
+					searchPage.getSearchUI().getRelevanceFeedback().getRelLabel().setText(rel+"");
+					searchPage.getSearchUI().getRelevanceFeedback().getIrrelLabel().setText(irrel+"");
 				}
 			}
 		});
-		searchPage.searchUI.getRelevanceFeedback().irrelButton.addActionListener(new ActionListener() {
+		searchPage.getSearchUI().getRelevanceFeedback().getIrrelButton().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int index = searchPage.searchUI.searchResultList.getSelectedIndex();
+				int index = searchPage.getSearchUI().getSearchResultList().getSelectedIndex();
 				if (index !=-1) {
 					feedbacks.set(index,Feedback.IRRL);
 					updateNoOfRelDocs();
-					searchPage.searchUI.getRelevanceFeedback().relLabel.setText(rel+"");
-					searchPage.searchUI.getRelevanceFeedback().irrelLabel.setText(irrel+"");
+					searchPage.getSearchUI().getRelevanceFeedback().getRelLabel().setText(rel+"");
+					searchPage.getSearchUI().getRelevanceFeedback().getIrrelLabel().setText(irrel+"");
 				}
 			}
 		});
-		searchPage.searchUI.getRelevanceFeedback().normalButton.addActionListener(new ActionListener() {
+		searchPage.getSearchUI().getRelevanceFeedback().getNormalButton().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int index = searchPage.searchUI.searchResultList.getSelectedIndex();
+				int index = searchPage.getSearchUI().getSearchResultList().getSelectedIndex();
 				if (index !=-1) {
 					feedbacks.set(index,Feedback.NORMAL);
 					updateNoOfRelDocs();
-					searchPage.searchUI.getRelevanceFeedback().relLabel.setText(rel+"");
-					searchPage.searchUI.getRelevanceFeedback().irrelLabel.setText(irrel+"");
+					searchPage.getSearchUI().getRelevanceFeedback().getRelLabel().setText(rel+"");
+					searchPage.getSearchUI().getRelevanceFeedback().getIrrelLabel().setText(irrel+"");
 				}
 			}
 		});
-		searchPage.searchUI.getRelevanceFeedback().relevanceFeedback.addActionListener(new ActionListener() {
+		searchPage.getSearchUI().getRelevanceFeedback().getRelevanceFeedback().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				updateTheQueryOnRelevanceFeedback(vectorSpaceModel.getVectorSpaceMatrix());
 				returnDocuments = vectorSpaceModel.searchWithQueryVector(query);
 				feedbacks = new ArrayList<Feedback>();
 				round++;
-				searchPage.searchUI.getOpenButton().setEnabled(false);
-				searchPage.searchUI.getRelevanceFeedback().roundLabel.setText("Round "+round+"");
+				searchPage.getSearchUI().getOpenButton().setEnabled(false);
+				searchPage.getSearchUI().getRelevanceFeedback().getRoundLabel().setText("Round "+round+"");
 				for (int i = 0; i < returnDocuments.size(); i++) {
 					feedbacks.add(Feedback.NORMAL);
 				}
 				System.out.println(returnDocuments.size()+","+feedbacks.size());
 				updateNoOfRelDocs();
-				searchPage.searchUI.getRelevanceFeedback().relLabel.setText(rel+"");
-				searchPage.searchUI.getRelevanceFeedback().irrelLabel.setText(irrel+"");
-				searchPage.searchUI.updateList(returnDocuments);
+				searchPage.getSearchUI().getRelevanceFeedback().getRelLabel().setText(rel+"");
+				searchPage.getSearchUI().getRelevanceFeedback().getIrrelLabel().setText(irrel+"");
+				searchPage.getSearchUI().updateList(returnDocuments);
 			}
 		});
-		searchPage.searchUI.getOpenButton().addActionListener(new ActionListener() {
+		searchPage.getSearchUI().getOpenButton().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// java file
-				int index = searchPage.searchUI.searchResultList.getSelectedIndex();
+				int index = searchPage.getSearchUI().getSearchResultList().getSelectedIndex();
 				if (index != -1) {
 					openJavaFile(returnDocuments.get(index).getDocInJavaFile());
 				}
@@ -298,7 +267,7 @@ public class Window {
 	}
 	private void setProjectExplorerPage() throws IOException {
 		explorerPage = new ExplorerPage("Project Explorer");
-		explorerPage.projectExplorerViewPanel = new ProjectExplorerViewPanel(new Bound(0, 0,UIConstants.WIDTH, UIConstants.HEIGHT-50),new File( projectPath));
+		explorerPage.setProjectExplorerViewPanel(new ProjectExplorerViewPanel(new Bound(0, 0,UIConstants.WIDTH, UIConstants.HEIGHT-50),new File( projectPath)));
 		AppManager.addDocument(explorerPage);
 		tabs.addTab(explorerPage.getFilename(), explorerPage.getProjectExplorerViewPanel());
 		int index = tabs.getTabCount()-1;
@@ -315,8 +284,21 @@ public class Window {
 		gbc.weightx = 0;
 		gbc.ipadx = 5;
 		tabs.setTabComponentAt(index, pnlTab);
-		javaFilePaths = explorerPage.projectExplorerViewPanel.projectTreePanel.javaFilePaths;
-		explorerPage.projectExplorerViewPanel.projectTreePanel.tree.addTreeSelectionListener(new TreeSelectionListener() {
+		javaFilePaths = explorerPage.getProjectExplorerViewPanel().projectTreePanel.getJavaFilePaths();
+		System.out.println(javaFilePaths.size());
+		if (javaFilePaths.size() > 0) {
+			JavaFileReader javaFileReader = new JavaFileReader();
+			File selectedFile = new File(javaFilePaths.get(0));
+			if (!selectedFile.isDirectory()) {
+				if (javaFileReader.openFile(selectedFile)) {
+					explorerPage.getProjectExplorerViewPanel().sourceViewPanel.getSourceTextArea().setText(
+							javaFileReader.getText());
+					explorerPage.getProjectExplorerViewPanel().sourceViewPanel.getFileName().setText(
+							selectedFile.getName());
+				}
+			}
+		}
+		explorerPage.getProjectExplorerViewPanel().projectTreePanel.getTree().addTreeSelectionListener(new TreeSelectionListener() {
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
 				JavaFileReader javaFileReader = new JavaFileReader();
@@ -327,9 +309,9 @@ public class Window {
 				File selectedFile = new File(filePath);
 				if (!selectedFile.isDirectory()) {
 					if (javaFileReader.openFile(selectedFile)) {
-						explorerPage.projectExplorerViewPanel.sourceViewPanel.getSourceTextArea().setText(
+						explorerPage.getProjectExplorerViewPanel().sourceViewPanel.getSourceTextArea().setText(
 								javaFileReader.getText());
-						explorerPage.projectExplorerViewPanel.sourceViewPanel.getFileName().setText(
+						explorerPage.getProjectExplorerViewPanel().sourceViewPanel.getFileName().setText(
 								selectedFile.getName());
 						
 					}
@@ -369,10 +351,10 @@ public class Window {
 				fileWriter.write("------------------------\n");
 				System.out.println("------------------------------------------------------------------------");
 				Document document = (Document)simpleDocument;
-				fileWriter.write(document.docInJavaFile+","+document.docName+"\n");
-				System.out.println(document.docInJavaFile+","+document.docName);
-				fileWriter.write(document.getStartPosition().line+" , "+document.getEndPosition().line+"\n");
-				System.out.println(document.getStartPosition().line+" , "+document.getEndPosition().line);
+				fileWriter.write(document.getDocInJavaFile()+","+document.getDocName()+"\n");
+				System.out.println(document.getDocInJavaFile()+","+document.getDocName());
+				fileWriter.write(document.getStartPosition().getLine()+" , "+document.getEndPosition().getLine()+"\n");
+				System.out.println(document.getStartPosition().getLine()+" , "+document.getEndPosition().getLine());
 				System.out.println(new JavaFileReader().getText(document));
 				fileWriter.write("------------------------------------------------------------------------\n");
 				fileWriter.write(new JavaFileReader().getText(document)+"\n");
@@ -417,11 +399,10 @@ public class Window {
 	}
 	private void openJavaFile(String fileName){
 		File file = new File(StringUtils.getFilePathAmongOS(fileName));
-		String val = "";
-		try {
-			val = AppManager.readFile(file);
-		} catch (IOException exc) {
-			exc.printStackTrace();
+		JavaFileReader javaFileReader = new JavaFileReader();
+		String val = "<code>Nothing present here</code>";
+		if (javaFileReader.openFile(file)) {
+			val = javaFileReader.getText();
 		}
 		ClassPage d = new ClassPage(file);
 		d.setEditor(new RSyntaxTextArea());
@@ -440,7 +421,7 @@ public class Window {
 		JPanel pnlTab = new JPanel(new GridBagLayout()), iconPanel = new JPanel(new GridLayout(1, 1, 4, 4));
 		pnlTab.setOpaque(false);
 		JLabel lblTitle = new JLabel(d.getFilename());
-		ImageIcon icon = new ImageIcon("src/res/close.png");
+		ImageIcon icon = new ImageIcon("res/close.png");
 		JButton btnClose = new JButton(new ImageIcon(icon.getImage().getScaledInstance(12, 12, 4)));
 		btnClose.setActionCommand("TabClose");
 		btnClose.setOpaque(false);
@@ -477,25 +458,24 @@ public class Window {
 			}
 		});
 	}
-
-	public void updateTheQueryOnRelevanceFeedback(VectorSpaceMatrix vectorSpaceMatrix){
+	private void updateTheQueryOnRelevanceFeedback(VectorSpaceMatrix vectorSpaceMatrix){
         List<Integer> relDocs = new ArrayList<Integer>();
         List<Integer> irrelDocs = new ArrayList<Integer>();
 		for(int i=0;i<feedbacks.size();i++)
 		{
 			if (feedbacks.get(i).equals(Feedback.REL)) {
-				for (int j = 0; j < vectorSpaceMatrix.simpleDocuments.size(); j++) {
+				for (int j = 0; j < vectorSpaceMatrix.getSimpleDocuments().size(); j++) {
 					if (returnDocuments.get(i).isSameDocument(
-							vectorSpaceMatrix.simpleDocuments.get(j))) {
+							vectorSpaceMatrix.getSimpleDocuments().get(j))) {
 						// System.out.println("Hello");
 						relDocs.add(j);
 						break;
 					}
 				}
 			} else if (feedbacks.get(i).equals(Feedback.IRRL)) {
-				for (int j = 0; j < vectorSpaceMatrix.simpleDocuments.size(); j++) {
+				for (int j = 0; j < vectorSpaceMatrix.getSimpleDocuments().size(); j++) {
 					if (returnDocuments.get(i).isSameDocument(
-							vectorSpaceMatrix.simpleDocuments.get(j))) {
+							vectorSpaceMatrix.getSimpleDocuments().get(j))) {
 						// System.out.println("Hello");
 						irrelDocs.add(j);
 						break;
@@ -507,26 +487,26 @@ public class Window {
 		// update with relevant docs
 		if (relDocs.size() >= 1) {
 			double offset = beta / relDocs.size();
-			for (int i = 0; i < query.vectorInVectorSpaceModel.length ; i++) {
+			for (int i = 0; i < query.getVectorInVectorSpaceModel().length ; i++) {
 				double weight = 0;
 				for (int j = 0; j < relDocs.size(); j++) {
-					weight += vectorSpaceMatrix.TERM_DOCUMENT_MATRIX[i][relDocs.get(j)];
+					weight += vectorSpaceMatrix.getTERM_DOCUMENT_MATRIX()[i][relDocs.get(j)];
 					System.out.println("YES");
 				}
-				query.vectorInVectorSpaceModel[i] += (weight * offset);
-				query.vectorInVectorSpaceModel[i] = validateTermWeight(query.vectorInVectorSpaceModel[i]);
+				query.getVectorInVectorSpaceModel()[i] += (weight * offset);
+				query.getVectorInVectorSpaceModel()[i] = validateTermWeight(query.getVectorInVectorSpaceModel()[i]);
 			}
 		}
 		// update with irrelevant docs
 		if (irrelDocs.size() >= 1) {
 			double offset = gyma / irrelDocs.size();
-			for (int i = 0; i < query.vectorInVectorSpaceModel.length ; i++) {
+			for (int i = 0; i < query.getVectorInVectorSpaceModel().length ; i++) {
 				double weight = 0;
 				for (int j = 0; j < irrelDocs.size(); j++) {
-					weight += vectorSpaceMatrix.TERM_DOCUMENT_MATRIX[i][irrelDocs.get(j)];
+					weight += vectorSpaceMatrix.getTERM_DOCUMENT_MATRIX()[i][irrelDocs.get(j)];
 				}
-				query.vectorInVectorSpaceModel[i] -= (weight * offset);
-				query.vectorInVectorSpaceModel[i] = validateTermWeight(query.vectorInVectorSpaceModel[i]);
+				query.getVectorInVectorSpaceModel()[i] -= (weight * offset);
+				query.getVectorInVectorSpaceModel()[i] = validateTermWeight(query.getVectorInVectorSpaceModel()[i]);
 			}
 		}
 	}

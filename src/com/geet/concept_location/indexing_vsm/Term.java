@@ -4,10 +4,36 @@ import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.Stemmer;
 import com.geet.concept_location.utils.StringUtils;
 public class Term {
-	public String termString;
-	public int termFrequency=0;
-	public int documentFrequency = 0;
-	public double inverseDocumentFrequency = 0.0; 
+	
+	private String termString="";
+	private int termFrequency=0;
+	private int documentFrequency = 0;
+	private double inverseDocumentFrequency = 0.0; 
+	
+	public String getTermString() {
+		return termString;
+	}
+	public void setTermString(String termString) {
+		this.termString = termString;
+	}
+	public int getTermFrequency() {
+		return termFrequency;
+	}
+	public void setTermFrequency(int termFrequency) {
+		this.termFrequency = termFrequency;
+	}
+	public int getDocumentFrequency() {
+		return documentFrequency;
+	}
+	public void setDocumentFrequency(int documentFrequency) {
+		this.documentFrequency = documentFrequency;
+	}
+	public double getInverseDocumentFrequency() {
+		return inverseDocumentFrequency;
+	}
+	public void setInverseDocumentFrequency(double inverseDocumentFrequency) {
+		this.inverseDocumentFrequency = inverseDocumentFrequency;
+	}
 	public Term(String termString) {
 		this.termString = termString;
 	}
@@ -64,12 +90,10 @@ public class Term {
 			return true;
 		}
 		Stemmer stemmer = new Stemmer(term.termString);
-		stemmer.stem();
 		if (termString.equals(stemmer.toString())) {
 			return true;
 		}
 		stemmer = new Stemmer(termString);
-		stemmer.stem();
 		if (term.termString.equals(stemmer.toString())) {
 			return true;
 		}

@@ -13,7 +13,7 @@ public class ExplorerPage extends Page {
 		this.projectExplorerViewPanel = projectExplorerViewPanel;
 	}
 
-	ProjectExplorerViewPanel projectExplorerViewPanel;
+	private ProjectExplorerViewPanel projectExplorerViewPanel;
 	
 	public ExplorerPage(File f) {
 		super(f);

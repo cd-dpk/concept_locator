@@ -19,10 +19,10 @@ public class ProjectExplorerViewPanel extends JPanel{
 		setLayout(null);
 		this.project = project;
 		projectTreePanel = new FileTree(this.project);
-		projectTreePanel.setBounds(0, 0, UIConstants.FILE_TREE_WIDTH, bound.height-20);
+		projectTreePanel.setBounds(0, 0, UIConstants.FILE_TREE_WIDTH, bound.getHeigh()-20);
 		add(projectTreePanel);
-		sourceViewPanel = new SourceViewPanel(source,new Bound(0,0, bound.width - UIConstants.FILE_TREE_WIDTH-20, bound.height-20));
-		sourceViewPanel.setBounds(UIConstants.FILE_TREE_WIDTH+20,0, bound.width - UIConstants.FILE_TREE_WIDTH-20, bound.height-20);
+		sourceViewPanel = new SourceViewPanel(source,new Bound(0,0, bound.getWidth() - UIConstants.FILE_TREE_WIDTH-20, bound.getHeigh()-20));
+		sourceViewPanel.setBounds(UIConstants.FILE_TREE_WIDTH+20,0, bound.getWidth() - UIConstants.FILE_TREE_WIDTH-20, bound.getHeigh()-20);
 		add(sourceViewPanel);
 	}
 	public FileTree getProjectTreePanel() {

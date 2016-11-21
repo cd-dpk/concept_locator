@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 public class StringUtils {
-	public static char underScoreCase = '_';
-	public static int upperCase_low = 65;
-	public static char upperCase_high  = 96;
-	public static char lowerCase_low  = 97;
-	public static char lowerCase_high  = 97+25;
+	private static char underScoreCase = '_';
+	private static int upperCase_low = 65;
+	private static char upperCase_high  = 96;
+	private static char lowerCase_low  = 97;
+	private static char lowerCase_high  = 97+25;
 	
 	public static String getFilePathName(String treePath){
 		String filePath ="";

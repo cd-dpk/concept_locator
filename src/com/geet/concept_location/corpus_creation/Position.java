@@ -2,8 +2,8 @@ package com.geet.concept_location.corpus_creation;
 import java.io.Serializable;
 import javax.crypto.spec.PSource;
 public class Position  implements Serializable{
-	public int line=0;
-	public int column=0;
+	private int line=0;
+	private int column=0;
 	public Position(int line, int column) {
 		setLine(line);
 		setColumn(column);

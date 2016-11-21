@@ -6,7 +6,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 public class Menu {
-	public JMenuItem fileNewItem,
+	private JMenuItem fileNewItem,
 					 fileExitItem;
 	private JMenu fileMenu, helpMenu;
 	private JMenuBar jbar;
@@ -33,4 +33,36 @@ public class Menu {
 	public Menu(ActionListener l) {
 		createMenu(l);
 	}
+	public JMenuItem getFileNewItem() {
+		return fileNewItem;
+	}
+	public void setFileNewItem(JMenuItem fileNewItem) {
+		this.fileNewItem = fileNewItem;
+	}
+	public JMenuItem getFileExitItem() {
+		return fileExitItem;
+	}
+	public void setFileExitItem(JMenuItem fileExitItem) {
+		this.fileExitItem = fileExitItem;
+	}
+	public JMenu getFileMenu() {
+		return fileMenu;
+	}
+	public void setFileMenu(JMenu fileMenu) {
+		this.fileMenu = fileMenu;
+	}
+	public JMenu getHelpMenu() {
+		return helpMenu;
+	}
+	public void setHelpMenu(JMenu helpMenu) {
+		this.helpMenu = helpMenu;
+	}
+	public JMenuBar getJbar() {
+		return jbar;
+	}
+	public void setJbar(JMenuBar jbar) {
+		this.jbar = jbar;
+	}
+
+	
 }

@@ -5,27 +5,23 @@ import com.geet.concept_location.corpus_creation.StopWords;
 public class CommentStringTokenizer extends StringTokenizer{
 	public CommentStringTokenizer(String str) {
 		super(str);
-		// TODO Auto-generated constructor stub
 	}
 	public CommentStringTokenizer(String str, String delim, boolean returnDelims) {
 		super(str, delim, returnDelims);
-		// TODO Auto-generated constructor stub
 	}
 	public CommentStringTokenizer(String str, String delim) {
 		super(str, delim);
-		// TODO Auto-generated constructor stub
 	}
 	@Override
 	public String nextToken() {
-		// TODO Auto-generated method stub
 		String largeToken = "";
 		String token = super.nextToken();
 		// if token has a substring of programming syntax then replace with " "
-		StringTokenizer stringTokenizer = new StringTokenizer(token,JavaLanguage.getProgrammingLanguageSyntax()+JavaLanguage.INLINE_COMMENT+JavaLanguage.BLOCK_OR_JAVADOC_CONTINUE+JavaLanguage.getOperators()+JavaLanguage.getJavaDocs(),false);
+		StringTokenizer stringTokenizer = new StringTokenizer(token,JavaLanguage.getProgrammingLanguageSyntax()+JavaLanguage.getInlineComment()+JavaLanguage.getBlockOrJavadocContinue()+JavaLanguage.getOperatorsInString()+JavaLanguage.getJavaDocs(),false);
 		while (stringTokenizer.hasMoreTokens()) {
 			String nestedToken = stringTokenizer.nextToken();
 			// in line comment or 
-			if (StopWords.isStopword(nestedToken)||nestedToken.equals(JavaLanguage.INLINE_COMMENT) || nestedToken.equals(JavaLanguage.BLOCK_OR_JAVADOC_CONTINUE)|| StringUtils.hasStringInList(nestedToken, JavaLanguage.OPERATORS)) {
+			if (StopWords.isStopword(nestedToken)||nestedToken.equals(JavaLanguage.getInlineComment()) || nestedToken.equals(JavaLanguage.getBlockOrJavadocContinue())|| StringUtils.hasStringInList(nestedToken, JavaLanguage.getOperators())) {
 				continue;
 			}
 			if (findAtSign(nestedToken)) {

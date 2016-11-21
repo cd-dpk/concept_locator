@@ -13,10 +13,11 @@ import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.SimpleDocument;
 
 public class VectorSpaceModel implements Serializable{
-	public List<SimpleDocument> documents = new ArrayList<SimpleDocument>();
-	public List<String> terms = new ArrayList<String>();
-	public double [][]TERM_DOCUMENT_MATRIX;
-	public double [] df;
+	
+	private List<SimpleDocument> documents = new ArrayList<SimpleDocument>();
+	private List<String> terms = new ArrayList<String>();
+	private double [][]TERM_DOCUMENT_MATRIX;
+	private double [] df;
 	private int totalTerm=0;
 	private int totalDocs=0;
 	private double MINIMUM_SCORE = 0.0;
@@ -24,6 +25,7 @@ public class VectorSpaceModel implements Serializable{
 	private double a = 1.0;
 	private double b = 2.0;
 	private double MIN = 0;
+	
 	public VectorSpaceModel(List<SimpleDocument> documentList) {
 		documents = documentList;
 		terms = getTermS();
@@ -36,18 +38,48 @@ public class VectorSpaceModel implements Serializable{
 		setTERM_DOCUMENT_MATRIX(terms, documents);
 	}
 	public VectorSpaceModel(VectorSpaceMatrix vectorSpaceMatrix){
-		for (int i = 0; i < vectorSpaceMatrix.simpleDocuments.size(); i++) {
-			documents.add(new SimpleDocument(vectorSpaceMatrix.simpleDocuments.get(i).docInJavaFile,vectorSpaceMatrix.simpleDocuments.get(i).docName,vectorSpaceMatrix.simpleDocuments.get(i).getStartPosition(),vectorSpaceMatrix.simpleDocuments.get(i).getEndPosition(),vectorSpaceMatrix.simpleDocuments.get(i).score));
+		for (int i = 0; i < vectorSpaceMatrix.getSimpleDocuments().size(); i++) {
+			SimpleDocument simpleDocument = new SimpleDocument.Builder()
+					.docInJavaFile(
+							vectorSpaceMatrix.getSimpleDocuments().get(i)
+									.getDocInJavaFile())
+					.docName(
+							vectorSpaceMatrix.getSimpleDocuments().get(i)
+									.getDocName())
+					.startPosition(
+							vectorSpaceMatrix.getSimpleDocuments().get(i)
+									.getStartPosition())
+					.endPosition(
+							vectorSpaceMatrix.getSimpleDocuments().get(i)
+									.getEndPosition())
+					.score(vectorSpaceMatrix.getSimpleDocuments().get(i).getScore())
+					.build();
+			documents.add(simpleDocument);
 		}
-		terms = vectorSpaceMatrix.terms;
-		TERM_DOCUMENT_MATRIX = vectorSpaceMatrix.TERM_DOCUMENT_MATRIX;
-		df = vectorSpaceMatrix.df;
+		terms = vectorSpaceMatrix.getTerms();
+		TERM_DOCUMENT_MATRIX = vectorSpaceMatrix.getTERM_DOCUMENT_MATRIX();
+		df = vectorSpaceMatrix.getDf();
 	}
 
 	public VectorSpaceMatrix getVectorSpaceMatrix(){
 		List<SimpleDocument> simpleDocuments = new ArrayList<SimpleDocument>();
 		for (int i = 0; i < documents.size(); i++) {
-			simpleDocuments.add(new SimpleDocument(documents.get(i).docInJavaFile, documents.get(i).docName, documents.get(i).startPosition, documents.get(i).endPosition, 0.0));
+			SimpleDocument simpleDocument = new SimpleDocument.Builder()
+			.docInJavaFile(
+					documents.get(i)
+							.getDocInJavaFile())
+			.docName(
+					documents.get(i)
+							.getDocName())
+			.startPosition(
+					documents.get(i)
+							.getStartPosition())
+			.endPosition(
+					documents.get(i)
+							.getEndPosition())
+			.score(documents.get(i).getScore())
+			.build();
+			simpleDocuments.add(simpleDocument);
 		}
 		return new VectorSpaceMatrix(simpleDocuments,terms,TERM_DOCUMENT_MATRIX, df);
 	}
@@ -99,8 +131,8 @@ public class VectorSpaceModel implements Serializable{
 					scalarOne += TERM_DOCUMENT_MATRIX[j][0] * (1 + (Math.log10((double)(documents.size())/(df[j]))/Math.log10(2.0)))* TERM_DOCUMENT_MATRIX[j][0] * (1 + (Math.log10((double)(documents.size())/(df[j]))/Math.log10(2.0)));
 					scalarTwo += TERM_DOCUMENT_MATRIX[j][i] * (1 + (Math.log10((double)(documents.size())/(df[j]))/Math.log10(2.0)))* TERM_DOCUMENT_MATRIX[j][i]*(1 + (Math.log10((double)(documents.size())/(df[j]))/Math.log10(2.0)));
 				}
-				documents.get(i).score = (dotProduct)/(Math.sqrt(scalarOne)*Math.sqrt(scalarTwo));
-				if (documents.get(i).score > 0) {
+				documents.get(i).setScore( (dotProduct)/(Math.sqrt(scalarOne)*Math.sqrt(scalarTwo)));
+				if (documents.get(i).getScore() > 0) {
 					lsiDocuments.add((Document) documents.get(i));
 				}
 		}
@@ -115,14 +147,14 @@ public class VectorSpaceModel implements Serializable{
 				double scalarTwo = 0.0;
 				for (int j = 0; j < terms.size(); j++) {
 					double tempDf = df[j];
-					if (query.vectorInVectorSpaceModel[j] != 0) {
+					if (query.getVectorInVectorSpaceModel()[j] != 0) {
 						tempDf =  1 + ((Math.log10((double)(totalDocument)/(tempDf+1)))/Math.log10(2.0));
 					}
 					else{
 						tempDf =  1 + ((Math.log10((double)(totalDocument)/(tempDf)))/Math.log10(2.0));
 					}
-					dotProduct +=( query.vectorInVectorSpaceModel[j] * tempDf )* (TERM_DOCUMENT_MATRIX[j][i]* tempDf);
-					scalarOne += (query.vectorInVectorSpaceModel[j] * tempDf)* (query.vectorInVectorSpaceModel[j] * tempDf);
+					dotProduct +=( query.getVectorInVectorSpaceModel()[j] * tempDf )* (TERM_DOCUMENT_MATRIX[j][i]* tempDf);
+					scalarOne += (query.getVectorInVectorSpaceModel()[j] * tempDf)* (query.getVectorInVectorSpaceModel()[j] * tempDf);
 					scalarTwo += (TERM_DOCUMENT_MATRIX[j][i] * tempDf)* (TERM_DOCUMENT_MATRIX[j][i]* tempDf);
 				}
 				/*for (int j = 0; j < query.vectorInExtendedVectorSpaceModel.length; j++) {
@@ -132,9 +164,9 @@ public class VectorSpaceModel implements Serializable{
 				//	System.out.println(scalarOne);
 				}*/
 				if (scalarOne != 0 && scalarTwo != 0) {
-					documents.get(i).score = (dotProduct)/(Math.sqrt(scalarOne)*Math.sqrt(scalarTwo));
-					System.out.println(documents.get(i).score);
-					if (documents.get(i).score > MINIMUM_SCORE) {
+					documents.get(i).setScore((dotProduct)/(Math.sqrt(scalarOne)*Math.sqrt(scalarTwo)));
+					System.out.println(documents.get(i).getScore());
+					if (documents.get(i).getScore() > MINIMUM_SCORE) {
 						lsiDocuments.add(documents.get(i));
 					}
 				}
@@ -147,13 +179,13 @@ public class VectorSpaceModel implements Serializable{
 	public Query getQuery(SimpleDocument simpleDocument){
 		Query query = new Query();
 		System.out.println(simpleDocument.getTerms().toString());
-		query.vectorInVectorSpaceModel = new double[terms.size()]; 
+		query.setVectorInVectorSpaceModel(new double[terms.size()]); 
 		List<Term> extensionTerms = new ArrayList<Term>();
 		for (Term term : simpleDocument.getTerms()) {
 			int flag =0;
-			for (int i = 0; i < query.vectorInVectorSpaceModel.length; i++) {
+			for (int i = 0; i < query.getVectorInVectorSpaceModel().length; i++) {
 				if (term.isSameInIR(new Term(terms.get(i)))) {
-					query.vectorInVectorSpaceModel[i] = term.termFrequency;
+					query.getVectorInVectorSpaceModel()[i] = term.getTermFrequency();
 					flag = 1;
 					break;
 				}
@@ -163,9 +195,9 @@ public class VectorSpaceModel implements Serializable{
 				extensionTerms.add(term);
 			}
 		}
-		query.vectorInExtendedVectorSpaceModel = new double[extensionTerms.size()];
+		query.setVectorInExtendedVectorSpaceModel(new double[extensionTerms.size()]);
 		for (int i = 0; i < extensionTerms.size(); i++) {
-			query.vectorInExtendedVectorSpaceModel[i] = extensionTerms.get(i).termFrequency;
+			query.getVectorInExtendedVectorSpaceModel()[i] = extensionTerms.get(i).getTermFrequency();
 		}
 		return query;
 	}
@@ -182,7 +214,7 @@ public class VectorSpaceModel implements Serializable{
 			int flag =0;
 			for (int i = 0; i < newDocumentMatrix.length; i++) {
 				if (term.isSameInIR(new Term(terms.get(i)))) {
-					newDocumentMatrix[i] = term.termFrequency;
+					newDocumentMatrix[i] = term.getTermFrequency();
 					flag = 1;
 					break;
 				}
@@ -216,10 +248,10 @@ public class VectorSpaceModel implements Serializable{
 				for (int j = 0; j < extensionTerms.size(); j++) {
 				//	System.out.println(j);
 					double tempDf =  1 + (Math.log10((double)(totalDocument)/(1))/Math.log10(2.0));
-					scalarOne += (extensionTerms.get(j).termFrequency * tempDf)* (extensionTerms.get(j).termFrequency* tempDf);
+					scalarOne += (extensionTerms.get(j).getTermFrequency() * tempDf)* (extensionTerms.get(j).getTermFrequency() * tempDf);
 				//	System.out.println(scalarOne);
 				}
-				documents.get(i).score = (dotProduct)/(Math.sqrt(scalarOne)*Math.sqrt(scalarTwo));
+				documents.get(i).setScore((dotProduct)/(Math.sqrt(scalarOne)*Math.sqrt(scalarTwo)));
 		//		System.out.println(documents.get(i).score);
 		//		if (documents.get(i).score > MINIMUM_SCORE) {
 					lsiDocuments.add(documents.get(i));
@@ -430,5 +462,67 @@ public class VectorSpaceModel implements Serializable{
 			text += "\n";
 		}
 		return text;
+	}
+	public List<String> getTerms() {
+		return terms;
+	}
+	public void setTerms(List<String> terms) {
+		this.terms = terms;
+	}
+	public double[] getDf() {
+		return df;
+	}
+	public void setDf(double[] df) {
+		this.df = df;
+	}
+	public int getTotalTerm() {
+		return totalTerm;
+	}
+	public void setTotalTerm(int totalTerm) {
+		this.totalTerm = totalTerm;
+	}
+	public int getTotalDocs() {
+		return totalDocs;
+	}
+	public void setTotalDocs(int totalDocs) {
+		this.totalDocs = totalDocs;
+	}
+	public double getMINIMUM_SCORE() {
+		return MINIMUM_SCORE;
+	}
+	public void setMINIMUM_SCORE(double mINIMUM_SCORE) {
+		MINIMUM_SCORE = mINIMUM_SCORE;
+	}
+	public double getMAX() {
+		return MAX;
+	}
+	public void setMAX(double mAX) {
+		MAX = mAX;
+	}
+	public double getA() {
+		return a;
+	}
+	public void setA(double a) {
+		this.a = a;
+	}
+	public double getB() {
+		return b;
+	}
+	public void setB(double b) {
+		this.b = b;
+	}
+	public double getMIN() {
+		return MIN;
+	}
+	public void setMIN(double mIN) {
+		MIN = mIN;
+	}
+	public void setDocuments(List<SimpleDocument> documents) {
+		this.documents = documents;
+	}
+	public void setTERM_DOCUMENT_MATRIX(double[][] tERM_DOCUMENT_MATRIX) {
+		TERM_DOCUMENT_MATRIX = tERM_DOCUMENT_MATRIX;
 	}	
+	
+	
 }

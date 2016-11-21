@@ -5,15 +5,12 @@ public class ImplementationStringTokenizer extends StringTokenizer {
 	public ImplementationStringTokenizer(String str, String delim,
 			boolean returnDelims) {
 		super(str, delim, returnDelims);
-		// TODO Auto-generated constructor stub
 	}
 	public ImplementationStringTokenizer(String str, String delim) {
 		super(str, delim);
-		// TODO Auto-generated constructor stub
 	}
 	public ImplementationStringTokenizer(String str) {
 		super(str);
-		// TODO Auto-generated constructor stub
 	}
 	@Override
 	public String nextToken() {
@@ -29,11 +26,11 @@ public class ImplementationStringTokenizer extends StringTokenizer {
 			String nestedToken = stringTokenizer.nextToken();
 			// if token is equal to any keywords, or operators then replace with
 			// " "
-			if (StringUtils.hasStringInList(nestedToken, JavaLanguage.KEYWORDS)
+			if (StringUtils.hasStringInList(nestedToken, JavaLanguage.getKeywords())
 					|| StringUtils.hasStringInList(nestedToken,
-							JavaLanguage.OPERATORS_CONTAINED_ONLY_CHAR)
+							JavaLanguage.getOperatorsContainedOnlyChar())
 					|| StringUtils.hasStringInList(nestedToken,
-							JavaLanguage.LITERALS)) {
+							JavaLanguage.getLiterals())) {
 			} else {
 				// get identifier separation
 				largeToken += StringUtils

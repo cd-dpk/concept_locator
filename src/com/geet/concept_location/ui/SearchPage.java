@@ -5,7 +5,7 @@ import java.io.File;
 import com.geet.concept_location.constants.UIConstants;
 
 public class SearchPage extends Page{
-	SearchUI searchUI;
+	private SearchUI searchUI;
 	public SearchPage(File f) {
 		super(f);
 		searchUI = new SearchUI(new Bound(0, 0, UIConstants.WIDTH, UIConstants.HEIGHT-UIConstants.Menu_Height));
@@ -13,5 +13,11 @@ public class SearchPage extends Page{
 	public SearchPage(String string) {
 		super(string);
 		searchUI = new SearchUI(new Bound(0, 0, UIConstants.WIDTH, UIConstants.HEIGHT-UIConstants.Menu_Height));
+	}
+	public SearchUI getSearchUI() {
+		return searchUI;
+	}
+	public void setSearchUI(SearchUI searchUI) {
+		this.searchUI = searchUI;
 	}
 }

@@ -3,7 +3,6 @@ package com.geet.concept_location.ui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-
 import javax.swing.JFileChooser;
 
 public class WindowActionHandler implements ActionListener {
@@ -19,7 +18,7 @@ public class WindowActionHandler implements ActionListener {
 			AppManager.getDocuments().remove(pos);
 			win.getTabs().remove(pos);
 		}
-		if (e.getSource().equals(win.getMenu().fileNewItem)) {
+		if (e.getSource().equals(win.getMenu().getFileNewItem())) {
 			// new project indexing...
 			final JFileChooser fc = new JFileChooser();
 			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -28,7 +27,7 @@ public class WindowActionHandler implements ActionListener {
 				File file = fc.getSelectedFile();
 				win.projectPath = file.getAbsolutePath();
 			}
-		} else if (e.getSource().equals(win.getMenu().fileExitItem)) {
+		} else if (e.getSource().equals(win.getMenu().getFileExitItem())) {
 			System.exit(0);
 		}
     }

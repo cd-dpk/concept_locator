@@ -9,8 +9,6 @@ public class Page {
 	public void setFile(File f) {
 		file = f;
 	}
-
-	
 	public String getFilename() {
 		return filename;
 	}

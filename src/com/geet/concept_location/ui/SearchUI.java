@@ -50,10 +50,10 @@ public class SearchUI extends JPanel{
 	public void setRelevanceFeedback(RelevanceFeedback relevanceFeedback) {
 		this.relevanceFeedback = relevanceFeedback;
 	}
-	DefaultListModel<SimpleDocument> listModel = new DefaultListModel();
-	public JList searchResultList = new JList(listModel);
-	public List<SimpleDocument> lsiDocuments = new ArrayList<SimpleDocument>();
-	Bound bound;
+	private DefaultListModel<SimpleDocument> listModel = new DefaultListModel();
+	private JList searchResultList = new JList(listModel);
+	private List<SimpleDocument> lsiDocuments = new ArrayList<SimpleDocument>();
+	private Bound bound;
 	public Bound getBound() {
 		return bound;
 	}
@@ -64,10 +64,10 @@ public class SearchUI extends JPanel{
 		setLayout(null);
 		setBound(bound);		
 		searchTextField = new JTextField("Enter Query");
-		searchTextField.setBounds(0, 0, (int)(.80*bound.width), 30);
+		searchTextField.setBounds(0, 0, (int)(.80*bound.getWidth()), 30);
 		add(searchTextField);
 		searchButton = new JButton("Search");
-		searchButton.setBounds((int)(.80*bound.width)+2, 0, (int)(.2*bound.width), 30);
+		searchButton.setBounds((int)(.80*bound.getWidth())+2, 0, (int)(.2*bound.getWidth()), 30);
 		//searchButton.setIcon(new ImageIcon("src/res/search.png"));
 		add(searchButton);
 		openButton = new JButton("OPEN");
@@ -75,7 +75,7 @@ public class SearchUI extends JPanel{
 		add(openButton);
 		openButton.setVisible(false);
 		relevanceFeedback = new RelevanceFeedback(bound);
-		relevanceFeedback.setBounds(200, 30, bound.width-200, 50);
+		relevanceFeedback.setBounds(200, 30, bound.getWidth()-200, 50);
 		add(relevanceFeedback);
 		relevanceFeedback.setVisible(false);
 		searchResultList.setCellRenderer(new SearhResult());
@@ -83,10 +83,10 @@ public class SearchUI extends JPanel{
 			listModel.addElement(document);
 		}
 		JScrollPane scrollPane =new JScrollPane(searchResultList);
-		scrollPane.setBounds(0, 80, bound.width,bound.height-80);
+		scrollPane.setBounds(0, 80, bound.getWidth(),bound.getHeigh()-80);
 		add(scrollPane);
 	}
-	/*
+	/**
 	 * @deprecated
 	 */
 	private class RTextAreaListItem extends RSyntaxTextArea implements ListCellRenderer, Scrollable{
@@ -100,34 +100,32 @@ public class SearchUI extends JPanel{
 		@Override
 		public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {
-			// TODO Auto-generated method stub
 			SimpleDocument simpleDocument = (SimpleDocument) value;
 			setText(simpleDocument.getArticle());
 			setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
 		    return this;
 		}
 	}
+	
 	private class SearhResult extends MyModel implements ListCellRenderer{
-		
 		protected SearhResult() {
 		    setBorder(BorderFactory.createLineBorder(Color.blue));
 		}
 		@Override
 		public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {
-			// TODO Auto-generated method stub
 			SimpleDocument simpleDocument = (SimpleDocument) value;
-			fileName.setText(simpleDocument.docInJavaFile+"\n"+simpleDocument.docName+"\n["+simpleDocument.getStartPosition().line+","+simpleDocument.getEndPosition().line+"]\n"+simpleDocument.score);
-			fileName.setEditable(false);
+			getFileName().setText(simpleDocument.getDocInJavaFile()+"\n"+simpleDocument.getDocName()+"\n["+simpleDocument.getStartPosition().getLine()+","+simpleDocument.getEndPosition().getLine()+"]\n"+simpleDocument.getScore());
+			getFileName().setEditable(false);
 //			System.out.println(simpleDocument.docInJavaFile);
-			rSyntaxTextArea.setText(new JavaFileReader().getText(simpleDocument));
-			rSyntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
-			rSyntaxTextArea.setCodeFoldingEnabled(true);
-			rSyntaxTextArea.setAntiAliasingEnabled(true);
+			getrSyntaxTextArea().setText(new JavaFileReader().getText(simpleDocument));
+			getrSyntaxTextArea().setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
+			getrSyntaxTextArea().setCodeFoldingEnabled(true);
+			getrSyntaxTextArea().setAntiAliasingEnabled(true);
 			if (isSelected) {
-				rSyntaxTextArea.setBackground(Color.LIGHT_GRAY);
+				getrSyntaxTextArea().setBackground(Color.LIGHT_GRAY);
 			}else{
-				rSyntaxTextArea.setBackground(Color.WHITE);
+				getrSyntaxTextArea().setBackground(Color.WHITE);
 			}
 			return this;
 		}
@@ -162,6 +160,18 @@ public class SearchUI extends JPanel{
 			listModel.addElement(document);
 		}	
 		searchResultList.setModel(listModel);
+	}
+	public DefaultListModel<SimpleDocument> getListModel() {
+		return listModel;
+	}
+	public void setListModel(DefaultListModel<SimpleDocument> listModel) {
+		this.listModel = listModel;
+	}
+	public List<SimpleDocument> getLsiDocuments() {
+		return lsiDocuments;
+	}
+	public void setLsiDocuments(List<SimpleDocument> lsiDocuments) {
+		this.lsiDocuments = lsiDocuments;
 	}
 
 	

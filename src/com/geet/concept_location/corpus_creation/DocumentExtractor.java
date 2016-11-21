@@ -16,12 +16,12 @@ import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 public class DocumentExtractor {
-	CompilationUnit compilationUnit;
-	private  List<MethodOrConstructorDocument> myMethodOrConstructorDocuments = new ArrayList<MethodOrConstructorDocument>();
-	private  List<ClassDocument> myClassDocuments = new ArrayList<ClassDocument>();
-	private  List<EnumDocument> myEnumDocuments = new ArrayList<EnumDocument>();
+	private CompilationUnit compilationUnit;
+	private  List<Document> myMethodOrConstructorDocuments = new ArrayList<Document>();
+	private  List<Document> myClassDocuments = new ArrayList<Document>();
+	private  List<Document> myEnumDocuments = new ArrayList<Document>();
 	private  List<Document> allDocuments = new ArrayList<Document>();
-	static String fileName;
+	private static String fileName;
 	public DocumentExtractor(File javaFile) {
 		allDocuments = new ArrayList<Document>();
 		try {
@@ -38,7 +38,7 @@ public class DocumentExtractor {
 		new ConstructorVisitor().visit(compilationUnit, null);
 		new EnumVisitor().visit(compilationUnit, null);
 		new ClassOrInterfaceVisitor().visit(compilationUnit, null);
-		for (ClassDocument document : myClassDocuments) {
+		for (Document document : myClassDocuments) {
 			new FieldVisitor(document).visit(compilationUnit, null);
 		}
 		allDocuments.addAll(myMethodOrConstructorDocuments);
@@ -52,19 +52,19 @@ public class DocumentExtractor {
 			Comment methodComment = methodDeclaration.getComment();
 			Position startPosition = new Position(methodDeclaration.getBeginLine(), methodDeclaration.getBeginColumn());
 			Position endPosition = new Position(methodDeclaration.getEndLine(), methodDeclaration.getEndLine());
-			MethodOrConstructorDocument methodOrConstructorDocument = new MethodOrConstructorDocument();
+			Document methodOrConstructorDocument = new Document.Builder().build();
 			methodOrConstructorDocument.docInJavaFile = fileName;
 			methodOrConstructorDocument.docName = methodDeclaration.getName();
 			if (methodComment != null && methodComment instanceof JavadocComment) {
-				methodOrConstructorDocument.javaDocComments.add((JavadocComment) methodComment);
+				methodOrConstructorDocument.getJavaDocComments().add((JavadocComment) methodComment);
 			}else if ((methodComment != null )&& (methodComment instanceof JavadocComment == false)) {
-				methodOrConstructorDocument.implementationComments.add(methodComment);
+				methodOrConstructorDocument.getImplementationComments().add(methodComment);
 			}
 			for (Comment containedComment : methodDeclaration.getAllContainedComments()) {
 				if (containedComment instanceof JavadocComment) {
-					methodOrConstructorDocument.javaDocComments.add((JavadocComment) containedComment);
+					methodOrConstructorDocument.getJavaDocComments().add((JavadocComment) containedComment);
 				}else {
-					methodOrConstructorDocument.implementationComments.add(containedComment);
+					methodOrConstructorDocument.getImplementationComments().add(containedComment);
 				}
 			}
 			if (methodComment!=null) {
@@ -72,7 +72,7 @@ public class DocumentExtractor {
 			}
 			methodOrConstructorDocument.setStartPosition(new com.geet.concept_location.corpus_creation.Position(startPosition));
 			methodOrConstructorDocument.setEndPosition(new com.geet.concept_location.corpus_creation.Position(endPosition));			
-			methodOrConstructorDocument.implementionBody = methodDeclaration.getBody().toStringWithoutComments();
+			methodOrConstructorDocument.setImplementionBody(methodDeclaration.getBody().toStringWithoutComments());
 			myMethodOrConstructorDocuments.add(methodOrConstructorDocument);
 		}
 	}
@@ -82,19 +82,19 @@ public class DocumentExtractor {
 			Comment methodComment = constructorDeclaration.getComment();
 			Position startPosition = new Position(constructorDeclaration.getBeginLine(), constructorDeclaration.getBeginColumn());
 			Position endPosition = new Position(constructorDeclaration.getEndLine(), constructorDeclaration.getEndLine());
-			MethodOrConstructorDocument methodOrConstructorDocument = new MethodOrConstructorDocument();
+			Document methodOrConstructorDocument = new Document.Builder().build();
 			methodOrConstructorDocument.docInJavaFile = fileName;
 			methodOrConstructorDocument.docName = constructorDeclaration.getName();
 			if (methodComment != null && methodComment instanceof JavadocComment) {
-				methodOrConstructorDocument.javaDocComments.add((JavadocComment) methodComment);
+				methodOrConstructorDocument.getJavaDocComments().add((JavadocComment) methodComment);
 			}else if ((methodComment != null )&& (methodComment instanceof JavadocComment == false)) {
-				methodOrConstructorDocument.implementationComments.add(methodComment);
+				methodOrConstructorDocument.getImplementationComments().add(methodComment);
 			}
 			for (Comment containedComment : constructorDeclaration.getAllContainedComments()) {
 				if (containedComment instanceof JavadocComment) {
-					methodOrConstructorDocument.javaDocComments.add((JavadocComment) containedComment);
+					methodOrConstructorDocument.getJavaDocComments().add((JavadocComment) containedComment);
 				}else {
-					methodOrConstructorDocument.implementationComments.add(containedComment);
+					methodOrConstructorDocument.getImplementationComments().add(containedComment);
 				}
 			}
 			if (methodComment!=null) {
@@ -102,7 +102,7 @@ public class DocumentExtractor {
 			}
 			methodOrConstructorDocument.setStartPosition(new com.geet.concept_location.corpus_creation.Position(startPosition));
 			methodOrConstructorDocument.setEndPosition(new com.geet.concept_location.corpus_creation.Position(endPosition));			
-			methodOrConstructorDocument.implementionBody = constructorDeclaration.getBlock().toStringWithoutComments();
+			methodOrConstructorDocument.setImplementionBody(constructorDeclaration.getBlock().toStringWithoutComments());
 			myMethodOrConstructorDocuments.add(methodOrConstructorDocument);
 		}
 	}
@@ -112,13 +112,13 @@ public class DocumentExtractor {
 			Comment classComment = classOrInterfaceDeclaration.getComment();
 			Position startPosition = new Position(classOrInterfaceDeclaration.getBeginLine(), classOrInterfaceDeclaration.getBeginColumn());
 			Position endPosition = new Position(classOrInterfaceDeclaration.getEndLine(), classOrInterfaceDeclaration.getEndLine());
-			ClassDocument classDocument = new ClassDocument();
+			Document classDocument = new Document.Builder().build();
 			classDocument.docInJavaFile = fileName;
 			classDocument.docName = classOrInterfaceDeclaration.getName();
 			if (classComment != null && classComment instanceof JavadocComment) {
-				classDocument.javaDocComments.add((JavadocComment) classComment);
+				classDocument.getJavaDocComments().add((JavadocComment) classComment);
 			}else if ((classComment != null )&& (classComment instanceof JavadocComment == false)) {
-				classDocument.implementationComments.add(classComment);
+				classDocument.getImplementationComments().add(classComment);
 			}
 			if (classComment!=null) {
 				startPosition = new Position(classComment.getBeginLine(), classComment.getBeginColumn());
@@ -129,9 +129,8 @@ public class DocumentExtractor {
 		}
 	}
 	private static class FieldVisitor extends VoidVisitorAdapter{
-		ClassDocument classDocument;
-		public FieldVisitor(ClassDocument classDocument) {
-			// TODO Auto-generated constructor stub
+		Document classDocument;
+		public FieldVisitor(Document classDocument) {
 			this.classDocument = classDocument;
 		}
 		@Override
@@ -143,11 +142,13 @@ public class DocumentExtractor {
 			if (isParamOneBelongsToParamTwo( new Range(startPosition, endPosition), classDocument.getRange())) {
 				Comment classComment = fieldDeclaration.getComment();
 				if (classComment != null && classComment instanceof JavadocComment) {
-					classDocument.javaDocComments.add((JavadocComment) classComment);
+					classDocument.getJavaDocComments().add((JavadocComment) classComment);
 				}else if ((classComment != null )&& (classComment instanceof JavadocComment == false)) {
-					classDocument.implementationComments.add(classComment);
+					classDocument.getImplementationComments().add(classComment);
 				}
-				classDocument.implementionBody += fieldDeclaration.toStringWithoutComments()+"\n";
+				String text = classDocument.getImplementionBody();
+				text += fieldDeclaration.toStringWithoutComments()+"\n";
+				classDocument.setImplementionBody(text) ;
 			}			
 		}
 	}
@@ -157,20 +158,20 @@ public class DocumentExtractor {
 				Comment classComment = enumDeclaration.getComment();
 				Position startPosition = new Position(enumDeclaration.getBeginLine(), enumDeclaration.getBeginColumn());
 				Position endPosition = new Position(enumDeclaration.getEndLine(), enumDeclaration.getEndLine());
-				EnumDocument enumDocument = new EnumDocument();
+				Document enumDocument = new Document.Builder().build();
 				enumDocument.docInJavaFile = fileName;
 				enumDocument.docName = enumDeclaration.getName();
 				if (classComment != null && classComment instanceof JavadocComment) {
-					enumDocument.javaDocComments.add((JavadocComment) classComment);
+					enumDocument.getJavaDocComments().add((JavadocComment) classComment);
 				}else if ((classComment != null )&& (classComment instanceof JavadocComment == false)) {
-					enumDocument.implementationComments.add(classComment);
+					enumDocument.getImplementationComments().add(classComment);
 				}
 				if (classComment!=null) {
 					startPosition = new Position(classComment.getBeginLine(), classComment.getBeginColumn());
 				}
 				enumDocument.setStartPosition(new com.geet.concept_location.corpus_creation.Position(startPosition));
 				enumDocument.setEndPosition(new com.geet.concept_location.corpus_creation.Position(endPosition));			
-				enumDocument.implementionBody = enumDeclaration.toStringWithoutComments()+"\n";
+				enumDocument.setImplementionBody(enumDeclaration.toStringWithoutComments()+"\n");
 				myEnumDocuments.add(enumDocument);
 			}			
 		}

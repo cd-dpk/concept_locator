@@ -12,8 +12,7 @@ import com.geet.concept_location.constants.UIConstants;
 
 public class ClassPage extends Page{
 
-	JPanel tabPanel = new JPanel();
-	
+	private JPanel tabPanel = new JPanel();
 	public ClassPage(File f) {
 		super(f);
 		getTabPanel().setLayout(new BorderLayout());
