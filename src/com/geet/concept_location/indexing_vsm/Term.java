@@ -1,13 +1,19 @@
 package com.geet.concept_location.indexing_vsm;
+import java.io.Serializable;
 import java.util.List;
+
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.Stemmer;
+import com.geet.concept_location.indexing_lsi.Lsi;
+import com.geet.concept_location.indexing_lsi.Vector;
 import com.geet.concept_location.utils.StringUtils;
-public class Term {
-	public String termString;
+public class Term implements Serializable, Comparable<Term>{
+	public String termString="";
 	public int termFrequency=0;
 	public int documentFrequency = 0;
 	public double inverseDocumentFrequency = 0.0; 
+	public Vector vector = new Vector(Lsi.NUM_FACTORS);
+	public double score =-1;
 	public Term(String termString) {
 		this.termString = termString;
 	}
@@ -77,5 +83,10 @@ public class Term {
 			return true;
 		}
 		return false;
+	}
+	@Override
+	public int compareTo(Term o) {
+		// TODO Auto-generated method stub
+		return Double.compare(score, o.score);
 	}
 }

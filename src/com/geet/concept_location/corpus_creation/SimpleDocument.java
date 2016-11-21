@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import com.geet.concept_location.indexing_lsi.Lsi;
+import com.geet.concept_location.indexing_lsi.Vector;
 import com.geet.concept_location.indexing_vsm.Term;
 import com.geet.concept_location.utils.StringUtils;
 
@@ -12,10 +14,17 @@ public class SimpleDocument implements Comparable<SimpleDocument>, Serializable{
 	protected String article= "";
 	public String docInJavaFile;
 	public String docName = "";
-	public double score = 0.0;
+	public double score = -1;
 	public Position startPosition;
 	public Position endPosition;
+	public Vector vector = new Vector(Lsi.NUM_FACTORS);
 	
+	public Vector getVector() {
+		return vector;
+	}
+	public void setVector(Vector vector) {
+		this.vector = vector;
+	}
 	public Position getStartPosition() {
 		return startPosition;
 	}
