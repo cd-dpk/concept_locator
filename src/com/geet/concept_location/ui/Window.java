@@ -155,8 +155,13 @@ public class Window {
 						returnDocuments = myLsi.search(lsiQuery);
 						List<Term> relatedTerms = myLsi.searchTerm(lsiQuery);
 						String terms= "";
+						int i=0;
 						for (Term term : relatedTerms) {
 							terms = terms+","+term.termString;
+							i++;
+							if (i >= 20 ) {
+								break;
+							}
 						}
 						searchPage.searchUI.getRelatedTermArea().setText(terms);
 						searchPage.searchUI.updateList(returnDocuments);

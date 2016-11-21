@@ -67,7 +67,6 @@ public class SearchUI extends JPanel{
 		JScrollPane rscrollPane = new JScrollPane(relatedTermArea);
 		rscrollPane.setBounds(250, 30, 700, 50);
 		add(rscrollPane);
-		
 		searchResultList.setCellRenderer(new SearhResult());
 		for (SimpleDocument document : lsiDocuments) {
 			listModel.addElement(document);
