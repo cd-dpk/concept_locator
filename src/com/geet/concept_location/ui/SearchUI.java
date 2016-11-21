@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -33,11 +35,22 @@ public class SearchUI extends JPanel{
 	
 	
 	private JTextField searchTextField;
-	JButton openButton;
+	private JButton openButton;
+	public JButton getOpenButton() {
+		return openButton;
+	}
+	public void setOpenButton(JButton openButton) {
+		this.openButton = openButton;
+	}
 	private JButton searchButton;
-	RelevanceFeedback relevanceFeedback;
+	private RelevanceFeedback relevanceFeedback;
+	public RelevanceFeedback getRelevanceFeedback() {
+		return relevanceFeedback;
+	}
+	public void setRelevanceFeedback(RelevanceFeedback relevanceFeedback) {
+		this.relevanceFeedback = relevanceFeedback;
+	}
 	DefaultListModel<SimpleDocument> listModel = new DefaultListModel();
-	private JPanel rfPanel;
 	public JList searchResultList = new JList(listModel);
 	public List<SimpleDocument> lsiDocuments = new ArrayList<SimpleDocument>();
 	Bound bound;
@@ -49,26 +62,28 @@ public class SearchUI extends JPanel{
 	}
 	public SearchUI(Bound bound){
 		setLayout(null);
-		setBound(bound);
-		
+		setBound(bound);		
 		searchTextField = new JTextField("Enter Query");
 		searchTextField.setBounds(0, 0, (int)(.80*bound.width), 30);
 		add(searchTextField);
 		searchButton = new JButton("Search");
 		searchButton.setBounds((int)(.80*bound.width)+2, 0, (int)(.2*bound.width), 30);
+		//searchButton.setIcon(new ImageIcon("src/res/search.png"));
 		add(searchButton);
 		openButton = new JButton("OPEN");
-		openButton.setBounds(0, 30, 100, 20);
+		openButton.setBounds(0, 30, 100, 30);
 		add(openButton);
+		openButton.setVisible(false);
 		relevanceFeedback = new RelevanceFeedback(bound);
-		relevanceFeedback.setBounds(200, 30, 900, 50);
+		relevanceFeedback.setBounds(200, 30, bound.width-200, 50);
 		add(relevanceFeedback);
+		relevanceFeedback.setVisible(false);
 		searchResultList.setCellRenderer(new SearhResult());
 		for (SimpleDocument document : lsiDocuments) {
 			listModel.addElement(document);
 		}
 		JScrollPane scrollPane =new JScrollPane(searchResultList);
-		scrollPane.setBounds(0, 80, bound.width,bound.height);
+		scrollPane.setBounds(0, 80, bound.width,bound.height-80);
 		add(scrollPane);
 	}
 	/*

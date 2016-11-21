@@ -116,25 +116,27 @@ public class VectorSpaceModel implements Serializable{
 				for (int j = 0; j < terms.size(); j++) {
 					double tempDf = df[j];
 					if (query.vectorInVectorSpaceModel[j] != 0) {
-						tempDf =  1 + (Math.log10((double)(totalDocument)/(tempDf+1))/Math.log10(2.0));
+						tempDf =  1 + ((Math.log10((double)(totalDocument)/(tempDf+1)))/Math.log10(2.0));
 					}
 					else{
-						tempDf =  1 + (Math.log10((double)(totalDocument)/(tempDf))/Math.log10(2.0));
+						tempDf =  1 + ((Math.log10((double)(totalDocument)/(tempDf)))/Math.log10(2.0));
 					}
 					dotProduct +=( query.vectorInVectorSpaceModel[j] * tempDf )* (TERM_DOCUMENT_MATRIX[j][i]* tempDf);
 					scalarOne += (query.vectorInVectorSpaceModel[j] * tempDf)* (query.vectorInVectorSpaceModel[j] * tempDf);
 					scalarTwo += (TERM_DOCUMENT_MATRIX[j][i] * tempDf)* (TERM_DOCUMENT_MATRIX[j][i]* tempDf);
 				}
-				for (int j = 0; j < query.vectorInExtendedVectorSpaceModel.length; j++) {
+				/*for (int j = 0; j < query.vectorInExtendedVectorSpaceModel.length; j++) {
 				//	System.out.println(j);
 					double tempDf =  1 + (Math.log10((double)(totalDocument)/(1))/Math.log10(2.0));
 					scalarOne += (query.vectorInExtendedVectorSpaceModel[j] * tempDf)* (query.vectorInExtendedVectorSpaceModel[j]* tempDf);
 				//	System.out.println(scalarOne);
-				}
-				documents.get(i).score = (dotProduct)/(Math.sqrt(scalarOne)*Math.sqrt(scalarTwo));
-		//		System.out.println(documents.get(i).score);
-				if (documents.get(i).score > MINIMUM_SCORE) {
-					lsiDocuments.add(documents.get(i));
+				}*/
+				if (scalarOne != 0 && scalarTwo != 0) {
+					documents.get(i).score = (dotProduct)/(Math.sqrt(scalarOne)*Math.sqrt(scalarTwo));
+					System.out.println(documents.get(i).score);
+					if (documents.get(i).score > MINIMUM_SCORE) {
+						lsiDocuments.add(documents.get(i));
+					}
 				}
 		}
 		Collections.sort(lsiDocuments);
@@ -144,6 +146,7 @@ public class VectorSpaceModel implements Serializable{
 	
 	public Query getQuery(SimpleDocument simpleDocument){
 		Query query = new Query();
+		System.out.println(simpleDocument.getTerms().toString());
 		query.vectorInVectorSpaceModel = new double[terms.size()]; 
 		List<Term> extensionTerms = new ArrayList<Term>();
 		for (Term term : simpleDocument.getTerms()) {
@@ -154,7 +157,6 @@ public class VectorSpaceModel implements Serializable{
 					flag = 1;
 					break;
 				}
-				query.vectorInVectorSpaceModel[i] = 0;
 			}
 			if (flag == 0) {
 				System.out.println("Not in term_document_matrix"+term);

@@ -292,9 +292,8 @@ public class Stemmer
    }
    
    public static void main(String[] args) {
-	Stemmer stemmer = new Stemmer("multiplication");
+	Stemmer stemmer = new Stemmer("dividing");
 	stemmer.stem();
 	System.out.println(stemmer.toString());
    }
-   
 }

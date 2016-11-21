@@ -19,30 +19,12 @@ public class ProjectExplorerViewPanel extends JPanel{
 		setLayout(null);
 		this.project = project;
 		projectTreePanel = new FileTree(this.project);
-		projectTreePanel.setBounds(0, 0, UIConstants.FILE_TREE_WIDTH, bound.height);
+		projectTreePanel.setBounds(0, 0, UIConstants.FILE_TREE_WIDTH, bound.height-20);
 		add(projectTreePanel);
-		sourceViewPanel = new SourceViewPanel(source,new Bound(0,0, bound.width - UIConstants.FILE_TREE_WIDTH, bound.height));
-		sourceViewPanel.setBounds(UIConstants.FILE_TREE_WIDTH+20, 0, bound.width - UIConstants.FILE_TREE_WIDTH, bound.height);
+		sourceViewPanel = new SourceViewPanel(source,new Bound(0,0, bound.width - UIConstants.FILE_TREE_WIDTH-20, bound.height-20));
+		sourceViewPanel.setBounds(UIConstants.FILE_TREE_WIDTH+20,0, bound.width - UIConstants.FILE_TREE_WIDTH-20, bound.height-20);
 		add(sourceViewPanel);
-/*		projectTreePanel.tree
-				.addTreeSelectionListener(new TreeSelectionListener() {
-					@Override
-					public void valueChanged(TreeSelectionEvent e) {
-						// TODO Auto-generated method stub
-						JavaFileReader javaFileReader = new JavaFileReader();
-						String filePath = StringUtils.getFilePathName(e
-								.getPath().toString());
-						File selectedFile = new File(filePath);
-						if (!selectedFile.isDirectory()) {
-							sourceViewPanel.setFilePath(filePath);
-							if (javaFileReader.openFile(selectedFile)) {
-								sourceViewPanel.getSourceTextArea().setText(
-										javaFileReader.getText());
-							}
-						}
-					}
-				});
-*/	}
+	}
 	public FileTree getProjectTreePanel() {
 		return projectTreePanel;
 	}

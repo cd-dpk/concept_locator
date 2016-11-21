@@ -28,9 +28,8 @@ public class WindowActionHandler implements ActionListener {
 				File file = fc.getSelectedFile();
 				win.projectPath = file.getAbsolutePath();
 			}
-		} else if (e.getSource().equals(win.getMenu().fileCloseItem)) {
-			AppManager.getDocuments().remove(win.getTabs().getSelectedIndex());
-			win.getTabs().remove(win.getTabs().getSelectedIndex());
+		} else if (e.getSource().equals(win.getMenu().fileExitItem)) {
+			System.exit(0);
 		}
     }
 

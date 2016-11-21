@@ -189,6 +189,7 @@ public class StringUtils {
  	}
     public static void main(String[] args) {
     	System.out.println(File.separatorChar);
+    	System.out.println(StringUtils.getFilePathAmongOS("UltimateCalculator-master\\src\\com\\minhasKamal\\ultimateCalculator\\calculators\\simpleCalculator\\SimpleCalculatorOperation.java"));
     	//    	System.out.println(uderscoreDeletedString("_hel_lo__"));
     }
     public static boolean isConstant(String target){
@@ -221,5 +222,22 @@ public class StringUtils {
 			}
 		}
     	return retString;
+    }
+    public static String getFilePathAmongOS(String filePath){
+    	String retString = "";
+    	int index = filePath.indexOf('\\');
+    	if (index != -1) {
+			for (int i = 0; i < filePath.length(); i++) {
+				char ch = filePath.charAt(i);
+				if (ch == '\\') {
+					retString += '/';
+					continue;
+				}
+				retString += ch;
+			}
+		}else{
+			return filePath;
+		}
+    	return retString ;
     }
 }

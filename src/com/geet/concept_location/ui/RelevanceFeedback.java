@@ -38,7 +38,7 @@ public class RelevanceFeedback extends JPanel {
 
 		
 		relevanceFeedback = new JButton("IRRF");
-		relevanceFeedback.setBounds(620, 0, 100, 20);
+		relevanceFeedback.setBounds(602, 0, 200, 30);
 		add(relevanceFeedback);
 		
 		roundLabel = new JLabel("RF");
