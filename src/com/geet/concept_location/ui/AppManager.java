@@ -38,7 +38,6 @@ public class AppManager {
 	/**
 	 * @param args
 	 */
-	
 	public static String readFile(File file) throws IOException {
 		  FileInputStream stream = new FileInputStream(file);
 		  try {

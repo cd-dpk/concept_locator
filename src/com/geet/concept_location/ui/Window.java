@@ -35,8 +35,6 @@ import javax.swing.tree.TreePath;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
-
-import com.geet.concept_location.constants.UIConstants;
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.DocumentExtractor;
 import com.geet.concept_location.corpus_creation.SimpleDocument;
@@ -49,7 +47,7 @@ import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
 import com.geet.concept_location.utils.StringUtils;
 
 public class Window {
-	public String projectPath="D:\\BSSE0501\\Project-801\\UltimateCalculator-master";
+	public String projectPath="UltimateCalculator-master";
 	public List<String> javaFilePaths =new ArrayList<String>();
 	ExplorerPage explorerPage;
 	int rel = 0, irrel = 0, round = 0;
@@ -324,6 +322,7 @@ public class Window {
 				}
 				classNo++;
 			}
+			
 			System.out.println("Size "+allDocuments.size());
 			for (SimpleDocument simpleDocument : allDocuments) {
 				fileWriter.write("------------------------\n");
@@ -340,7 +339,6 @@ public class Window {
 				fileWriter.write(document.getArticle()+"\n");
 				fileWriter.write("------------------------------------------------------------------------\n");
 				fileWriter.write(document.getTermsInString()+"\n");
-				
 			}
 			fileWriter.close();
 //			System.exit(0);
@@ -407,7 +405,7 @@ public class Window {
 		//iconPanel.setPreferredSize(new Dimension(12, 12));
 		pnlTab.setOpaque(false);
 		JLabel lblTitle = new JLabel(d.getFilename());
-		ImageIcon icon = new ImageIcon("src/res/close.png");
+		ImageIcon icon = new ImageIcon("res/close.png");
 		JButton btnClose = new JButton(new ImageIcon(icon.getImage().getScaledInstance(12, 12, 4)));
 		btnClose.setActionCommand("TabClose");
 		btnClose.setOpaque(false);
@@ -415,7 +413,6 @@ public class Window {
 		btnClose.setContentAreaFilled(false);
 		btnClose.setFocusPainted(false);
 		btnClose.setPreferredSize(new Dimension(11, 15));
-
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -429,9 +426,7 @@ public class Window {
 		gbc.ipadx = 5;
 		iconPanel.add(btnClose);
 		pnlTab.add(btnClose, gbc);
-		
 		getTabs().setTabComponentAt(index, pnlTab);
-
 		try {
 			AppManager.addDocument(d);
 		} catch (Exception exc) {

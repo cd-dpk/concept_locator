@@ -25,7 +25,7 @@ public class DocumentExtractor {
 	public DocumentExtractor(File javaFile) {
 		allDocuments = new ArrayList<Document>();
 		try {
-			fileName = javaFile.getAbsolutePath();
+			fileName = javaFile.getPath();
 			compilationUnit = JavaParser.parse(javaFile);
 		} catch (ParseException e) {
 			e.printStackTrace();
