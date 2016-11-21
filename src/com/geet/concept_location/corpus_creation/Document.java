@@ -65,7 +65,7 @@ public class Document  extends SimpleDocument {
 		article += " "+ getArticleFromDocName();
 		article += " "+ getArticleFromComment();
 		article += " "+ getArticleFromJavaDocComments();
-		article += " "+ getArticleFromImplementation();
+		article += " "+ getArticleFromImplementation(); 
 		return article;
 	}
 	private String getArticleFromName(){
@@ -103,7 +103,7 @@ public class Document  extends SimpleDocument {
 	private String getArticleFromDocName(){
 		String subArticle = "";
 		// titles extraction
-		subArticle+=" "+(StringUtils.getIdentifierSeparationsWithCamelCase(docName));
+		subArticle = (StringUtils.getIdentifierSeparationsWithCamelCase(docName));
 		return subArticle;
 	}
 	private String getArticleFromJavaDocComments(){

@@ -8,13 +8,13 @@ import com.geet.concept_location.indexing_vsm.Term;
 import com.geet.concept_location.utils.StringUtils;
 
 public class SimpleDocument implements Comparable<SimpleDocument>, Serializable{
+	
 	protected String article= "";
 	public String docInJavaFile;
 	public String docName = "";
 	public double score = 0.0;
 	public Position startPosition;
 	public Position endPosition;
-	
 	
 	public Position getStartPosition() {
 		return startPosition;
@@ -63,8 +63,8 @@ public class SimpleDocument implements Comparable<SimpleDocument>, Serializable{
 	
 	public SimpleDocument( String docInJavaFile, String article) {
 		super();
-		this.article = article;
-		this.docInJavaFile = docInJavaFile;
+		setDocInJavaFile(docInJavaFile);
+		setArticle(article);
 	}
 
 
@@ -76,6 +76,13 @@ public class SimpleDocument implements Comparable<SimpleDocument>, Serializable{
 	}
 	public void setArticle(String article) {
 		this.article = article;
+		StringTokenizer stringTokenizer = new StringTokenizer(getArticle(), JavaLanguage.getWhiteSpace()+JavaLanguage.getProgrammingLanguageSyntax()+JavaLanguage.getOperators(), false);
+		while (stringTokenizer.hasMoreTokens()) {
+			String token = stringTokenizer.nextToken();
+			if (!token.equals(StringUtils.getIdentifierSeparationsWithCamelCaseOnlyToken(token))) {
+				this.article += " "+StringUtils.getIdentifierSeparationsWithCamelCaseOnlyToken(token)+" ";				
+			}
+		}
 	}
 	public String getArticle() {
 		return article;
@@ -90,11 +97,13 @@ public class SimpleDocument implements Comparable<SimpleDocument>, Serializable{
 		return tf;
 	}
 	public List<Term> getTerms() {
+		
+//		System.out.println(article);
 		List<Term> terms = new ArrayList<Term>();
 		StringTokenizer stringTokenizer = new StringTokenizer(getArticle(), JavaLanguage.getWhiteSpace()+JavaLanguage.getProgrammingLanguageSyntax()+JavaLanguage.getOperators(), false);
 		while (stringTokenizer.hasMoreTokens()) {
 			String token = stringTokenizer.nextToken();
-			System.out.println(token);
+//			System.out.println(token);
 			token = token.toLowerCase();
 			if (StopWords.isStopword(token) || StringUtils.isConstant(token)) {
 				continue;
@@ -124,7 +133,6 @@ public class SimpleDocument implements Comparable<SimpleDocument>, Serializable{
 	}
 	@Override
 	public int compareTo(SimpleDocument o) {
-		// TODO Auto-generated method stub
 		return Double.compare(score, o.score);
 	}
 	public List<String> getTermsInString(){
@@ -143,6 +151,14 @@ public class SimpleDocument implements Comparable<SimpleDocument>, Serializable{
 			return true;
 		}
 		return status;
+	}
+	
+	public static void main(String[] args) {
+		SimpleDocument simpleDocument = new SimpleDocument("Null", "primeNumber");
+		System.out.println(simpleDocument.getArticle());
+		System.out.println(simpleDocument.getTermsInString());
+		
+		System.out.println(StringUtils.getIdentifierSeparationsWithCamelCase("HelloWorld"));
 	}
 }
 

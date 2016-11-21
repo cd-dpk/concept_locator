@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -48,7 +49,7 @@ import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
 import com.geet.concept_location.utils.StringUtils;
 
 public class Window {
-	public String projectPath="/media/Random/UltimateCalculator-master";
+	public String projectPath="D:\\BSSE0501\\Project-801\\UltimateCalculator-master";
 	public List<String> javaFilePaths =new ArrayList<String>();
 	ExplorerPage explorerPage;
 	int rel = 0, irrel = 0, round = 0;
@@ -107,6 +108,19 @@ public class Window {
 		System.exit(0);
 		*/
 		// SearchPage added
+		if (javaFilePaths.size()>0) {
+			JavaFileReader javaFileReader = new JavaFileReader();
+			File selectedFile = new File(javaFilePaths.get(0));
+			if (!selectedFile.isDirectory()) {
+				if (javaFileReader.openFile(selectedFile)) {
+					explorerPage.projectExplorerViewPanel.sourceViewPanel.getSourceTextArea().setText(
+							javaFileReader.getText());
+					explorerPage.projectExplorerViewPanel.sourceViewPanel.getFileName().setText(
+							selectedFile.getName());
+					
+				}
+			}
+		}
 		setSearchPage();
 		
 		menu = new Menu(new WindowActionHandler(this));
@@ -144,7 +158,7 @@ public class Window {
 					query = vectorSpaceModel.getQuery(queryDocument);
 					returnDocuments = vectorSpaceModel.searchWithQueryVector(query);
 					round=1;
-					searchPage.searchUI.relevanceFeedback.roundLabel.setText(round+"");
+					searchPage.searchUI.relevanceFeedback.roundLabel.setText("Round "+round+"");
 					feedbacks = new ArrayList<Feedback>();
 					for (int i = 0; i < returnDocuments.size(); i++) {
 						feedbacks.add(Feedback.NORMAL);
@@ -221,7 +235,7 @@ public class Window {
 				returnDocuments = vectorSpaceModel.searchWithQueryVector(query);
 				feedbacks = new ArrayList<Feedback>();
 				round++;
-				searchPage.searchUI.relevanceFeedback.roundLabel.setText(round+"");
+				searchPage.searchUI.relevanceFeedback.roundLabel.setText("Round "+round+"");
 				for (int i = 0; i < returnDocuments.size(); i++) {
 					feedbacks.add(Feedback.NORMAL);
 				}
@@ -243,7 +257,7 @@ public class Window {
 			}
 		});
 	}
-	private void setProjectExplorerPage() {
+	private void setProjectExplorerPage() throws IOException {
 		explorerPage = new ExplorerPage("Project Explorer");
 		explorerPage.projectExplorerViewPanel = new ProjectExplorerViewPanel(new Bound(0, 0,1300 - 100, 800 - 50),new File( projectPath));
 		AppManager.addDocument(explorerPage);
@@ -266,7 +280,6 @@ public class Window {
 		explorerPage.projectExplorerViewPanel.projectTreePanel.tree.addTreeSelectionListener(new TreeSelectionListener() {
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
-				// TODO Auto-generated method stub
 				JavaFileReader javaFileReader = new JavaFileReader();
 				System.out.println(e.getPath().toString());
 				String filePath = StringUtils.getFilePathNameNew(e
@@ -284,23 +297,24 @@ public class Window {
 				}
 			}
 		});
-//		createVectorSpaceMatrix();
+		createVectorSpaceMatrix();
 //		System.exit(0);
 	}
 	public Window(int w, int h) throws Exception {
 		width = w;
 		height = h;
-		frame = new JFrame("Simple Text Editor");
+		frame = new JFrame("Concept Locator");
 		createControls();
 	}
-	
-	
 	// indexing...
-	private void createVectorSpaceMatrix(){
+	private void createVectorSpaceMatrix() throws IOException{
+			FileWriter fileWriter = new FileWriter(new File("D:\\BSSE0501\\Project-801\\Corpus.txt"));
 			List<SimpleDocument> allDocuments = new ArrayList<SimpleDocument>();
 			int classNo = 0;
 			for (String path : javaFilePaths) {
 				if (new JavaClassPreprocessor().processJavaFile(new File(path))) {
+					fileWriter.write(classNo+"\n");
+					fileWriter.write(path+"\n");
 					System.out.println(classNo);
 					System.out.println(path);
 					allDocuments.addAll(new DocumentExtractor(new File(path)).getAllDocuments());
@@ -312,14 +326,24 @@ public class Window {
 			}
 			System.out.println("Size "+allDocuments.size());
 			for (SimpleDocument simpleDocument : allDocuments) {
+				fileWriter.write("------------------------\n");
 				System.out.println("------------------------------------------------------------------------");
 				Document document = (Document)simpleDocument;
+				fileWriter.write(document.docInJavaFile+","+document.docName+"\n");
 				System.out.println(document.docInJavaFile+","+document.docName);
+				fileWriter.write(document.getStartPosition().line+" , "+document.getEndPosition().line+"\n");
 				System.out.println(document.getStartPosition().line+" , "+document.getEndPosition().line);
 				System.out.println(new JavaFileReader().getText(document));
-				System.out.println("------------------------------------------------------------------------");
-				System.out.println(document.getArticle());
+				fileWriter.write("------------------------------------------------------------------------\n");
+				fileWriter.write(new JavaFileReader().getText(document)+"\n");
+				fileWriter.write("------------------------------------------------------------------------\n");
+				fileWriter.write(document.getArticle()+"\n");
+				fileWriter.write("------------------------------------------------------------------------\n");
+				fileWriter.write(document.getTermsInString()+"\n");
+				
 			}
+			fileWriter.close();
+//			System.exit(0);
 			VectorSpaceModel vectorSpaceModel = new VectorSpaceModel(allDocuments);
 			System.out.println("Initializing.............");
 			storeVectorSpaceMatrix(vectorSpaceModel.getVectorSpaceMatrix());

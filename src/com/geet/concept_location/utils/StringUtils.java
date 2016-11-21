@@ -102,6 +102,29 @@ public class StringUtils {
 		}
 		return resultant+" "+ target;
 	}
+	
+	/**
+	 * @param target identifier
+	 * @return resultant 
+	 * separate the identifiers written in camel case or underscore case into multiple words
+	 * also the identifier itself 
+	 */
+	public static String getIdentifierSeparationsWithCamelCaseOnlyToken(String target){
+		String resultant ="";
+		StringTokenizer stringTokenizer = new StringTokenizer(splitCamelCase(target)," ",false);
+		int i=0;
+		while (stringTokenizer.hasMoreTokens()) {
+			String token = stringTokenizer.nextToken();
+			if (!token.equals("_")) {
+				resultant += token+" ";
+				i++;
+			}
+		}
+		if (i<=1) {
+			return target;
+		}
+		return resultant;
+	}
 	public static boolean allUpperCaseCharacters(String target){
 		for (int i = 0; i < target.length(); i++) {
 			char ch = target.charAt(i);

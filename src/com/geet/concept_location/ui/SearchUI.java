@@ -60,9 +60,8 @@ public class SearchUI extends JPanel{
 		openButton = new JButton("OPEN");
 		openButton.setBounds(0, 30, 100, 20);
 		add(openButton);
-		
 		relevanceFeedback = new RelevanceFeedback(bound);
-		relevanceFeedback.setBounds(200, 30, 600, 50);
+		relevanceFeedback.setBounds(200, 30, 900, 50);
 		add(relevanceFeedback);
 		searchResultList.setCellRenderer(new SearhResult());
 		for (SimpleDocument document : lsiDocuments) {

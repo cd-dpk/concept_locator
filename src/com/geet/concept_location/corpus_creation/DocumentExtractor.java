@@ -55,8 +55,6 @@ public class DocumentExtractor {
 			MethodOrConstructorDocument methodOrConstructorDocument = new MethodOrConstructorDocument();
 			methodOrConstructorDocument.docInJavaFile = fileName;
 			methodOrConstructorDocument.docName = methodDeclaration.getName();
-			methodOrConstructorDocument.setStartPosition(new com.geet.concept_location.corpus_creation.Position(startPosition));
-			methodOrConstructorDocument.setEndPosition(new com.geet.concept_location.corpus_creation.Position(endPosition));			
 			if (methodComment != null && methodComment instanceof JavadocComment) {
 				methodOrConstructorDocument.javaDocComments.add((JavadocComment) methodComment);
 			}else if ((methodComment != null )&& (methodComment instanceof JavadocComment == false)) {
@@ -69,6 +67,11 @@ public class DocumentExtractor {
 					methodOrConstructorDocument.implementationComments.add(containedComment);
 				}
 			}
+			if (methodComment!=null) {
+				startPosition = new Position(methodComment.getBeginLine(), methodComment.getBeginColumn());
+			}
+			methodOrConstructorDocument.setStartPosition(new com.geet.concept_location.corpus_creation.Position(startPosition));
+			methodOrConstructorDocument.setEndPosition(new com.geet.concept_location.corpus_creation.Position(endPosition));			
 			methodOrConstructorDocument.implementionBody = methodDeclaration.getBody().toStringWithoutComments();
 			myMethodOrConstructorDocuments.add(methodOrConstructorDocument);
 		}
@@ -82,8 +85,6 @@ public class DocumentExtractor {
 			MethodOrConstructorDocument methodOrConstructorDocument = new MethodOrConstructorDocument();
 			methodOrConstructorDocument.docInJavaFile = fileName;
 			methodOrConstructorDocument.docName = constructorDeclaration.getName();
-			methodOrConstructorDocument.setStartPosition(new com.geet.concept_location.corpus_creation.Position(startPosition));
-			methodOrConstructorDocument.setEndPosition(new com.geet.concept_location.corpus_creation.Position(endPosition));			
 			if (methodComment != null && methodComment instanceof JavadocComment) {
 				methodOrConstructorDocument.javaDocComments.add((JavadocComment) methodComment);
 			}else if ((methodComment != null )&& (methodComment instanceof JavadocComment == false)) {
@@ -96,6 +97,11 @@ public class DocumentExtractor {
 					methodOrConstructorDocument.implementationComments.add(containedComment);
 				}
 			}
+			if (methodComment!=null) {
+				startPosition = new Position(methodComment.getBeginLine(), methodComment.getBeginColumn());
+			}
+			methodOrConstructorDocument.setStartPosition(new com.geet.concept_location.corpus_creation.Position(startPosition));
+			methodOrConstructorDocument.setEndPosition(new com.geet.concept_location.corpus_creation.Position(endPosition));			
 			methodOrConstructorDocument.implementionBody = constructorDeclaration.getBlock().toStringWithoutComments();
 			myMethodOrConstructorDocuments.add(methodOrConstructorDocument);
 		}
@@ -109,13 +115,16 @@ public class DocumentExtractor {
 			ClassDocument classDocument = new ClassDocument();
 			classDocument.docInJavaFile = fileName;
 			classDocument.docName = classOrInterfaceDeclaration.getName();
-			classDocument.setStartPosition(new com.geet.concept_location.corpus_creation.Position(startPosition));
-			classDocument.setEndPosition(new com.geet.concept_location.corpus_creation.Position(endPosition));			
 			if (classComment != null && classComment instanceof JavadocComment) {
 				classDocument.javaDocComments.add((JavadocComment) classComment);
 			}else if ((classComment != null )&& (classComment instanceof JavadocComment == false)) {
 				classDocument.implementationComments.add(classComment);
 			}
+			if (classComment!=null) {
+				startPosition = new Position(classComment.getBeginLine(), classComment.getBeginColumn());
+			}
+			classDocument.setStartPosition(new com.geet.concept_location.corpus_creation.Position(startPosition));
+			classDocument.setEndPosition(new com.geet.concept_location.corpus_creation.Position(endPosition));			
 			myClassDocuments.add(classDocument);
 		}
 	}
@@ -151,13 +160,16 @@ public class DocumentExtractor {
 				EnumDocument enumDocument = new EnumDocument();
 				enumDocument.docInJavaFile = fileName;
 				enumDocument.docName = enumDeclaration.getName();
-				enumDocument.setStartPosition(new com.geet.concept_location.corpus_creation.Position(startPosition));
-				enumDocument.setEndPosition(new com.geet.concept_location.corpus_creation.Position(endPosition));			
 				if (classComment != null && classComment instanceof JavadocComment) {
 					enumDocument.javaDocComments.add((JavadocComment) classComment);
 				}else if ((classComment != null )&& (classComment instanceof JavadocComment == false)) {
 					enumDocument.implementationComments.add(classComment);
 				}
+				if (classComment!=null) {
+					startPosition = new Position(classComment.getBeginLine(), classComment.getBeginColumn());
+				}
+				enumDocument.setStartPosition(new com.geet.concept_location.corpus_creation.Position(startPosition));
+				enumDocument.setEndPosition(new com.geet.concept_location.corpus_creation.Position(endPosition));			
 				enumDocument.implementionBody = enumDeclaration.toStringWithoutComments()+"\n";
 				myEnumDocuments.add(enumDocument);
 			}			

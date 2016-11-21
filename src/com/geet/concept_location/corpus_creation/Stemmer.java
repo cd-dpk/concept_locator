@@ -292,7 +292,7 @@ public class Stemmer
    }
    
    public static void main(String[] args) {
-	Stemmer stemmer = new Stemmer("choosing");
+	Stemmer stemmer = new Stemmer("multiplication");
 	stemmer.stem();
 	System.out.println(stemmer.toString());
    }
