@@ -297,7 +297,7 @@ public class Window {
 				}
 			}
 		});
-		createVectorSpaceMatrix();
+//		createVectorSpaceMatrix();
 //		System.exit(0);
 	}
 	public Window(int w, int h) throws Exception {
