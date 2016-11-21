@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.Scrollable;
@@ -35,6 +36,7 @@ public class SearchUI extends JPanel{
 	private JTextField searchTextField;
 	JButton openButton;
 	private JButton searchButton;
+	private JTextArea relatedTermArea;
 	DefaultListModel<SimpleDocument> listModel = new DefaultListModel();
 	private JPanel rfPanel;
 	public JList searchResultList = new JList(listModel);
@@ -49,7 +51,6 @@ public class SearchUI extends JPanel{
 	public SearchUI(Bound bound){
 		setLayout(null);
 		setBound(bound);
-		
 		searchTextField = new JTextField("Enter Query");
 		searchTextField.setBounds(0, 0, (int)(.80*bound.width), 30);
 		add(searchTextField);
@@ -59,13 +60,20 @@ public class SearchUI extends JPanel{
 		openButton = new JButton("OPEN");
 		openButton.setBounds(0, 30, 100, 20);
 		add(openButton);
+		JLabel relatedTerms = new JLabel("Related Terms");
+		relatedTerms.setBounds(110, 30, 120, 20);
+		add(relatedTerms);
+		relatedTermArea = new JTextArea("Related Terms",5,20);
+		JScrollPane rscrollPane = new JScrollPane(relatedTermArea);
+		rscrollPane.setBounds(250, 30, 700, 50);
+		add(rscrollPane);
 		
 		searchResultList.setCellRenderer(new SearhResult());
 		for (SimpleDocument document : lsiDocuments) {
 			listModel.addElement(document);
 		}
 		JScrollPane scrollPane =new JScrollPane(searchResultList);
-		scrollPane.setBounds(0, 80, bound.width,bound.height);
+		scrollPane.setBounds(0, 100, bound.width,bound.height);
 		add(scrollPane);
 	}
 	/*
@@ -144,6 +152,12 @@ public class SearchUI extends JPanel{
 			listModel.addElement(document);
 		}	
 		searchResultList.setModel(listModel);
+	}
+	public JTextArea getRelatedTermArea() {
+		return relatedTermArea;
+	}
+	public void setRelatedTermArea(JTextArea relatedTermArea) {
+		this.relatedTermArea = relatedTermArea;
 	}
 
 	

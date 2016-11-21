@@ -26,15 +26,18 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
+
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.DocumentExtractor;
 import com.geet.concept_location.corpus_creation.SimpleDocument;
 import com.geet.concept_location.indexing_lsi.Lsi;
 import com.geet.concept_location.indexing_lsi.LsiQuery;
 import com.geet.concept_location.indexing_lsi.Vector;
+import com.geet.concept_location.indexing_vsm.Term;
 import com.geet.concept_location.indexing_vsm.VectorSpaceMatrix;
 import com.geet.concept_location.indexing_vsm.VectorSpaceModel;
 import com.geet.concept_location.io.JavaFileReader;
@@ -147,9 +150,15 @@ public class Window {
 								"Query", searchPage.searchUI
 										.getSearchTextField().getText());
 						Lsi myLsi = new Lsi();
-						returnDocuments = myLsi.search(new LsiQuery(
-								queryDocument, new Vector(Lsi.NUM_FACTORS)));
-						
+						LsiQuery lsiQuery = new LsiQuery(
+								queryDocument, new Vector(Lsi.NUM_FACTORS));
+						returnDocuments = myLsi.search(lsiQuery);
+						List<Term> relatedTerms = myLsi.searchTerm(lsiQuery);
+						String terms= "";
+						for (Term term : relatedTerms) {
+							terms = terms+","+term.termString;
+						}
+						searchPage.searchUI.getRelatedTermArea().setText(terms);
 						searchPage.searchUI.updateList(returnDocuments);
 
 			}

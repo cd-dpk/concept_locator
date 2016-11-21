@@ -12,7 +12,7 @@ public class Lsi {
 	public List<Term> spaceTerms = new ArrayList<Term>();
 	public List<SimpleDocument> simpleDocuments = new ArrayList<SimpleDocument>();
 	public static final int NUM_FACTORS = 10;
-	public final static double MINIMUM_SCORE = 0.0;
+	public final static double MINIMUM_SCORE = 0.2;
 	public double [] scales = new double[NUM_FACTORS];
 	// Lsi bug localization initiated
 	
@@ -71,9 +71,9 @@ public class Lsi {
 		if (!lsiQuery.vector.isNull()) {
 			for (int j = 0; j < simpleDocuments.size(); ++j) {
 				simpleDocuments.get(j).score = lsiQuery.vector.cosine(simpleDocuments.get(j).vector);
-			//	if (this.lsiDocuments.get(j).score > MINIMUM_SCORE) {
+				if (simpleDocuments.get(j).score > MINIMUM_SCORE) {
 					resultantLsiDocuments.add(simpleDocuments.get(j));
-			//	}
+				}
 			}
 			Collections.sort(resultantLsiDocuments);
 			Collections.reverse(resultantLsiDocuments);
@@ -92,7 +92,9 @@ public class Lsi {
 		System.out.println(lsiQuery.vector.isNull());
 		for (int j = 0; j < spaceTerms.size(); ++j) {
 			spaceTerms.get(j).score = lsiQuery.vector.cosine(spaceTerms.get(j).vector);
-			resultantTerms.add(spaceTerms.get(j));
+			if (spaceTerms.get(j).score > MINIMUM_SCORE) {
+				resultantTerms.add(spaceTerms.get(j));
+			}
 		}
 		Collections.sort(resultantTerms);
 		Collections.reverse(resultantTerms);
