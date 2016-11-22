@@ -6,6 +6,7 @@ import java.util.Scanner;
 import com.geet.concept_location.corpus_creation.Document;
 import com.geet.concept_location.corpus_creation.Position;
 import com.geet.concept_location.corpus_creation.SimpleDocument;
+import com.geet.concept_location.utils.StringUtils;
 public class JavaFileReader {
 	String text="";
 	public boolean openFile(File file){
@@ -29,7 +30,7 @@ public class JavaFileReader {
 		int end = simpleDocument.getEndPosition().line;
 		String text ="";
 		try {
-			Scanner scanner = new Scanner(new File(simpleDocument.docInJavaFile));
+			Scanner scanner = new Scanner(new File(StringUtils.getFilePathAmongOS(simpleDocument.docInJavaFile)));
 			int lineNumber = 1;
 			while (scanner.hasNext()) {
 				String token = scanner.nextLine();

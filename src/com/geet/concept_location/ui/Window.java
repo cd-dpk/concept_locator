@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -45,7 +46,7 @@ import com.geet.concept_location.preprocessing.JavaClassPreprocessor;
 import com.geet.concept_location.utils.StringUtils;
 
 public class Window {
-	public String projectPath="D:\\BSSE0501\\Project-801\\UltimateCalculator-master";
+	public String projectPath="UltimateCalculator-master";
 	public List<String> javaFilePaths =new ArrayList<String>();
 	ExplorerPage explorerPage;
 	SearchPage searchPage;
@@ -92,15 +93,9 @@ public class Window {
 		panel = new JPanel(new java.awt.BorderLayout()); 
 		
 		tabs = new JTabbedPane();
+		
 		/// Project Explorer
 		setProjectExplorerPage();
-		/*
-		VectorSpaceMatrix vectorSpaceMatrix = loadVectorSpaceMatrix();
-		for (SimpleDocument simpleDocument : vectorSpaceMatrix.simpleDocuments) {
-			System.out.println(simpleDocument.docInJavaFile+","+simpleDocument.docName);
-		}	
-		System.exit(0);
-		*/
 		// SearchPage added
 		if (javaFilePaths.size()>0) {
 			JavaFileReader javaFileReader = new JavaFileReader();
@@ -293,7 +288,36 @@ public class Window {
 			e.printStackTrace();
 		}
 	}
-	
+/*	private void setData() {
+		System.out.println("What?");
+			List<SimpleDocument>simpleDocuments = new ArrayList<SimpleDocument>();
+			try {
+				FileInputStream file = new FileInputStream("Documents.ser");
+				ObjectInputStream objectInputStream = new ObjectInputStream(file);
+				try {
+					simpleDocuments = (ArrayList<SimpleDocument>) objectInputStream.readObject();
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+				objectInputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		for (SimpleDocument simpleDocument : simpleDocuments) {
+			String fileName = simpleDocument.docInJavaFile;
+			System.out.println(fileName);
+			simpleDocument.docInJavaFile = fileName.replace("D:\\BSSE0501\\Project-801\\", "");
+		}
+		try {
+			FileOutputStream file = new FileOutputStream("Documents.ser");
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream(file);
+			objectOutputStream.writeObject(simpleDocuments);
+			objectOutputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+*/	
 	public VectorSpaceMatrix loadVectorSpaceMatrix() throws IOException{
 		System.out.println("Vector Space Model is loading...");
 		VectorSpaceMatrix vectorSpaceMatrix = null;
@@ -308,6 +332,7 @@ public class Window {
 		
 		return vectorSpaceMatrix;
 	}
+	
 	private void openJavaFile(String fileName){
 		File file = new File(fileName);
 		String val = "";

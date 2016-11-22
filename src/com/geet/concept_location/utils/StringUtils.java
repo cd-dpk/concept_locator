@@ -222,4 +222,21 @@ public class StringUtils {
 		}
     	return retString;
     }
+    public static String getFilePathAmongOS(String filePath){
+    	String retString = "";
+    	int index = filePath.indexOf('\\');
+    	if (index != -1) {
+			for (int i = 0; i < filePath.length(); i++) {
+				char ch = filePath.charAt(i);
+				if (ch == '\\') {
+					retString += '/';
+					continue;
+				}
+				retString += ch;
+			}
+		}else{
+			return filePath;
+		}
+    	return retString ;
+    }   
 }
