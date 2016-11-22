@@ -25,7 +25,7 @@ public class WindowActionHandler implements ActionListener {
 			int ret = fc.showOpenDialog(win.getFrame());
 			if(ret == JFileChooser.APPROVE_OPTION) {
 				File file = fc.getSelectedFile();
-				win.projectPath = file.getAbsolutePath();
+				AppManager.setProjectPath(file.getAbsolutePath());
 			}
 		} else if (e.getSource().equals(win.getMenu().getFileExitItem())) {
 			System.exit(0);

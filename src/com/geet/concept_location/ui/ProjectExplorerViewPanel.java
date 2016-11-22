@@ -24,7 +24,42 @@ public class ProjectExplorerViewPanel extends JPanel{
 		sourceViewPanel = new SourceViewPanel(source,new Bound(0,0, bound.getWidth() - UIConstants.FILE_TREE_WIDTH-20, bound.getHeigh()-20));
 		sourceViewPanel.setBounds(UIConstants.FILE_TREE_WIDTH+20,0, bound.getWidth() - UIConstants.FILE_TREE_WIDTH-20, bound.getHeigh()-20);
 		add(sourceViewPanel);
+		AppManager.setJavaFilePaths(getProjectTreePanel().getJavaFilePaths());
+		if (AppManager.getJavaFilePaths().size() > 0) {
+			JavaFileReader javaFileReader = new JavaFileReader();
+			File selectedFile = new File(AppManager.getJavaFilePaths().get(0));
+			if (!selectedFile.isDirectory()) {
+				if (javaFileReader.openFile(selectedFile)) {
+					sourceViewPanel.getSourceTextArea().setText(
+							javaFileReader.getText());
+					sourceViewPanel.getFileName().setText(
+							selectedFile.getName());
+				}
+			}
+		}
+		getProjectTreePanel().getTree().addTreeSelectionListener(new TreeSelectionListener() {
+			@Override
+			public void valueChanged(TreeSelectionEvent e) {
+				JavaFileReader javaFileReader = new JavaFileReader();
+				System.out.println(e.getPath().toString());
+				String filePath = StringUtils.getFilePathNameNew(e
+						.getPath().toString());
+				System.out.println("File Path:"+filePath);
+				File selectedFile = new File(filePath);
+				if (!selectedFile.isDirectory()) {
+					if (javaFileReader.openFile(selectedFile)) {
+						sourceViewPanel.getSourceTextArea().setText(
+								javaFileReader.getText());
+						sourceViewPanel.getFileName().setText(
+								selectedFile.getName());
+						
+					}
+				}
+			}
+		});
+
 	}
+	
 	public FileTree getProjectTreePanel() {
 		return projectTreePanel;
 	}
