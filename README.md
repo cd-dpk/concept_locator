@@ -5,3 +5,5 @@ code locations based on similarity of the concept and the code portion. The impl
 titled "An information retrieval approach to concept location in source code" on 2004 and [Gregory et. al.](http://ai2-s2-pdfs.s3.amazonaws.com/cca2/439b3ebaa377f34a942f4826c559b0c9eafb.pdf)
 titled "On the use of relevance feedback in IR-based concept location" on 2009. 
 
+# Tool's UI
+![A sample Search Result in Concept Locator Tool](img/Search%20Result.PNG)
